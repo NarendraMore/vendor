@@ -1,0 +1,143 @@
+::ng-deep .pbutton {
+  background-color: #d93954;
+  border-color: white;
+}
+
+.pbutton:hover {
+  background-color: #d30628;
+  border-color: white;
+}
+
+::ng-deep .userDialog {
+  color: #e68897;
+}
+
+.search {
+  float: right;
+}
+
+.roles,
+h1 {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+.newroles {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+::ng-deep .accesscard {
+  background-color: #f3f3f3;
+}
+
+.access,
+h3 {
+  color: #3a3a3a;
+  font-size: 22px;
+  font-family: "Helvetica ";
+  font-weight: bold;
+  padding-top: 5px;
+}
+
+.myTable::ng-deep * {
+  background-color: #9aa4be !important;
+}
+
+::ng-deep .buttons {
+  margin-bottom: 20px;
+  float: right;
+}
+
+::ng-deep .pbuttonclass {
+  background-color: #d04a02;
+  color: white;
+  float: right;
+  margin-right: 10px !important;
+  border: none;
+  font-family: Helvetica;
+}
+
+::ng-deep .pbuttonclass1 {
+  background-color: #d04a02;
+  color: white;
+  float: right;
+  /* margin-right: 4rem !important; */
+  border: none;
+  font-family: Helvetica;
+}
+
+.pbuttonclass1:hover {
+  background-color: #d04a02;
+  color: white;
+}
+.pbuttonclass:hover {
+  background-color: #d04a02;
+  color: white;
+}
+
+::ng-deep input {
+  margin-top: 10px !important;
+  
+}
+
+::ng-deep .dropdown {
+  margin-top: 10px !important;
+
+}
+
+tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+
+::ng-deep .balancesheettable {
+  border-radius: 0px;
+  border: 2px solid #9aa4be !important;
+  overflow: hidden !important;
+
+}
+
+::ng-deep small {
+  color: red !important;
+}
+
+.spinner {
+  /* backdrop-filter: blur(2px); */
+  background-color: rgba(184, 167, 167, 0.2);
+  content: " ";
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+app-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 4px 15px;
+  color: #fff;
+  border-radius: 20px;
+  display: block;
+  width: 100px;
+  text-align: center;
+}
+
+.status-badge-active {
+  background: #2d8531;
+}
+
+.status-badge-pending {
+  background:red;
+}
+
+.status-badge-progress {
+  background: #f7bc0c;
+}

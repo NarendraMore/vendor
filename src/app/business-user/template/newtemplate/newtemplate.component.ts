@@ -1,0 +1,59 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { AppModuleConstants } from 'src/app/app-constants';
+import { VendorMngServiceService } from 'src/app/vendor-mng-service.service';
+@Component({
+  selector: 'app-newtemplate',
+  templateUrl: './newtemplate.component.html',
+  styleUrls: ['./newtemplate.component.css'],
+})
+export class NewtemplateComponent implements OnInit {
+  items!: MenuItem[];
+  activeItem!: MenuItem;
+  userRole!: string;
+  userName!: string;
+  templateDetailsRoute: any;
+  templateCreationRoute: any;
+  constructor(private service: VendorMngServiceService) {}
+
+  ngOnInit(): void {
+    let draftId = window.location.pathname.split('/')[4];
+
+    this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
+    this.userName = sessionStorage.getItem(AppModuleConstants.USERNAME)!;
+
+    if (this.userRole === '2') {
+      this.templateDetailsRoute = [
+        '/BusinessUser/create-template',
+        'templatedetails',
+      ];
+      this.templateCreationRoute = [
+        '/BusinessUser/create-template',
+        'tableDemo',
+      ];
+    } else if (this.userRole === '1') {
+      this.templateDetailsRoute = ['/Admin/create-template', 'templatedetails'];
+      this.templateCreationRoute = ['/Admin/create-template', 'tableDemo'];
+    }
+
+    if (draftId) {
+      this.templateDetailsRoute.push(draftId);
+      this.templateCreationRoute.push(draftId);
+    }
+
+    this.items = [
+      {
+        label: 'Template Details',
+        routerLink: this.templateDetailsRoute,
+        disabled: true,
+      },
+      {
+        label: 'Template Creation',
+        routerLink: this.templateCreationRoute,
+        disabled: true,
+      },
+    ];
+    this.activeItem = this.items[0];
+  }
+}

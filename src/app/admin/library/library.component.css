@@ -1,0 +1,76 @@
+::ng-deep .categoryTable {
+  margin-top: 20px !important;
+  border: 2px solid #9aa4be !important;
+}
+
+::ng-deep .pi {
+  font-size: large !important;
+  font-weight: bold;
+}
+
+.myTable::ng-deep * {
+  background-color: #9aa4be !important;
+}
+
+::ng-deep .submitButton {
+  background-color: #d04a02 !important;
+  color: white !important;
+  border: none;
+  margin-left: 10px !important;
+}
+
+h2 {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+.actionButton{
+  background-color: #d04a02;
+  border-color: white;
+  font-family: Helvetica;
+  float: left;
+}
+.actionButton:hover{
+  background-color: #d04a02;
+  border-color: white;
+}
+
+::ng-deep .cancleButton {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+::ng-deep .deleteButton {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+::ng-deep .lineItemDropdown {
+  margin-top: 10px !important;
+  width: 100%;
+}
+
+::ng-deep .dropdownValue {
+  height: 2.6rem !important;
+  margin-top: 3px !important;
+  width: 12rem !important;
+}
+
+.spinner {
+  /* backdrop-filter: blur(2px); */
+  background-color: rgba(184, 167, 167, 0.2);
+  content: " ";
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+app-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,93 @@
+.roles,
+h1 {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+.search {
+  float: right;
+}
+
+
+.myTable::ng-deep * {
+  background-color: #9aa4be !important;
+}
+
+::ng-deep .projectDropdown{ 
+  height: 2.9rem !important;
+  width: 15rem !important;
+  margin-top: 10px !important;
+}
+
+::ng-deep dropdown {
+  overflow-y: auto !important;
+  overflow-wrap: auto !important;
+}
+
+ng-deep .templateTable {
+  overflow-y: visible !important;
+  overflow-wrap: visible !important;
+}
+
+.actionButton{
+  background-color: #d04a02;
+  border-color: white;
+  font-family: Helvetica;
+  float: left;
+}
+.actionButton:hover{
+  background-color: #d04a02;
+  border-color: white;
+}
+
+.status-badge {
+  padding:4px 15px;
+  color: #fff;
+  border-radius: 20px;
+  display: block;
+  width: 126px;
+  text-align: center;
+}
+
+.status-badge-success {
+  background: #2d8531;
+}
+
+.status-badge-pending {
+  background: #D04A02;
+}
+
+.status-badge-progress {
+  background: #f7bc0c;
+}
+
+.anchor-row {
+  cursor: pointer;
+}
+
+.tab-header {
+  width: 250px;
+}
+
+.input-left-margin {
+    margin-left: 20px;
+}
+
+.spinner {
+  /* backdrop-filter: blur(2px); */
+  background-color: rgba(184, 167, 167, 0.2);
+  content: " ";
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+app-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

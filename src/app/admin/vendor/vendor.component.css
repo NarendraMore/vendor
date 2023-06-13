@@ -1,0 +1,123 @@
+
+
+::ng-deep .pbuttonclass {
+  background-color: #d04a02;
+  border-color: white;
+  font-family: Helvetica;
+  float: left;
+}
+
+.pbuttonclass:hover {
+  background-color: #d04a02;
+  border-color: white;
+}
+
+::ng-deep .userDialog {
+  color: #e68897;
+}
+
+.search {
+  float: right;
+}
+
+::ng-deep .newroles {
+  color: #415385;
+  font-size: 34px;
+  font-family: Helvetica;
+}
+
+tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+
+::ng-deep .pbuttonclass {
+  background-color: #d04a02;
+  color: white;
+  font-family: Helvetica ;
+  font-size: 18px;
+}
+
+.myTable::ng-deep * {
+  background-color: #9aa4be !important;
+}
+
+.roles,
+h1 {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+::ng-deep input,
+.input {
+  margin-top: 10px !important;
+}
+::ng-deep .skillButton2{
+  background-color: #D04A02;
+  color: white;
+  border: none;
+  margin-top: 40px;
+ }
+ ::ng-deep .pbuttonclass3 {
+  background-color: #d04a02;
+  border-color: white;
+  float: right;
+}
+.pbuttonclass3:hover{
+  background-color: #D04A02;
+  color: white;
+  border: none;
+ }
+
+.skillButton2:hover{
+  background-color: #D04A02;
+  color: white;
+  border: none;
+ }
+::ng-deep .lineOfBusinessdropdown {
+  margin-top: 20px !important;
+
+}
+::ng-deep .Projects1 {
+  margin-top: 20px !important;
+}
+::ng-deep .dropdown1 {
+  margin-top: 10px !important;
+}
+
+::ng-deep .balancesheettable {
+  border-radius: 0px;
+  border: 2px solid #9aa4be !important;
+  overflow: hidden !important;
+}
+
+::ng-deep label {
+  font-weight: bold;
+}
+
+::ng-deep small{
+  color: red !important;
+}
+
+.spinner {
+  /* backdrop-filter: blur(2px); */
+  background-color: rgba(184, 167, 167, 0.2);
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+app-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

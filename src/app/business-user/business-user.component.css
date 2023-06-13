@@ -1,0 +1,458 @@
+.container {
+  width: 100%;
+  position: fixed;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+::ng-deep .title {
+  text-align: center;
+  justify-content: center;
+  height: auto;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin: 0;
+}
+::ng-deep .notificationPanel1{
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black;
+  width: 25% !important;
+  height: 40% !important;
+  overflow: auto !important;
+}
+ .notificationButton{
+height: 20px !important;
+}
+.footer-section {
+  /* position: fixed; */
+  position: relative;
+  float: right;
+  margin-bottom: 2%;
+}
+.clearIcon1{
+  padding: 0%;
+  height: 20px !important;
+  width: 20px;
+}
+.notify{
+  font-size: larger;
+  padding: 0.5rem !important;
+}
+
+::ng-deep .matMenu{
+  max-width: 500px !important;
+  height: 20rem !important;
+}
+.nav-pane {
+  background: #f2f2f2;
+  scroll-behavior: auto;
+}
+
+.newnav-pane {
+  background: #f2f2f2;
+  scroll-behavior: auto;
+}
+
+.user {
+  align-items: center;
+  background-color: white;
+  padding: 10px;
+  font-size: larger;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+i {
+  color: white;
+}
+
+/* a:hover , i:hover
+    {
+        color: #415385;
+    } */
+
+.nav-buttons {
+  background-color: #f2f2f2;
+  color: #7d7d7d;
+  font-family: Helvetica Neue LT Pro;
+  font-size: 20px;
+}
+
+ul {
+  list-style: none;
+}
+
+.listItem {
+  padding: 10px;
+  color: white;
+  font-size: larger;
+}
+
+.listItem1 {
+  padding: 10px;
+  color: white;
+  font-size: larger;
+}
+::ng-deep .leftpanel {
+  height: 100%;
+  position: static;
+  float: left;
+  width: 100%;
+  display: flex;
+}
+
+::ng-deep .newleftpanel {
+  height: 100%;
+  position: absolute;
+  float: right;
+  width: 100%;
+  display: flex;
+}
+
+.item {
+  padding: 0.5rem;
+  font-size: 22px;
+  color: #7c7c7c;
+  cursor: pointer;
+  font-family: "Helvetica Neue LT Pro";
+}
+
+.item:hover,
+a:hover,
+i:hover {
+  background-color: #415385;
+  color: #ffffff;
+}
+
+.toggle {
+  padding: 0.7rem;
+  font-size: 22px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  font-family: "Helvetica Neue LT Pro";
+  font-size: 18px;
+}
+
+/* @media screen and (max-width: 400px) {
+        .toolbar{
+            display: flex;
+            flex-wrap: wrap;
+            height: 100px;
+            width: fit-content;
+        }
+    
+        .title1,.userInfo{
+            display: none;
+        }
+    }
+    
+    @media screen and (max-width: 490px) {
+        .title1 {
+            width: 5px;
+        }
+    }
+    
+    @media screen and (max-width: 754px) {
+        .title1 {
+            font-size:medium;
+        }
+    
+    
+        .userInfo{
+            font-size:medium;
+        }
+    } */
+
+img {
+  width: 50px;
+  margin-right: 10px;
+}
+
+::ng-deep .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0%;
+  padding: 0%;
+  height: 12vh;
+  width: 100%;
+  color: black;
+  background-color: #f2f2f2;
+}
+
+::ng-deep .cardData {
+  color: black;
+  background-color: #f2f2f2;
+  height: 9vh;
+}
+
+span {
+  margin: 0%;
+  padding: 0%;
+  margin-right: 10px;
+  color: white;
+}
+
+.title1 {
+  margin-left: 10px !important;
+  color: #252525;
+  font-size: x-large !important;
+}
+
+.pages {
+  position: relative;
+  float: left;
+  height: 90vh;
+  flex: 1;
+  overflow-x: hidden;
+  padding: 10px;
+  margin-left: 110px !important;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: gray;
+  color: white;
+  text-align: center;
+}
+
+.menuButton {
+  text-decoration: none;
+  width: 100%;
+  background-color: #eb8c00;
+  border: 0mm;
+  color: black;
+}
+
+@media screen and (max-width: 662px) {
+  ::ng-deep img {
+    display: none;
+  }
+  ::ng-deep .userData {
+    display: none;
+  }
+}
+
+a {
+  color: #7c7c7c;
+  font-family: Helvetica Neue LT Pro;
+}
+
+i {
+  color: #7c7c7c;
+  /* width: 27.77px;
+        height: 32px; */
+  font-size: x-large;
+  margin-bottom: 5px;
+}
+
+/* ::ng-deep active{
+        background-color: #415385;
+    } */
+/* left sidenav new css */
+
+.sidenav {
+  margin-top: 9vh;
+  background: #f2f2f2;
+  transition: all 0.5s ease;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 5rem;
+  height: 100vh;
+}
+.logo-container {
+  display: flex;
+  position: fixed;
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 10px;
+}
+.logo {
+  background: #fff;
+  text-align: center;
+  width: 3rem;
+  min-width: 3rem;
+  border-radius: 0.313rem;
+  padding: 0.313rem;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+}
+
+.logo-text {
+  margin-left: 1.5rem;
+  font-size: 22px;
+  font-weight: 700;
+  color: #7d7d7d;
+  cursor: pointer;
+}
+
+.btn-close {
+  margin-left: auto;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+}
+.fa-times {
+  color: #7d7d7d;
+  font-size: 22px;
+}
+
+.sidenav-collapsed {
+  width: 16.5625rem;
+}
+
+.sidenav-nav {
+  list-style: none;
+  padding: 0.938rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100% - 3.65rem);
+  cursor: pointer;
+}
+.sidenav-nav-item {
+  width: 100%;
+  margin-bottom: 0.625rem;
+}
+.sidenav-nav-link {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  color: #7d7d7d;
+  text-decoration: none;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease;
+}
+.sidenav-link-icon {
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 0 0.5rem;
+  text-align: center;
+}
+.collapseIcon {
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 0 0.8rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.sidenav-link-text {
+  margin-left: 1.5rem;
+  font-family: Helvetica;
+  font-size: 22px;
+}
+
+.sidenav-nav-item:hover .sidenav-nav-link {
+  background-color: #415385 !important;
+  color: #7d7d7d;
+}
+
+.active {
+  background-color: #415385 !important;
+}
+
+.sidenav-link-text {
+  color: #7d7d7d;
+}
+
+.pages {
+  width: calc(100% - 5rem);
+  height: 100vh;
+  margin-left: 5rem;
+  margin-bottom: 10vh !important;
+  z-index: 0;
+  position: relative;
+  top: 0;
+  transition: all 0.8s ease;
+  background: white;
+  padding: 1rem 1rem;
+}
+
+.pages-trimmed {
+  width: calc(100% - 16.5625rem);
+  margin-left: 16.5625rem;
+}
+
+.pages-md-screen {
+  width: calc(100% - 5rem);
+  margin-left: 5rem;
+}
+
+::ng-deep .toggleIcon {
+  flex-wrap: wrap;
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 0 0.5rem;
+  text-align: center;
+}
+
+::ng-deep .collapse {
+  color: #7d7d7d;
+}
+
+::ng-deep .blank {
+  margin-top: 10vh !important ;
+}
+:host::ng-deep .logo1 * {
+  color: black !important;
+  margin: 1rem 0.2rem !important;
+}
+
+::ng-deep .invisibaleCard {
+  border: none;
+  box-shadow: none;
+}
+
+::ng-deep .topOptions {
+  margin: 1rem !important;
+  color: black !important;
+  font-size: 20px;
+  padding: 20px 10px;
+  font-size: x-large !important;
+}
+
+::ng-deep .options {
+  margin: 1rem !important;
+}
+
+::ng-deep .profileIcon {
+  border-radius: 50%;
+  background-color: #d04a02;
+  padding: 10px !important;
+  margin-top: -8px !important;
+  font-size: xx-large !important;
+}
+
+:host::ng-deep .logo1 * {
+  color: black !important;
+  margin: 1rem 0.2rem !important;
+}
+
+.logoImage{
+  float: left;
+  margin-top: 1rem;
+  zoom: 120%;
+  margin-left: 10px;
+}
