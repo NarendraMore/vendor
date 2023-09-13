@@ -27,7 +27,7 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.css"
             ],
-            "scripts": []
+            "scripts": [ "node_modules/jquery/dist/jquery.min.js", "node_modules/powerbi-client/dist/powerbi.js", "node_modules/powerbi-client/dist/powerbi.min.js", "node_modules/powerbi-models/dist/models.min.js"]
           },
           "configurations": {
             "production": {
@@ -64,6 +64,11 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "grading-tool:build",
+            "sslKey": "private.key",
+            "sslCert": "certificate.crt"
+          },
           "configurations": {
             "production": {
               "browserTarget": "VendorUI:build:production"
@@ -92,7 +97,7 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [  "node_modules/jquery/dist/jquery.min.js", "node_modules/powerbi-client/dist/powerbi.js","node_modules/powerbi-client/dist/powerbi.min.js", "node_modules/powerbi-models/dist/models.min.js"]
           }
         }
       }

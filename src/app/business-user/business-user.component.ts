@@ -9,6 +9,11 @@ import { Router } from '@angular/router';
 import { AppModuleConstants } from '../app-constants';
 import { VendorMngServiceService } from '../vendor-mng-service.service';
 import { UserService } from '../services/user.service';
+import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
+import { NotificationService } from '../services/notification.service';
+import { Subscription,interval, take } from 'rxjs';
+
+
 
 interface SideNavToggle {
   screenWidth: number;
@@ -19,9 +24,10 @@ interface SideNavToggle {
   selector: 'app-business-user',
   templateUrl: './business-user.component.html',
   styleUrls: ['./business-user.component.css'],
+  providers: [ConfirmationService, MessageService, PrimeIcons],
+
 })
 export class BusinessUserComponent implements OnInit {
-
   sidebar: boolean = false;
 
   checked1: boolean = false;
@@ -35,31 +41,62 @@ export class BusinessUserComponent implements OnInit {
   isActive3: boolean = false;
   isActive4: boolean = false;
   pageProgressBar: boolean = false;
-  overlayVisible:boolean = false;
+  overlayVisible: boolean = false;
   userRole!: string;
   userName!: string;
   lastName!: string;
+  private subscription!: Subscription;
+
   constructor(
     private router: Router,
     private service: VendorMngServiceService,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService,
+    private notificationService:NotificationService
   ) {}
   allNotifications: any[] = [];
+  notificationCount:any;
   ngOnInit(): void {
+    // setInterval(() => {
+      // this.userService.getAllNotifications().subscribe((data: any) => {
+      //   this.allNotifications = this.filterNotificationData(data);
+      //   this.allNotifications.reverse();
+      //   console.log('updated notifications', this.allNotifications);
+      // });
+    // }, 15000); // Update every 1 second
 
+
+    // this.notificationService.dialogFormDataSubscriber$.subscribe((data: any) => {
+    //   console.log("inside business user subsciber: ",data);
+    //   this.userService.getAllNotifications().subscribe((data: any) => {
+    //     this.allNotifications = this.filterNotificationData(data);
+    //     this.allNotifications.reverse();
+    //     console.log('updated notifications', this.allNotifications);
+    //   });
+    // })
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    this.userService.getAllNotificationsCount().subscribe((data: any) => {
+      // console.log(data);
+      this.notificationCount = data;
+    });
 
     setInterval(() => {
-      this.userService.getAllNotifications().subscribe((data: any) => {
-        this.allNotifications = this.filterNotificationData(data);
-        this.allNotifications.reverse();
-        console.log("updated notifications",this.allNotifications);
+      this.userService.getAllNotificationsCount().subscribe((data: any) => {
+        // console.log(data);
+        this.notificationCount=data;
       });
-    }, 5000); // Update every 1 second
+    }, 15000); //execute after every 15 seconds
+
+
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
     this.lastName = sessionStorage.getItem(AppModuleConstants.LASTNAME)!;
 
-    this.pageProgressBar = this.service.pageProgressBar;
+    // this.pageProgressBar = this.service.pageProgressBar;
     this.screenWidth = window.innerWidth;
 
     this.navData = [
@@ -101,17 +138,15 @@ export class BusinessUserComponent implements OnInit {
     ];
   }
 
+  filterNotificationData(inputData: any) {
+    let filterData: any[] = [];
 
-  filterNotificationData(inputData:any){
-
-    let filterData:any[]=[];
-
-     inputData.filter((data: any) => {
+    inputData.filter((data: any) => {
       // console.log('data././././', data);
-      if(data.userName===sessionStorage.getItem('email')){
-      filterData.push(data);
+      if (data.userName === sessionStorage.getItem('email')) {
+        filterData.push(data);
       }
-    })
+    });
     return filterData;
   }
   sideBar() {
@@ -131,10 +166,14 @@ export class BusinessUserComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-
-  onClickNotification(){
-
-    this.overlayVisible = !this.overlayVisible;  }
+  onClickNotification() {
+    this.userService.getAllNotifications().subscribe((data: any) => {
+      this.allNotifications = this.filterNotificationData(data);
+      this.allNotifications.reverse();
+      // console.log("updated notifications", this.allNotifications);
+    });
+    this.overlayVisible = !this.overlayVisible;
+  }
   onClicUserMngmnt() {
     this.router.navigate(['/user-mng']);
   }
@@ -233,13 +272,36 @@ export class BusinessUserComponent implements OnInit {
     // window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
   }
 
-  onClearNotification(id:any){
+  onClearNotification(id: any) {
     // alert(id)
-    this.userService.clearNotification(id).subscribe(
-      (data:any)=>{
-        console.log("notification cleared");
-        
-      }
-    )
+    this.userService.clearNotification(id).subscribe((data: any) => {
+      // console.log('notification cleared');
+      this.userService.getAllNotifications().subscribe((data: any) => {
+        this.allNotifications = this.filterNotificationData(data);
+        this.allNotifications.reverse();
+        // console.log('updated notifications', this.allNotifications);
+      });
+    });
+  }
+
+  clearAllNotification(){
+    this.userService.clearAllNotifications(sessionStorage.getItem('email')).subscribe((data: any) => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success..!!',
+        detail: 'All notifications are cleared',
+      });
+      // this.userService.getAllNotifications().subscribe((data: any) => {
+      //   this.allNotifications = this.filterNotificationData(data);
+      //   this.allNotifications.reverse();
+      //   console.log('updated notifications', this.allNotifications);
+      // });
+      // this.notificationService.emitDialogFormData("event");
+      this.overlayVisible=false;
+      this.notificationCount=0;
+
+    })
+
+   
   }
 }

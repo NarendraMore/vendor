@@ -144,7 +144,7 @@ export class RoleComponent implements OnInit {
       (data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Role addedd successfully',
         });
         // console.log(JSON.stringify(data));

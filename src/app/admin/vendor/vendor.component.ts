@@ -31,7 +31,7 @@ export class VendorComponent implements OnInit {
 
   vendorNamePattern ='^([0-9a-zA-Z!@#$%^&*()_+ -]{3,155})$';
   spocNamePattern = '^([a-zA-Z ]{3,200})$';
-  mobnumPattern = '^((\\+91-?)|0)?[5,6,7,8,9]{1}[0-9]{9}$';
+  mobnumPattern = '^((\\+?)|0)?[0-9]{3,20}$';
   emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
 
   vendorId!: string;
@@ -163,7 +163,7 @@ export class VendorComponent implements OnInit {
     //     if (data.status === 200) {
     //       this.messageService.add({
     //         severity: 'success',
-    //         summary: 'Successfull',
+    //         summary: 'Successful',
     //         detail: 'Vendor addedd successfully',
     //       });
     //       console.log(data,"response...!!");
@@ -191,7 +191,7 @@ export class VendorComponent implements OnInit {
       (data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Vendor addedd successfully',
         });
         this.spinner.isLoading.next(false);
@@ -286,14 +286,15 @@ export class VendorComponent implements OnInit {
     this.vendorForm.reset();
   }
 
+  editable:boolean=false;
   editVendor(vendor: any) {
     // this.updateButton=true;
-    console.log(vendor);
+    // console.log(vendor);
     
     this.vendorService.getVendorById(vendor.vendorId).subscribe(
       (data: any) => {
         this.vendorData = data;
-        console.log(this.vendorData);
+        // console.log(this.vendorData);
         
         // this.save=false;
         // this.update=true;
@@ -326,6 +327,12 @@ export class VendorComponent implements OnInit {
 
         this.editVendorForm = true;
         this.addVendorDialogBox = true;
+
+        if (data.createdBy === sessionStorage.getItem('email')) {
+          this.editable = false;
+        } else {
+          this.editable = true;
+        }
         // console.log('vendor data', this.vendorData);
       },
       (error: HttpErrorResponse) => {
@@ -350,9 +357,15 @@ export class VendorComponent implements OnInit {
     this.addlineOfBusinessForm.reset();
   }
 
+  onClickCancelLOB(){
+    this.addlineOfBusinessForm.reset();
+    this.flagAdding=false;
+
+  }
+
 
   onClickSaveLineofBuisnes() {
-    console.log(this.addlineOfBusinessForm.value, 'line Of Business.....');
+    // console.log(this.addlineOfBusinessForm.value, 'line Of Business.....');
     const lineofBuisness ={
       value:this.addlineOfBusinessForm.value.lineOfBusiness,
       type :'Buisness'
@@ -367,7 +380,7 @@ export class VendorComponent implements OnInit {
         
     this.masterRepoService.getCategories().subscribe(
       (data: any) => {
-     console.log(data,'data./....');
+    //  console.log(data,'data./....');
      
       // console.log(this.categoriesData, ' data');
 
@@ -395,7 +408,7 @@ export class VendorComponent implements OnInit {
         // this.spinner.isLoading.next(false);
         // this.categoryForm.reset();
         // this.ngOnInit();
-        console.log(data,'data');
+        // console.log(data,'data');
         
 
       },

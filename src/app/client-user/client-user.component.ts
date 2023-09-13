@@ -8,6 +8,9 @@ import {
 import { Router } from '@angular/router';
 import { AppModuleConstants } from '../app-constants';
 import { UserService } from '../services/user.service';
+import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
+import { NotificationService } from '../services/notification.service';
+import { Subscription,interval, take } from 'rxjs';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -18,6 +21,7 @@ interface SideNavToggle {
   selector: 'app-client-user',
   templateUrl: './client-user.component.html',
   styleUrls: ['./client-user.component.css'],
+  providers: [ConfirmationService, MessageService, PrimeIcons],
 })
 export class ClientUserComponent implements OnInit {
   sidebar: boolean = false;
@@ -36,20 +40,52 @@ export class ClientUserComponent implements OnInit {
   userRole!: string;
   lastName!: string;
   userName!: string;
-  overlayVisible:boolean =false
-  constructor(private router: Router,
-    private userService: UserService) { }
+  overlayVisible: boolean = false;
+  private subscription!: Subscription;
+
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private messageService: MessageService,
+    private notificationService:NotificationService
+  ) {}
   allNotifications: any[] = [];
+  notificationCount:any=0;
+
   ngOnInit(): void {
+    this.userService.getAllNotificationsCount().subscribe((data: any) => {
+      // console.log(data);
+      this.notificationCount = data;
+    });
     setInterval(() => {
-      this.userService.getAllNotifications().subscribe((data: any) => {
-        this.allNotifications = this.filterNotificationData(data);
-        this.allNotifications.reverse();
-        
-        console.log("updated notifications", this.allNotifications);
+      this.userService.getAllNotificationsCount().subscribe((data: any) => {
+        // console.log(data);
+        this.notificationCount = data;
       });
-     
-    }, 5000); // Update every 1 second
+    }, 15000); //execute after every 15 seconds
+
+    // this.notificationService.dialogFormDataSubscriber$.subscribe(
+    //   (data: any) => {
+    //     console.log("inside client subsciber: ",data);
+    //     this.userService.getAllNotifications().subscribe((data: any) => {
+    //       this.allNotifications = this.filterNotificationData(data);
+    //       this.allNotifications.reverse();
+    //       console.log('updated notifications', this.allNotifications);
+    //     });
+    //   }
+    // );
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    
+    setInterval(() => {
+      this.userService.getAllNotificationsCount().subscribe((data: any) => {
+        console.log(data);
+        this.notificationCount=data;
+      });
+    }, 15000); //execute after every 15 seconds
 
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.user = sessionStorage.getItem(AppModuleConstants.USER)!;
@@ -86,7 +122,6 @@ export class ClientUserComponent implements OnInit {
   }
 
   filterNotificationData(inputData: any) {
-
     let filterData: any[] = [];
 
     inputData.filter((data: any) => {
@@ -94,7 +129,7 @@ export class ClientUserComponent implements OnInit {
       if (data.userName === sessionStorage.getItem('email')) {
         filterData.push(data);
       }
-    })
+    });
     return filterData;
   }
 
@@ -106,9 +141,14 @@ export class ClientUserComponent implements OnInit {
     }
   }
 
-  onClickNotification(){
-
-    this.overlayVisible = !this.overlayVisible;  }
+  onClickNotification() {
+    this.userService.getAllNotifications().subscribe((data: any) => {
+      this.allNotifications = this.filterNotificationData(data);
+      this.allNotifications.reverse();
+      console.log("updated notifications", this.allNotifications);
+    });
+    this.overlayVisible = !this.overlayVisible;
+  }
 
   logout() {
     sessionStorage.clear();
@@ -219,11 +259,29 @@ export class ClientUserComponent implements OnInit {
 
   onClearNotification(id: any) {
     // alert(id)
-    this.userService.clearNotification(id).subscribe(
-      (data: any) => {
-        console.log("notification cleared");
-
-      }
-    )
+    this.userService.clearNotification(id).subscribe((data: any) => {
+      console.log('notification cleared');
+      this.userService.getAllNotifications().subscribe((data: any) => {
+        this.allNotifications = this.filterNotificationData(data);
+        this.allNotifications.reverse();
+        console.log('updated notifications', this.allNotifications);
+      });
+    });
   }
+
+  clearAllNotification() {
+    this.userService
+      .clearAllNotifications(sessionStorage.getItem('email'))
+      .subscribe((data: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success..!!',
+          detail: 'All notifications are cleared',
+        });
+      });
+      this.overlayVisible=false;
+      this.notificationCount=0;
+
+      // this.notificationService.emitDialogFormData("event");
+    }
 }

@@ -231,8 +231,14 @@ table thead th {
 
 button.pbuttonclass {
   border: 2px solid #d04a02 !important;
-  background: #fff !important;
+  background: #ffffff !important;
   color: #d04a02 !important;
+  zoom: 70%;
+}
+button.pbuttonclass67 {
+  /* border: 2px solid #d04a02 !important; */
+  background: #d04a02 !important;
+  color: #ffffff !important;
   zoom: 70%;
 }
 
@@ -329,4 +335,45 @@ table {
     background-color: lightgray;
   } */
 
-  
+  .customSubmitButton{
+    float: right;
+    margin-top: 10px;
+    background-color: #d04a02;
+    border: none;
+  }
+  .customCancelButton{
+    float: left;
+    margin-top: 10px;
+    background-color: #d04a02;
+    border: none
+  }
+  .customSubmitButton:hover{
+    float: right;
+    margin-top: 10px;
+    background-color: #d04a02 !important;
+    border: none;
+  }
+  .customCancelButton:hover{
+    float: left;
+    margin-top: 10px;
+    background-color: #d04a02 !important;
+    border: none
+  }
+
+  .customSubmitButton{
+    float: right;
+    margin-top: 10px;
+  }
+  .customCancelButton{
+    float: left;
+    margin-top: 10px;
+  }
+
+  .customDialog{
+    width: 20%;
+  }
+
+  .customvalueInputBox{
+    width: 100%;
+    padding: 10px;
+  }

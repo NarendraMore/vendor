@@ -19,6 +19,7 @@ import { ProposalService } from 'src/app/business-user/proposal/proposal.service
 import { ProjectService } from 'src/app/services/project.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-view-proposal',
@@ -63,7 +64,8 @@ export class ViewProposalComponent implements OnInit {
     private vendorservice: VendorService,
     private projectService: ProjectService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private notificationService:NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -543,7 +545,7 @@ export class ViewProposalComponent implements OnInit {
   }
 
   openViewCommentOverlay(event: Event, nodeId: string, type?: string) {
-    console.log('nodeId: ', nodeId);
+    // console.log('nodeId: ', nodeId);
     this.issueType = type!;
     this.viewCommentOverlay.toggle(event);
 
@@ -640,6 +642,8 @@ export class ViewProposalComponent implements OnInit {
       this.templateService
         .postNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
+
           this.issueType = '';
           this.commentData = data;
           this.populateComments([
@@ -654,6 +658,8 @@ export class ViewProposalComponent implements OnInit {
       this.templateService
         .putNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
+
           this.populateComments([
             {
               caseStatus: 'Pending',
@@ -678,6 +684,8 @@ export class ViewProposalComponent implements OnInit {
     this.templateService
       .putNodeStatus(this.commentForm.get('nodeId')?.value, data)
       .subscribe((res: any) => {
+        //this.notificationService.emitDialogFormData("event");
+
         this.getComments(this.commentForm.get('nodeId')?.value);
       });
   }
@@ -1488,13 +1496,15 @@ export class ViewProposalComponent implements OnInit {
 
     this.messageService.add({
       severity: 'success',
-      summary: 'Successfull',
+      summary: 'Successful',
       detail: 'Proposal approved successfully',
     });
     console.log('data: ', data);
     this.proposalService
       .updateScorcard(this.selectedTemplateData.scoreCardId, data)
       .subscribe((result: any) => {
+        ////this.notificationService.emitDialogFormData("event");
+
         // console.log(result, 'Proposal approved.');
         this.router.navigate(['/ClientUser/score-cards']);
       });

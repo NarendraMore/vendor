@@ -27,7 +27,7 @@ export class LibraryComponent implements OnInit {
   editCategoryForm: boolean = false;
   lineItemtypes: lineItemType[] = [];
   selectedType!: string;
-
+  closable:boolean = false
   // valuePattern = "^[a-zA-Z .,]{3,155}$";
 
 

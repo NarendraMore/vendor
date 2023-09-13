@@ -15,23 +15,21 @@
   width: 100%;
   margin: 0;
 }
+.topOptions i.notifyIcon {
+  font-size: 33px !important; 
+}
 ::ng-deep .notificationPanel1{
   background-color: white !important;
   color: black !important;
   border: 1px solid black;
   width: 25% !important;
-  height: 40% !important;
+  height: auto;
   overflow: auto !important;
 }
  .notificationButton{
 height: 20px !important;
 }
-.footer-section {
-  /* position: fixed; */
-  position: relative;
-  float: right;
-  margin-bottom: 2%;
-}
+
 .clearIcon1{
   padding: 0%;
   height: 20px !important;
@@ -40,6 +38,11 @@ height: 20px !important;
 .notify{
   font-size: larger;
   padding: 0.5rem !important;
+}
+
+.notifyIcon:hover{
+background-color: #f2f2f2 !important;
+color: #7c7c7c;
 }
 
 ::ng-deep .matMenu{
@@ -410,7 +413,9 @@ i {
 
 ::ng-deep .collapse {
   color: #7d7d7d;
+  font-size: 22px;
 }
+
 
 ::ng-deep .blank {
   margin-top: 10vh !important ;
@@ -454,5 +459,43 @@ i {
   float: left;
   margin-top: 1rem;
   zoom: 120%;
+  margin-top: 19px !important;
   margin-left: 10px;
+}
+
+::ng-deep .notificationPanel{
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black;
+  width: 35% !important;
+  height: 40% !important;
+  overflow: auto !important;
+}
+
+::ng-deep .clearAllButton{
+  color: red !important;
+  padding: 10px !important;
+  font-size: larger !important;
+  font-weight: bold;
+  cursor: pointer;
+  }
+
+  /* Define the initial icon style */
+.icon-container {
+  display: inline-block;
+  position: relative;
+}
+
+.icon-container img {
+
+  height: auto;
+  transition: color 0.1s ease; 
+}
+
+/* Change the color on hover */
+.icon-container:hover img {
+  filter: brightness(4.5); 
+}
+.lableHover:hover {
+  color: rgb(255, 255, 255); 
 }

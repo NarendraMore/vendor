@@ -255,7 +255,7 @@ export class UserComponent implements OnInit {
       (data: any) => {
         this.allUsers = data;
         this.allUsers.reverse();
-        console.log(this.allUsers, ' all Users');
+        // console.log(this.allUsers, ' all Users');
         this.spinner.isLoading.next(false);
       },
       (error: HttpErrorResponse) => {
@@ -314,7 +314,7 @@ export class UserComponent implements OnInit {
             // console.log(data);
             this.messageService.add({
               severity: 'success',
-              summary: 'Successfull',
+              summary: 'Successful',
               detail: 'user addedd successfully',
             });
 
@@ -451,6 +451,8 @@ export class UserComponent implements OnInit {
         this.userForm.get('partner')?.patchValue(this.userData.partner);
         this.userForm.get('userStatus')?.patchValue(this.userData.userStatus);
         this.userForm.get('createdOn')?.patchValue(this.userData.createdOn);
+        this.userForm.get('createdBy')?.patchValue(this.userData.createdBy);
+        this.userForm.get('editedBy')?.patchValue(sessionStorage.getItem('email'));
         this.userFormEditable = true;
 
         this.addUserDialogBox = true;

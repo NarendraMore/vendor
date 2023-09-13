@@ -1,14 +1,10 @@
-::ng-deep .pbuttonclass {
+/* ::ng-deep .pbuttonclass {
   background-color: #d04a02 !important;
   color: white !important;
   float: right !important;
   border: none !important;
   border-radius: 4px !important ;
-/* zoom: 80% !important; */
 
-  /* padding: 2%;
-    height: 2rem;
-    font-size: 14; */
 }
 
 ::ng-deep .picklist {
@@ -218,7 +214,6 @@ tr:nth-child(even) {
 }
 
 .spinner {
-  /* backdrop-filter: blur(2px); */
   background-color: rgba(184, 167, 167, 0.2);
   top: 0;
   left: 0;
@@ -236,4 +231,256 @@ app-spinner {
 
 .thirdTab {
   margin-bottom: 10px !important;
+} */
+
+.roles,
+h1 {
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+::ng-deep .balancesheettable {
+  border-radius: 0px;
+  border: 2px solid #9aa4be !important;
+  overflow: hidden !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
+}
+
+.spinner {
+  background-color: rgba(184, 167, 167, 0.2);
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+app-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.addVendor {
+  background-color: #d04a02;
+  border: none;
+}
+
+.addVendor:hover {
+  background-color: #d93954;
+  border: none;
+}
+
+tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+
+th {
+  background-color: #9aa4be !important;
+}
+
+.pbuttonclass12 {
+  background-color: #d04a02;
+  color: white;
+  border: none;
+  float: left;
+}
+
+.pbuttonclass12:hover {
+  background-color: #d93954;
+  color: white;
+  border: none;
+}
+
+.pbuttonclass13 {
+  background-color: #d04a02;
+  color: white;
+  border: none;
+  float: left;
+}
+
+.pbuttonclass13:hover {
+  background-color: #d93954;
+  color: white;
+  border: none;
+}
+
+
+::ng-deep .editButton11 {
+  background-color: #d04a02 !important;
+  color: #f7f7f7 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton12 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton13 {
+  background-color: #d04a02 !important;
+  color: #f7f7f7 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton14 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton15 {
+  background-color: #d04a02 !important;
+  color: #f7f7f7 !important;
+  /* margin-top: 8px !important; */
+}
+
+::ng-deep .editButton16 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  /* margin-top: 8px !important; */
+}
+
+.title,
+h3 {
+  color: #3a3a3a;
+  font-size: 22px;
+  font-family: "Helvetica";
+  text-align: left;
+  font-weight: bold;
+  padding: 10px 0px;
+}
+
+label {
+  font-weight: bold;
+}
+
+::ng-deep .input {
+  margin-top: 10px !important;
+}
+
+::ng-deep .picklist {
+  width: 50rem;
+  margin-left: 6rem;
+  margin-top: 1rem;
+}
+
+.pbuttonclass {
+  background-color: #d04a02;
+  color: white;
+  border: none;
+}
+
+.pbuttonclass:hover {
+  background-color: #d93954;
+  color: white;
+  border: none;
+}
+
+.pbuttonclassSave {
+  background-color: #d04a02;
+  border: none;
+  float: right;
+}
+
+.pbuttonclassSave:hover {
+  background-color: #d93954;
+  border: none;
+}
+
+.btnsForNew {
+  float: right;
+  margin-bottom: 20px;
+}
+
+.firstScreenButton {
+  margin-bottom: 10px !important;
+}
+
+::ng-deep .addLOB1 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+ 
+  /* margin-top: 32px !important; */
+}
+
+
+
+.cancelButton {
+  background-color: #d04a02;
+  border: none;
+  float: left;
+}
+
+.cancelButton:hover {
+  background-color: #d93954;
+  border: none;
+}
+
+.okButton {
+  background-color: #d04a02 !important;
+  color: white !important;
+  float: right !important;
+  border: none;
+}
+
+.okButton:hover {
+  background-color: #d04a02;
+  color: white;
+  float: right !important;
+  border: none;
+}
+
+.pbuttonclass45 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+.pbuttonclass46 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+.pbuttonclass47 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+.pbuttonclass48 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
+
+::ng-deep .detagReasonDialog {
+  width: 33% !important;
+  height: 20rem !important;
+}
+
+.reasonArea {
+  width: 100% !important;
+  height: 7rem !important;
+  padding: 30px 10px;
+}
+
+
+.detagReasonDialog {
+  width: 30% !important;
+  height: 20rem !important;
 }

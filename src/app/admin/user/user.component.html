@@ -1,6 +1,7 @@
 <!-- To add New User Details -->
 <form [formGroup]="userForm" autocomplete="off">
   <p-dialog
+  [modal]="true"
     class="userDialog"
     [(visible)]="addUserDialogBox"
     [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
@@ -253,8 +254,9 @@
           <span>
             <label for="status">Status </label> <br />
             <p-inputSwitch
+              
               required="true"
-              styleClass="dropdown"
+              styleClass="dropdown "
               [(ngModel)]="checked"
               (onChange)="handleChange($event)"
               [ngModelOptions]="{ standalone: true }"
@@ -295,7 +297,7 @@
         icon="pi pi-times-circle"
         label="Cancel"
         (click)="onClickCancle()"
-        class="p-button-sm pbuttonclass"
+        class="p-button-sm p-button-outlined editButton2"
       ></button>
     </ng-template>
   </p-dialog>
@@ -350,7 +352,16 @@
     placeholder="Search"
   />
 </span>
-
+<span>
+  <button
+  pTooltip="Delete User"
+  tooltipPosition="top"
+  pButton
+  class="p-button-sm p-button-outlined deleteButton1"
+  icon="pi pi-trash"
+  (click)="deleteUser()"
+  [disabled]="!selectedUser || !selectedUser.length"
+></button>&nbsp; &nbsp;
 <button
   pButton
   label="Create New User"
@@ -358,22 +369,15 @@
   (click)="onClickAddUser()"
   class="p-button-sm pbuttonclass"
 ></button>
-&nbsp; &nbsp;
 
-<button
-  pTooltip="Delete User"
-  tooltipPosition="top"
-  pButton
-  class="p-button-sm pbuttonclass"
-  icon="pi pi-trash"
-  (click)="deleteUser()"
-  [disabled]="!selectedUser || !selectedUser.length"
-></button>
 
-<br /><br />
+
+</span>
+
+  
 
 <!-- to view all Users -->
-<div class="card" style="margin-top: 10px">
+<div class="card" style="margin-top: 20px">
   <p-table
     styleClass="p-datatable-sm  balancesheettable"
     #dt
@@ -440,7 +444,7 @@
             pButton
             pRipple
             icon="pi pi-pencil"
-            class="p-button-sm pbuttonclass1"
+            class="p-button-sm p-button-outlined  editButton1"
             (click)="editUser(user.id)"
           ></button>
         </td>

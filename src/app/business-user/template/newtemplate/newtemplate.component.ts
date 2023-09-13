@@ -17,6 +17,8 @@ export class NewtemplateComponent implements OnInit {
   templateCreationRoute: any;
   constructor(private service: VendorMngServiceService) {}
 
+
+  
   ngOnInit(): void {
     let draftId = window.location.pathname.split('/')[4];
 

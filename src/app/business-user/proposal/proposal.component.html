@@ -6,16 +6,15 @@
 
 <p-tabView>
   <!-- All templates -->
-  <p-tabPanel header="Proposals per Project">
-    <div>
+  <p-tabPanel header="Proposals Per Project">
+    <div class="topView">
     <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+      <i class="pi pi-search searchIcon"></i>
       <input
       style="height: 45px ;"
         type="text"
         pInputText
         (input)="dt.filterGlobal(target($event).value, 'contains')"
-        class="p-inputtext-sm"
         placeholder="Search"
       />
     </span>&nbsp;
@@ -31,12 +30,13 @@
     filterBy="projectName"
   ></p-dropdown>
 </div>
+<br>
     <!-- to view all Users -->
     <div class="card" style="margin-top: 10px">
       <p-table
-        styleClass="p-datatable-sm templateTable"
+        styleClass="p-datatable-sm balancesheettable"
         #dt
-        [value]="proposalDetails.reverse()"
+        [value]="proposalDetails"
         [rows]="7"
         [paginator]="true"
         responsiveLayout="scroll"
@@ -87,7 +87,7 @@
                 pButton
                 pRipple
                
-                class="p-button actionButton"
+                class="p-button-sm p-button-outlined editButton21"
                 (click)="navigateProposalDetails(proposalDetails.templateId)"
               ></button>
             </td>
@@ -105,14 +105,13 @@
 
   <!-- all scorecrads -->
   <p-tabPanel header="Sent for Review">
+    <div class="topView">
     <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+      <i class="pi pi-search searchIcon"></i>
       <input
-        style="height: 45px ;"
         type="text"
         pInputText
         (input)="dtSentForReview.filterGlobal(target($event).value, 'contains')"
-        class="p-inputtext-sm"
         placeholder="Search"
       />
     </span> &nbsp;
@@ -128,13 +127,14 @@
     [filter]="true"
     filterBy="projectName"
   ></p-dropdown>
-
+</div>
+<br>
     <!-- to view all Users -->
     <div class="card" style="margin-top: 10px">
       <p-table
-        styleClass="p-datatable-sm templateTable"
+        styleClass="p-datatable-sm balancesheettable"
         #dtSentForReview
-        [value]="scorecards.reverse()"
+        [value]="scorecards"
         [rows]="7"
         [paginator]="true"
         responsiveLayout="scroll"
@@ -194,7 +194,7 @@
                 pButton
                 pRipple
                 
-                class="p-button actionButton"
+                class="p-button-sm p-button-outlined editButton22"
                 (click)="navigateScorcardDetails(proposalDetails.scoreCardId)"
               ></button>
             </td>
@@ -212,8 +212,9 @@
 
 <!-- All draft scorecards -->
 <p-tabPanel header="Draft Scorecards">
+  <div class="topView">
   <span class="p-input-icon-left">
-    <i class="pi pi-search"></i>
+    <i class="pi pi-search searchIcon"></i>
     <input
       type="text"
       pInputText
@@ -236,7 +237,8 @@
     [filter]="true"
     filterBy="projectName"
   ></p-dropdown>
-  
+  </div>
+  <br>
 
 <!-- <span style="float: right">
     <button
@@ -266,9 +268,9 @@
   <!-- to view all Users -->
   <div class="card" style="margin-top: 10px">
     <p-table
-      styleClass="p-datatable-sm templateTable"
+      styleClass="p-datatable-sm balancesheettable"
       #dtDraft
-      [value]="allDraftData.reverse()"
+      [value]="allDraftData"
       [rows]="7"
       [paginator]="true"
       responsiveLayout="scroll"
@@ -335,7 +337,7 @@
               data.status
             }}</span>
           </td> -->
-          <td>
+          <td style="width: 15%;">
             <button
             pTooltip="Edit"
             tooltipPosition="top"
@@ -344,7 +346,7 @@
               pButton
               pRipple
            
-              class="p-button actionButton"
+              class="p-button-sm p-button-outlined editButton23"
               (click)="navigateCreateTemplate(data.draftId)"
             ></button>
             &nbsp;
@@ -355,7 +357,7 @@
               pButton
               pRipple
               icon="pi pi-trash"
-              class="p-button-danger actionButton"
+              class="p-button-sm p-button-outlined editButton24"
               (click)="deleteSelectedDrafts(data.draftId)"
             ></button>
           </td>

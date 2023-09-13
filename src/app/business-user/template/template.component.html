@@ -1,3 +1,4 @@
+
 <span>
 <p-progressSpinner *ngIf="!templateDetails"></p-progressSpinner>
 
@@ -7,8 +8,9 @@
 
 <p-tabView>
   <p-tabPanel header="Created by you">
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+    <div class="topView">
+    <span class="p-input-icon-left ">
+      <i class="pi pi-search searchIcon"></i>
       <input
         type="text"
         pInputText
@@ -30,29 +32,22 @@
     filterBy="projectName"
   ></p-dropdown>
     &nbsp;
+   
     <button
       pButton
-      style="
-        background-color: #d04a02;
-        color: #f3f3f3;
-        font-family: Helvetica;
-        font-size: 14px;
-        float: right;
-        border: none;
-        height: 2rem;
-      "
       label="Create New Template"
       (click)="onClickAddTemplate()"
       icon="pi pi-plus-circle"
-      class="p-button-sm pbuttonclass"
+      class="createNewButton"
     ></button>
+  </div>
 <br>
     <!-- to view all Users -->
     <div class="card" style="margin-top: 10px">
       <p-table
-        styleClass="p-datatable-sm templateTable"
+        styleClass="p-datatable-sm balancesheettable"
         #dt
-        [value]="templateDetails1.reverse()"
+        [value]="templateDetails1"
         [rows]="7"
         [paginator]="true"
         responsiveLayout="scroll"
@@ -73,8 +68,9 @@
             <th pSortableColumn="templateDescription.description">Description</th>
             <th pSortableColumn="project.projectName">Project Name</th>
             <th pSortableColumn="project.industry">Industry/Sector</th>
-            <th pSortableColumn="templateDescription.createdOn">CreatedOn</th>
-            <th>Action</th>
+            <th pSortableColumn="templateDescription.createdOn">Created On</th>
+            <th pSortableColumn="project.status">Status</th>
+            <th >Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-templateDetails1>
@@ -83,7 +79,13 @@
             <td>{{ templateDetails1.templateDescription.description }}</td>
             <td>{{ templateDetails1.project.projectName }}</td>
             <td>{{ templateDetails1.project.industry }}</td>
+            
             <td>{{ templateDetails1.templateDescription.createdOn | date : "EEE, dd-MMM yyyy" }}</td>
+            <td>
+              <span [class]="getStatusClass(templateDetails1.status)">{{
+                templateDetails1.status
+              }}</span>
+            </td>
             <td style="text-align: center">
               <button
               pTooltip="Edit"
@@ -93,7 +95,7 @@
                 pButton
                 pRipple
                
-                class="p-button actionButton"
+                class="p-button-sm p-button-outlined editButton"
                 (click)="navigateTemplateDetails(templateDetails1.templateId)"
               ></button>
             </td>
@@ -110,50 +112,43 @@
   </p-tabPanel>
 
   <p-tabPanel header="Sent for Review">
+    <div class="topView">
     <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+      <i class="pi pi-search searchIcon"></i>
       <input
         type="text"
         pInputText
         (input)="dtCreated.filterGlobal(target($event).value, 'contains')"
-        class="p-inputtext-sm"
         placeholder="Search"
       />
     </span>&nbsp;
     <p-dropdown
     [options]="sentForReviewProjects"
-    [(ngModel)]="selectedProjects"
+    [(ngModel)]="selectedProject"
     placeholder="Select"
     optionLabel="projectName"
     optionValue="projectName"
     appendTo="body"
-    (onChange)="dtCreated.filterGlobal($any(selectedProjects), 'equals')"
+    (onChange)="dtCreated.filterGlobal($any(selectedProject), 'equals')"
     [showClear]="true"
     [filter]="true"
     filterBy="projectName"
-  ></p-dropdown>
+  ></p-dropdown> &nbsp;
     <button
       pButton
-      style="
-        background-color: #d04a02;
-        color: #f3f3f3;
-        font-family: Helvetica;
-        font-size: 14px;
-        float: right;
-        border: none;
-        height: 2rem;
-      "
       label="Create New Template"
       (click)="onClickAddTemplate()"
       icon="pi pi-plus-circle"
-      class="p-button-sm pbuttonclass"
+      class="createNewButton"
     ></button>
+  </div>
+  <br>
     <!-- to view all Users -->
     <div class="card" style="margin-top: 10px">
       <p-table
-        styleClass="p-datatable-sm templateTable"
+        styleClass="p-datatable-sm balancesheettable"
         #dtCreated
-        [value]="templateDetails.reverse()"
+        [value]="templateDetails"
         [rows]="7"
         [paginator]="true"
         responsiveLayout="scroll"
@@ -179,7 +174,7 @@
             <th pSortableColumn="editedBy">Edited By</th>
             <th pSortableColumn="editedOn">Edited On</th>
             <th pSortableColumn="status">Status</th>
-            <th>Action</th>
+            <th >Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-templateDetails>
@@ -213,7 +208,7 @@
                 pButton
                 pRipple
                
-                class="p-button actionButton"
+                class="p-button-sm p-button-outlined editButton25"
                 (click)="navigateTemplateDetails(templateDetails.templateId)"
               ></button>
             </td>
@@ -230,13 +225,13 @@
   </p-tabPanel>
 
   <p-tabPanel header="Draft Templates">
+    <div class="topView">
     <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+      <i class="pi pi-search searchIcon"></i>
       <input
         type="text"
         pInputText
         (input)="dtDraft.filterGlobal(target($event).value, 'contains')"
-        class="p-inputtext-sm"
         placeholder="Search"
       />
     </span>
@@ -265,26 +260,19 @@
     </span> -->
     <button
       pButton
-      style="
-        background-color: #d04a02;
-        color: #f3f3f3;
-        font-family: Helvetica;
-        font-size: 14px;
-        float: right;
-        border: none;
-        height: 2rem;
-      "
       label="Create New Template"
       (click)="onClickAddTemplate()"
       icon="pi pi-plus-circle"
-      class="p-button-sm pbuttonclass"
+      class="createNewButton"
     ></button>
+  </div>
+  <br>
     <!-- to view all Users -->
     <div class="card" style="margin-top: 10px">
       <p-table
-        styleClass="p-datatable-sm templateTable"
+        styleClass="p-datatable-sm balancesheettable"
         #dtDraft
-        [value]="draftTemplateData.reverse()"
+        [value]="draftTemplateData"
         [rows]="7"
         [paginator]="true"
         responsiveLayout="scroll"
@@ -311,7 +299,7 @@
             <th pSortableColumn="draftTag">Draft tag</th>
             <th pSortableColumn="templateDescription.createdOn">Created On</th>
             <!-- <th>Status</th> -->
-            <th>Action</th>
+            <th >Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data>
@@ -350,7 +338,7 @@
                 pButton
                 pRipple
              
-                class="p-button actionButton"
+                class="p-button-sm p-button-outlined editButton26"
                 (click)="navigateCreateTemplate(data.draftId)"
               ></button>
               &nbsp;
@@ -361,7 +349,7 @@
                 pButton
                 pRipple
                 icon="pi pi-trash"
-                class="p-button-danger actionButton"
+                class="p-button-sm p-button-outlined editButton27"
                 (click)="deleteSelectedDrafts(data.draftId)"
               ></button>
             </td>

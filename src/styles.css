@@ -1,7 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 /* .p-picklist .p-picklist-header * {
     background: #317eca;
     color: #343a40;
@@ -10,74 +16,140 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin: 0rem !important;
     border-bottom: 0 none;
 } */
-
-.p-table{
-    width: 100% !important;
-    scroll-behavior: smooth !important;
+.p-picklist-buttons {
+  color: #ffffff;
+  /* background: #3bf65b ; */
+  /* border: 1px solid #d04a02 !important; */
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 6px;
 }
-
-
+.p-picklist .p-picklist-buttons .p-button {
+  margin-bottom: 0.5rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 10px !important;
+  background-color: #12cca4 !important;
+  border: 1px solid #02d07a !important;
+}
+.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background: #d04a02 !important;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 30px !important;
+}
+::ng-deep .p-inputswitch.p-inputswitch-checked :hover{
+  background: #b8b4b2 !important;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s,
+    box-shadow 0.2s;
+  border-radius: 30px !important;
+}
+.p-table {
+  width: 100% !important;
+  scroll-behavior: smooth !important;
+}
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: #ffffff !important;
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+}
 .p-picklist .p-picklist-header {
-    /* background: #f8f9fa;
+  /* background: #f8f9fa;
     color: #343a40; */
-    border: 1px solid #dee2e6;
-    padding: 0.65rem !important;
-    border-bottom: 0 none;
-    border-top-right-radius: 6px;
-    border-top-left-radius: 6px;
+  border: 1px solid #dee2e6;
+  padding: 0.65rem !important;
+  border-bottom: 0 none;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
 }
 
 .p-picklist .p-picklist-filter-container {
-    padding: 0.35rem !important;
-    background: #ffffff;
-    border: 1px solid #dee2e6;
-    border-bottom: 0 none;
+  padding: 0.35rem !important;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-bottom: 0 none;
 }
 
 .p-picklist .p-picklist-filter-container .p-picklist-filter-input {
-    padding: 0.55rem !important;
+  padding: 0.55rem !important;
 }
 
 .p-picklist .p-picklist-list .p-picklist-item {
-    padding: 0.5rem !important;
-    margin: 0px 0px !important;
-    border: 0 none;
-    /* color: #495057;
+  padding: 0.5rem !important;
+  margin: 0px 0px !important;
+  border: 0 none;
+  /* color: #495057;
     background: transparent; */
-    transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .p-picklist .p-picklist-buttons .p-button {
-    margin-bottom: 0.5rem !important;
-    width: 2rem !important;
-    height: 2rem !important;
-    padding: 10px !important;
+  margin-bottom: 0.5rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 10px !important;
 }
 
 .p-datatable {
-    position: relative !important;
-    padding: 0% !important;
-    /* zoom: 80% !important; */
+  position: relative !important;
+  padding: 0% !important;
+  /* zoom: 80% !important; */
 }
 
 .p-tabview .p-tabview-panels {
-    background: #ffffff;
-    padding: 0.25rem !important;
-    border: 0 none;
-    /* color: #495057; */
-    border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px;
+  background: #ffffff;
+  padding: 0.25rem !important;
+  border: 0 none;
+  /* color: #495057; */
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .p-accordion .p-accordion-content {
-    padding: 0.25rem !important;
-    border: 1px solid #dee2e6;
-    background: #ffffff;
-    /* color: #495057; */
-    border-top: 0;
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px;
+  padding: 0.25rem !important;
+  border: 1px solid #dee2e6;
+  background: #ffffff;
+  /* color: #495057; */
+  border-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
+.customMenu {
+    width: 300px; /* Adjust the width value as needed */
+  }
+
+  .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: #ffffff;
+    border-color: #d04a02 !important;
+    color: #d04a02 !important;
+  }
+  .p-picklist-buttons {
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    border-radius: 6px;
+  
+  }
+  
+  .p-picklist .p-picklist-buttons .p-button {
+      margin-bottom: 0.5rem !important;
+      width: 2rem !important;
+      height: 2rem !important;
+      padding: 10px !important;
+      background-color: #ffffff !important;
+      border: 1px solid #d04a02 !important;
+      color: #d04a02 !important;
+  }
+  .p-tabmenu .p-tabmenu-nav .p-menuitem-text {
+    color: #d04a02 !important;
+}
+  .p-tabmenu .p-tabmenu-nav  {
+
+    border-color: #d04a02 !important;
+}

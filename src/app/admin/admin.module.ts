@@ -26,7 +26,7 @@ import { ReportsComponent } from './reports/reports.component';
     VendorComponent,
     SpinnerComponent,
     ProjectComponent,
-    ReportsComponent
+    ReportsComponent,
   ],
   imports: [
     CommonModule,

@@ -39,7 +39,7 @@ export class TemplateComponent implements OnInit {
   sentForReviewProjects: any[] = [];
   draftProjects: any[] = [];
   draftProjects1: any[] = [];
-
+  navData: any = [];
   constructor(
     private router: Router,
     private service: VendorMngServiceService,
@@ -51,6 +51,46 @@ export class TemplateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    this.navData = [
+      {
+        routeLink: '/BusinessUser',
+        icon: 'pi pi-chart-line',
+        label: 'Project',
+        image: 'assets/Images/Union 2.png',
+        tooltip: 'Projects',
+      },
+      {
+        routeLink: '/BusinessUser/vendor',
+        icon: 'pi pi-users',
+        label: 'Vendor',
+        image: 'assets/Images/Group.png',
+        tooltip: 'Vendors',
+      },
+      {
+        routeLink: '/BusinessUser/template-list',
+        icon: 'pi pi-cog',
+        label: 'Templates',
+        image: 'assets/Images/Union 1.png',
+        tooltip: 'Templates',
+      },
+      {
+        routeLink: '/BusinessUser/proposal-list',
+        icon: 'pi pi-chart-line',
+        label: 'Propsal Rating',
+        image: 'assets/Images/scoring_icon.png',
+        tooltip: 'Proposal Rating',
+      },
+      {
+        routeLink: '/BusinessUser/report',
+        icon: 'pi pi-chart-line',
+        label: 'Reports',
+        image: 'assets/Images/dashboard.png',
+        tooltip: 'Reports',
+      },
+    ];
+
+
     this.projectService.getClients().subscribe(
       (data: any) => {
         // this.projects=;
@@ -73,7 +113,7 @@ export class TemplateComponent implements OnInit {
         } else {
           this.projects = data;
         }
-        console.log(data, 'projects');
+        // console.log(data, 'projects');
 
         // console.log(this.projects);
         // for (let i = 0; i < data.length; i++) {
@@ -110,28 +150,28 @@ export class TemplateComponent implements OnInit {
 
           // this.templateDetails = data;
           this.spinner.isLoading.next(false);
-          this.templateDetails1 = this.transformTempalteData1(data);
-          console.log('this.templateDetails1: ', this.templateDetails1);
+          this.templateDetails1 = this.transformTempalteData1(data).reverse();
+          // this.templateDetails1.reverse();
+          // console.log('this.templateDetails1: ', this.templateDetails1);
           this.createdByYouProjectList = this.transformProjectList(
             this.templateDetails1
           );
-          console.log(
-            'project list created by you:',
-            this.createdByYouProjectList
-          );
+          // console.log(
+          //   'project list created by you:',
+          //   this.createdByYouProjectList
+          // );
 
           if (this.userRole === '2') {
-            this.templateDetails = this.transformTempalteData(data);
+            this.templateDetails = this.transformTempalteData(data).reverse();
             this.sentForReviewProjects = this.transformProjectList(
               this.templateDetails
             );
           } else {
-            this.templateDetails = data;
+            this.templateDetails = data.reverse();
             this.sentForReviewProjects = this.transformProjectList(
               this.templateDetails
-            );   
+            );
           }
-
         },
         (error: HttpErrorResponse) => {
           this.messageService.add({
@@ -210,26 +250,25 @@ export class TemplateComponent implements OnInit {
         return { projectName: data.project.projectName };
       });
 
-      projectData = Array.from(new Set(projectData.map((data: any) => JSON.stringify(data))))
-      .map((data: any) => JSON.parse(data));
-   
-      projectData.sort((a:any, b:any) => {
-        const nameA = a.projectName.toLowerCase();
-        const nameB = b.projectName.toLowerCase();
-        if (nameA < nameB) return -1;
-        if (nameA > nameB) return 1;
-        return 0;
-      });
+    projectData = Array.from(
+      new Set(projectData.map((data: any) => JSON.stringify(data)))
+    ).map((data: any) => JSON.parse(data));
+
+    projectData.sort((a: any, b: any) => {
+      const nameA = a.projectName.toLowerCase();
+      const nameB = b.projectName.toLowerCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
 
     return projectData;
   }
 
   transformDraftProjectList(inputData: any) {
-    
-    
     let projectData = inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.projectDraft.projectName;
       })
@@ -237,16 +276,17 @@ export class TemplateComponent implements OnInit {
         return { projectName: data.projectDraft.projectName };
       });
 
-      projectData = Array.from(new Set(projectData.map((data: any) => JSON.stringify(data))))
-      .map((data: any) => JSON.parse(data));
+    projectData = Array.from(
+      new Set(projectData.map((data: any) => JSON.stringify(data)))
+    ).map((data: any) => JSON.parse(data));
 
-      projectData.sort((a:any, b:any) => {
-        const nameA = a.projectName.toLowerCase();
-        const nameB = b.projectName.toLowerCase();
-        if (nameA < nameB) return -1;
-        if (nameA > nameB) return 1;
-        return 0;
-      });
+    projectData.sort((a: any, b: any) => {
+      const nameA = a.projectName.toLowerCase();
+      const nameB = b.projectName.toLowerCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
     return projectData;
   }
 
@@ -256,43 +296,41 @@ export class TemplateComponent implements OnInit {
       // console.log('this.draftTemplateData: ', this.draftTemplateData);
 
       if (this.userRole === '2') {
-        this.draftTemplateData = this.transformTempalteDraftData(data);
+        this.draftTemplateData = this.transformTempalteDraftData(data).reverse();
         this.draftProjects = this.transformDraftProjectList(
-          this.draftTemplateData      
+          this.draftTemplateData
         );
 
         this.draftProjects = [...new Set(this.draftProjects)];
-          //  this.draftProjects=[...new Set(this.draftProjects)]
-          //  this.draftProjects=this.draftProjects.filter(
-          //   (item,index)=>{
-          //     return this.draftProjects.indexOf(item)===index
-          //   }
-          // )
-        console.log("this.draftProjects./././././",this.draftProjects);
-        
+        //  this.draftProjects=[...new Set(this.draftProjects)]
+        //  this.draftProjects=this.draftProjects.filter(
+        //   (item,index)=>{
+        //     return this.draftProjects.indexOf(item)===index
+        //   }
+        // )
+        // console.log('this.draftProjects./././././', this.draftProjects);
       } else if (this.userRole === '1') {
         this.draftTemplateData = data;
         this.draftProjects = this.transformDraftProjectList(
           this.draftTemplateData
         );
-        this.draftProjects=[...new Set(this.draftProjects)]
-          // this.draftProjects=this.draftProjects.filter(
-          //   (item,index)=>{
-          //     return this.draftProjects.indexOf(item)===index
-          //   }
-          // )
-
+        this.draftProjects = [...new Set(this.draftProjects)];
+        // this.draftProjects=this.draftProjects.filter(
+        //   (item,index)=>{
+        //     return this.draftProjects.indexOf(item)===index
+        //   }
+        // )
       }
       this.spinner.isLoading.next(false);
     });
   }
   transformTempalteDraftData(inputData: any) {
     this.allDraftData = [];
-    console.log(inputData, 'inputData1');
+    // console.log(inputData, 'inputData1');
     const categoryData = inputData.filter((data: any) => {
-      console.log(data, 'data of single project');
+      // console.log(data, 'data of single project');
       for (let i = 0; i < data.projectDraft.businessUser.length; i++) {
-        console.log(data.projectDraft.businessUser[i]);
+        // console.log(data.projectDraft.businessUser[i]);
 
         if (
           data.projectDraft.businessUser[i] === sessionStorage.getItem('email')
@@ -313,7 +351,9 @@ export class TemplateComponent implements OnInit {
     } else if (this.userRole === '1') {
       this.router.navigate(['/Admin/create-template/templatedetails']);
     }
+    
   }
+  
 
   target(event: any): HTMLInputElement {
     if (!(event.target instanceof HTMLInputElement)) {
@@ -406,7 +446,13 @@ export class TemplateComponent implements OnInit {
             this.ngOnInit();
           },
           (error: HttpErrorResponse) => {
-            alert(error);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Draft Deleted',
+              life: 3000,
+            });
+            this.ngOnInit();
           }
         );
       },

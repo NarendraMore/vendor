@@ -5,7 +5,6 @@
     <hr>
 
   </div>
-  <br />
 
   <div style="float: left">
     <span class="p-input-icon-left">
@@ -33,6 +32,7 @@
   <!-- To add New Vendor Details -->
   <form [formGroup]="vendorForm" autocomplete="off">
     <p-dialog
+    [modal]="true"
       [(visible)]="updateButton"
       class="userDialog"
       [(visible)]="addVendorDialogBox"
@@ -59,7 +59,7 @@
                 formControlName="vendorName"
                 pInputText
                 placeholder="Enter"
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -80,7 +80,7 @@
                 formControlName="spocName"
                 pInputText
                 placeholder="Enter"
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -101,7 +101,7 @@
                 id="email"
                 formControlName="email"
                 pInputText
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -127,9 +127,9 @@
               >Mobile Number <span style="color: red">*</span></label
             >
             <div class="p-inputgroup">
-              <span class="p-inputgroup-addon input">+91</span>
+              <!-- <span class="p-inputgroup-addon">+91</span> -->
               <input
-                type="number"
+                type="text"
                 pInputText
                 id="contactNumber"
                 formControlName="contactNumber"
@@ -178,7 +178,7 @@
               <p-dropdown
                 [showClear]="true"
                 [required]="true"
-                styleClass="lineOfBusinessdropdown"
+                styleClass="input"
                 [options]="allLineOfBusiness"
                 formControlName="lineOfBusiness"
                 optionLabel="businessName"
@@ -204,10 +204,10 @@
               pTooltip="Add Line Of Business"
              
               tooltipPosition="top"
-              class="skillButton2"
+              class="p-button-sm p-button-outlined addLOB3"
               type="button"
               pButton
-              icon="pi pi-plus"
+              icon="pi pi-plus-circle plus_icon"
               (click)="onClickAddLineOfBusiness()"
             ></button>
           </div>
@@ -219,34 +219,23 @@
       <ng-template pTemplate="footer">
         <span *ngIf="!editVendorForm" style=" float: right;">
           <button
+          pButton
+          icon="pi pi-times"
+          label="Cancel"
+          (click)="onClickCancle()"
+        
+          class="p-button-sm p-button-outlined cancelButton33"
+        ></button>
+          <button
             [disabled]="!vendorForm.valid"
             pButton
             icon="pi pi-check"
             label="{{ updateButton ? 'Update' : 'Save' }}"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+        
             class="p-button-sm pbuttonclass"
             (click)="save ? onClickSave() : onClickUpdate()"
           ></button>
-          <button
-            pButton
-            icon="pi pi-times"
-            label="Cancel"
-            (click)="onClickCancle()"
-            style="
-              background-color: #ffffff;
-              color: #d04a02;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
-            class="p-button-sm pbuttonclass"
-          ></button>
+        
         </span>
 
         <span *ngIf="editVendorForm" style="float: right;">
@@ -254,30 +243,18 @@
             pButton
             icon="pi pi-times"
             label="Cancel"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+          
             (click)="onClickCancle()"
-            class="p-button-sm pbuttonclass"
+            class="p-button-sm p-button-outlined cancelButton33"
           ></button>
 
           <button
             pButton
             icon="pi pi-trash"
             label="Delete"
-            style="
-              background-color: #ffffff;
-              color: #d04a02;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+           
             (click)="deleteVendor(vendorData.vendorId)"
-            class="p-button-sm p-button-outlined"
+            class="p-button-sm p-button-outlined cancelButton33"
           ></button>
 
           <button
@@ -286,13 +263,7 @@
             icon="pi pi-save"
             label="Update"
             class="p-button-sm pbuttonclass"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+           
             (click)="onClickUpdate()"
           ></button>
         </span>
@@ -307,6 +278,8 @@
         [(visible)]="flagAdding"
         [style]="{ width: '30%', margin: '0px 20px' }"
         (onHide)="onClickCancle2()"
+        [modal]="true"
+        [closable]="false"
       >
         <div class="p-fluid grid">
           <div class="field col-12 md:col-12">
@@ -333,6 +306,13 @@
           </div>
         </div>
         <div class="footer">
+          <button
+            pButton
+            label="Cancel"
+            class="p-button-sm busibessCancelButton"
+            icon="pi pi-check-circle"
+            (click)="onClickCancelLOB()"
+          ></button>
           <button
             [disabled]="!addlineOfBusinessForm.valid"
             pButton
@@ -416,7 +396,7 @@
               pTooltip="Edit"
               tooltipPosition="top"
               icon="pi pi-pencil"
-              class="p-button-sm pbuttonclass"
+              class="p-button-sm p-button-outlined editButtonVendor"
               (click)="editVendor(vendor)"
             ></button>
           </td>

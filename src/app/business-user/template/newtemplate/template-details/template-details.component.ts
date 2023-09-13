@@ -79,7 +79,7 @@ export class TemplateDetailsComponent implements OnInit {
               .subscribe(
                 (data: any) => {
                   this.draftTemplateData = data;
-                  console.log('draft data.../././.', data);
+                  // console.log('draft data.../././.', data);
                   this.service.draftTemplateDetails = data;
                   this.selectedProject = this.draftTemplateData.projectDraft;
                   this.onSelectProject();
@@ -116,10 +116,10 @@ export class TemplateDetailsComponent implements OnInit {
               )
               .subscribe(
                 (data: any) => {
-                  console.log(data, ' template data');
-                  console.log(
-                    'projectName: new FormControl(this.draftTemplateData.project),'
-                  );
+                  // console.log(data, ' template data');
+                  // console.log(
+                  //   'projectName: new FormControl(this.draftTemplateData.project),'
+                  // );
 
                   this.draftTemplateData = data;
                   this.service.draftTemplateDetails = data;
@@ -229,9 +229,9 @@ export class TemplateDetailsComponent implements OnInit {
     this.templateForm.value.createdOn = Date.now();
     this.service.project = this.selectedProject;
     this.service.templateDescriptionData = this.templateForm.value;
-    console.log('project data', this.selectedProject);
+    // console.log('project data', this.selectedProject);
     this.redirectToTemplateCreation();
-    console.log('template data', JSON.stringify(this.templateForm.value));
+    // console.log('template data', JSON.stringify(this.templateForm.value));
   }
 
   private redirectToTemplateCreation() {
@@ -269,6 +269,8 @@ export class TemplateDetailsComponent implements OnInit {
   }
 
   onClickCancel() {
+    // console.log("onclickcancel");
+    
     this.uploadProposal = false;
     if (this.userRole === '2') {
       this.router.navigate(['/BusinessUser/template-list']);
@@ -282,12 +284,12 @@ export class TemplateDetailsComponent implements OnInit {
     allTemplates: any,
     selectedProject: any
   ) {
-    console.log(
-      'allTemplates: ',
-      allTemplates,
-      ' selected project:',
-      selectedProject
-    );
+    // console.log(
+    //   'allTemplates: ',
+    //   allTemplates,
+    //   ' selected project:',
+    //   selectedProject
+    // );
 
     this.allExistTemplates = [];
 
@@ -308,12 +310,12 @@ export class TemplateDetailsComponent implements OnInit {
       this.allTemplates,
       this.selectedProject
     );
-    console.log(
-      this.selectedProject,
-      'Already createdTemplate1: ',
-      this.allTemplates
-    );
-    console.log('Already createdTemplate: ', this.createdTemplate);
+    // console.log(
+    //   this.selectedProject,
+    //   'Already createdTemplate1: ',
+    //   this.allTemplates
+    // );
+    // console.log('Already createdTemplate: ', this.createdTemplate);
 
     if (this.createdTemplate.length > 0) {
       this.templateExist = true;
@@ -325,6 +327,7 @@ export class TemplateDetailsComponent implements OnInit {
   // upload template
   uploadTemplate() {
     sessionStorage.setItem('saveEnable', 'false');
+// console.log("uploadTemplate()");
 
     this.templateForm.value.createdOn = Date.now();
 
@@ -346,7 +349,7 @@ export class TemplateDetailsComponent implements OnInit {
         this.projectService.uploadMasterTemplate(file).subscribe(
           (data: any) => {
             localStorage.setItem('saveEnable', 'true');
-            console.log('template uploaded', JSON.parse(data.body));
+            // console.log('template uploaded', JSON.parse(data.body));
             this.templateService.masterTemplateData = JSON.parse(data.body);
             this.service.draftTemplateDetails = JSON.parse(data.body);
 
@@ -376,14 +379,14 @@ export class TemplateDetailsComponent implements OnInit {
   downloadMasterTemplate() {
     this.projectService.downloadMasterTemplate().subscribe(
       (data: any) => {
-        console.log('after download', data);
+        // console.log('after download', data);
 
         var newBlob = new Blob([data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
 
         const data1 = window.URL.createObjectURL(newBlob);
-        console.log('link to download: ', data1);
+        // console.log('link to download: ', data1);
 
         var link = document.createElement('a');
         link.href = data1;
@@ -411,5 +414,9 @@ export class TemplateDetailsComponent implements OnInit {
         });
       }
     );
+  }
+
+  onClickCancelUpload(){
+    this.uploadProposal=false;
   }
 }

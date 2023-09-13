@@ -22,7 +22,7 @@ textarea {
   border: 1px solid #415385 !important;
 }
 
-::ng-deep .pbuttonclass {
+::ng-deep .pbuttonClass {
   background-color: #ffffff;
   color: #d04a02;
   border-color: #d04a02;
@@ -30,12 +30,57 @@ textarea {
   margin-bottom: 10px;
 }
 
-.pbuttonclass:hover {
+::ng-deep .pbuttonclassDownload {
+  background-color: #d04a02;
+  color: #ffffff;
+  border: none;
+  font-family: Helvetica;
+  margin-bottom: 10px;
+}
+::ng-deep .pbuttonclassUpload {
+  background-color: #d04a02;
+  color: #ffffff;
+  border: none;
+  font-family: Helvetica;
+  margin-bottom: 10px;
+}
+
+.pbuttonclassUpload:hover {
   background-color: #d04a02;
   border-color: #d04a02;
   font-family: Helvetica;
   margin-bottom: 10px;
+  color: #ffffff;
 }
+.pbuttonclassDownload:hover {
+  background-color: #d04a02;
+  border-color: #d04a02;
+  font-family: Helvetica;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+.pbuttonClass:hover {
+  background-color: #d04a02;
+  border-color: #d04a02;
+  font-family: Helvetica;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.pbuttonClassNext {
+  background-color: #d04a02;
+  color: white;
+  border: none;
+  font-family: Helvetica;
+  margin-bottom: 10px;
+}
+
+.pbuttonClassNext:hover {
+  background-color: #d62d20;
+  color: white;
+
+}
+
 .para {
   font-size: 18px;
   font-family: Helvetica;
@@ -51,9 +96,9 @@ textarea {
   border: 1px solid #707070;
 }
 
-::ng-deep .seperateCard1 {
+/* ::ng-deep .seperateCard1 {
   border: 1px solid #707070;
-}
+} */
 
 ::ng-deep .cardd {
   margin-top: 50px;
@@ -62,37 +107,46 @@ textarea {
 
 ::ng-deep .dropdown1 {
   margin-top: 10px !important;
-  width: 50% !important;
+  width: 80% !important;
   background-color: #f3f3f3 !important;
   border: 1px solid #415385 !important;
   color: black !important;
   border: 1px solid black;
 }
 
+.inputTextArea {
+  width: 100px;
+}
+
 @keyframes p-progress-spinner-color {
+
   100%,
   0% {
-      stroke: #d62d20;
+    stroke: #d62d20;
   }
+
   40% {
-      stroke: #0057e7;
+    stroke: #0057e7;
   }
+
   66% {
-      stroke: #008744;
+    stroke: #008744;
   }
+
   80%,
   90% {
-      stroke: #ffa700;
+    stroke: #ffa700;
   }
 }
 
-.spinnerDiv{
+.spinnerDiv {
 
   display: flex;
   justify-content: center;
   vertical-align: middle;
 }
-.spinner{
+
+.spinner {
   /* background: #222;
   color: #fff; */
   display: inline-block;

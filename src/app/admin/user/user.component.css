@@ -23,6 +23,10 @@ h1 {
   font-family: "Helvetica";
 }
 
+.roles{
+  margin-top: 20px;
+}
+
 .newroles {
   color: #415385;
   font-size: 34px;
@@ -56,6 +60,7 @@ h3 {
   color: white;
   float: right;
   margin-right: 10px !important;
+  margin-top: 10px !important;
   border: none;
   font-family: Helvetica;
 }
@@ -78,24 +83,57 @@ h3 {
   color: white;
 }
 
-::ng-deep input {
+.editButton {
+  margin: 0px 10px;
+}
+::ng-deep .editButton1 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
+}
+::ng-deep .editButton2 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
   margin-top: 10px !important;
+  height: 37px;
+}
+::ng-deep input {
+  margin-top: 5px !important;
   
 }
 
 ::ng-deep .dropdown {
-  margin-top: 10px !important;
+  margin-top: 7px !important;
 
 }
+::ng-deep .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+  background: #d04a02;
+}
+
 
 tr:nth-child(even) {
   background-color: #f3f3f3;
 }
 
+
+::ng-deep .deleteButton1 {
+
+  float: right;
+  margin-right: 10px !important;
+  margin-top: 10px !important;
+  border: none;
+  font-family: Helvetica;
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
+}
 ::ng-deep .balancesheettable {
   border-radius: 0px;
   border: 2px solid #9aa4be !important;
   overflow: hidden !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
 
 }
 
@@ -140,4 +178,23 @@ app-spinner {
 
 .status-badge-progress {
   background: #f7bc0c;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.input-box {
+  flex: 1;
+}
+
+.button-container {
+  display: flex;
+  float: right;
+}
+
+::ng-deep .right-button {
+  margin-left: 10px;
+  float: right !important;
 }

@@ -8,38 +8,30 @@
           <span class="title1">Vendor Evaluation Tool</span>
         </h2>
       </span> -->
-<span class="logoImage">
-  <img src="assets\Images\Logo_Black.png" alt="">
-</span>
-    <span class="logo1" style="float: left"
-      ><h2>
-      
+    <span class="logoImage">
+      <img src="assets\Images\Logo_Black.png" alt="" />
+    </span>
+    <span class="logo1" style="float: left">
+      <h2>
         <span class="title1">Vendor Evaluation Tool</span>
       </h2>
     </span>
     <span style="float: right; color: black" class="options">
       <!-- <span class="topOptions"> <i class="pi pi-cog"></i> Settings </span> -->
       <!-- <span class="topOptions"> <i class="pi pi-bell"></i> Notifications </span> -->
-      <span
-      class="topOptions"
-     
-      (click)="onClickNotification()"
-    >
-      <i
-        class="pi pi-bell mr-4 p-text-secondary"
-        pBadge
-        [value]="allNotifications.length.toString()"
-      ></i>
-    </span>
+      <span class="topOptions" (click)="onClickNotification()">
+        <i class="pi pi-bell mr-4 p-text-secondary notifyIcon" pBadge [value]="notificationCount"></i>
+      </span>
 
-    <p-overlay
-    [(visible)]="overlayVisible"
-    [responsive]="{direction: 'bottom' }"
-    appendTo="body"
-    styleClass="notificationPanel"
-  >
-    <p class="notify" *ngFor="let notification of allNotifications">
-      <!-- <button
+      <p-overlay [(visible)]="overlayVisible" [responsive]="{ direction: 'bottom' }" appendTo="body"
+        styleClass="notificationPanel">
+        <div class="clearAllButton">
+          <label style="float: right; cursor: pointer" (click)="clearAllNotification()">Clear All</label>
+        </div>
+        <br />
+        <hr />
+        <p class="notify" *ngFor="let notification of allNotifications">
+          <!-- <button
         pButton
         pRipple
         type="button"
@@ -49,44 +41,53 @@
         pTooltip="Clear"
         tooltipPosition="top"
       ></button> -->
-      <p-tabView *ngIf="notification.event == 'Comment'">
-        {{ notification.notificationMsg }} "{{ notification.template }}" on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
-      <p-tabView *ngIf="notification.event == 'Issue Raised'">
-        {{ notification.notificationMsg }} "{{ notification.template }}" on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
-      <p-tabView *ngIf="notification.event == 'Template'">
-      "{{ notification.template }}" {{ notification.notificationMsg }} on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
-    
-      <p-tabView *ngIf="notification.event == 'Scorecard'">
-      "{{ notification.template }}" {{ notification.notificationMsg }} on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
-  </p>
-  <ng-template pTemplate="footer">
-    <div class="footer-section">
-      <button pButton label="Clear all" class="notificationButton"></button>
-    </div>
-  </ng-template>
-  <!-- <br /> -->
-  </p-overlay>
-      <span
-        style="float: right"
-        class="profileIcon"
-        [matMenuTriggerFor]="cat"
-        >{{ userName.substring(0, 1) | uppercase }}</span
-      >
+          <p-tabView *ngIf="notification.event == 'Comment'">
+            {{ notification.notificationMsg }} "{{ notification.template }}" on
+            {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+            <label style="color: red; cursor: pointer" (click)="onClearNotification(notification.id)">Clear</label>
+          </p-tabView>
+          <p-tabView *ngIf="notification.event == 'Issue Raised'">
+            {{ notification.notificationMsg }} "{{ notification.template }}" on
+            {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+            <label style="color: red; cursor: pointer" (click)="onClearNotification(notification.id)">Clear</label>
+          </p-tabView>
+          <p-tabView *ngIf="notification.event == 'Template'">
+            "{{ notification.template }}" Template
+            {{ notification.notificationMsg }} on
+            {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+            <label style="color: red; cursor: pointer" (click)="onClearNotification(notification.id)">Clear</label>
+          </p-tabView>
+
+          <p-tabView *ngIf="notification.event == 'Scorecard'">
+            "{{ notification.template }}" {{ notification.notificationMsg }} on
+            {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+            <label style="color: red; cursor: pointer" (click)="onClearNotification(notification.id)">Clear</label>
+          </p-tabView>
+          <p-tabView *ngIf="notification.event == 'Draft'">
+            "{{ notification.template }}" {{ notification.notificationMsg }} on
+            {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+            <label style="color: red; cursor: pointer" (click)="onClearNotification(notification.id)">Clear</label>
+          </p-tabView>
+        </p>
+        <!-- <ng-template pTemplate="footer">
+          <div class="footer-section">
+            <button
+              pButton
+              label="Clear all"
+              class="notificationButton"
+            ></button>
+          </div>
+        </ng-template> -->
+        <!-- <br /> -->
+      </p-overlay>
+      <span style="float: right" class="profileIcon" [matMenuTriggerFor]="cat">{{ userName.substring(0, 1) | uppercase
+        }}</span>
     </span>
 
     <mat-menu #cat="matMenu">
-      <span style="color: black; padding: 5px; text-align: center"
-        >{{ userName | uppercase }}&nbsp;{{ lastName | uppercase }} (BUSINESS
-        USER)</span
-      >
+      <span style="color: black; padding: 5px; text-align: center">{{ userName | uppercase }}&nbsp;{{ lastName |
+        uppercase }} (BUSINESS
+        USER)</span>
       <br />
       <button mat-menu-item (click)="onClickLogout()">
         <mat-icon>logout</mat-icon>
@@ -99,42 +100,33 @@
   <div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
     <div class="logo-container">
       <span *ngIf="!collapsed" (click)="toggleCollapse()">
-        <img
-          class="collapseIcon"
-          src="assets/Images/collapse_out.png"
-          alt=""
-          pTooltip="Open"
-        />
+        <div class="p-fluid grid">
+          <div class="field col-12 md:col-5">
+        <img class="collapseIcon" src="assets/Images/collapse_out.png" alt="" pTooltip="Open" />
+      </div>
+      </div>
       </span>
-
       <span *ngIf="collapsed" (click)="toggleCollapse()">
-        <img
-          class="collapseIcon"
-          src="assets\Images\collapse_in.png"
-          alt=""
-          pTooltip="Collapse"
-        />
-        <label class="collapse">Collapse</label>
+        <div class="p-fluid grid">
+          <div class="field col-12 md:col-5">
+        <img class="collapseIcon" src="assets\Images\collapse_in.png" alt="" pTooltip="Collapse" />
+        </div>
+        <div class="field col-12 md:col-5" style="margin-top: 3%;">
+        <label class="collapse ">Collapse</label>
+        </div>
+        </div>
       </span>
       <div class="logo-text" *ngIf="collapsed"></div>
     </div>
     <ul class="sidenav-nav">
       <li class="sidenav-nav-item" *ngFor="let data of navData">
-        <a
-          class="sidenav-nav-link"
-          [routerLink]="[data.routeLink]"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          (click)="toggleCollapse1()"
-        >
-          <img
-            class="sidenav-link-icon"
-            [src]="[data.image]"
-            alt=""
-            [pTooltip]="data.tooltip"
-          />
+        <a class="sidenav-nav-link" [routerLink]="[data.routeLink]" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" (click)="toggleCollapse1()">
+          <div class="icon-container">
+            <img class="sidenav-link-icon" [src]="[data.image]" alt="" [pTooltip]="data.tooltip" />
+          </div>
 
-          <span class="sidenav-link-text" *ngIf="collapsed">
+          <span class="sidenav-link-text lableHover" *ngIf="collapsed">
             {{ data.label }}
           </span>
         </a>
@@ -150,3 +142,7 @@
 
   <div class="blank"></div>
 </div>
+
+<!-- Notification msg's -->
+<p-toast></p-toast>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

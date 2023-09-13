@@ -160,48 +160,50 @@ export class TemplateValidations {
     const categoryControl = control.get('category') as FormArray;
     categoryControl.value.find((row: any, rowIindex: number) => {
       var selfObj = this;
-      selfObj.validateSubCategoryControlsCopy(
-        control.get('category').at(rowIindex) as FormArray
-      );
+      // selfObj.validateSubCategoryControlsCopy(
+      //   control.get('category').at(rowIindex) as FormArray
+      // );
       categoryControl.value.find((data: any, i: number) => {
         if (data.name === row.name && rowIindex !== i) {
           categoryControl.at(rowIindex).setErrors({ categoryError: true });
+          categoryControl.at(rowIindex+1).setErrors({categoryControl:true});
           console.log(categoryControl);
         } else {
-            categoryControl.at(rowIindex).setErrors({ categoryError: false });
+          if(data.name === row.name && rowIindex !== i){
+            categoryControl.at(rowIindex).setErrors({ categoryError: true });
+          }
+          categoryControl.at(rowIindex).setErrors({ categoryError: false });
 
+          // const innerSubCategoryControl = control
+          //   .get('category')
+          //   .at(rowIindex) as FormArray;
+          // console.log('innerSubCategoryControl: ', innerSubCategoryControl);
 
-        //   const innerSubCategoryControl = control
-        //     .get('category')
-        //     .at(rowIindex) as FormArray;
-        //   console.log('innerSubCategoryControl: ', innerSubCategoryControl);
+          // innerSubCategoryControl.value.subcategory.find(
+          //   (row: any, rowIindex: number) => {
+          //     var selfObj = this;
 
-        //   innerSubCategoryControl.value.subcategory.find(
-        //     (row: any, rowIindex: number) => {
-        //       var selfObj = this;
+          //     if (innerSubCategoryControl.value.subcategory.length > 0) {
+          //       innerSubCategoryControl.value.subcategory.find(
+          //         (data1: any, i: number) => {
+          //           if (
+          //             data1.subcategoryname === data.name
 
-        //       if (innerSubCategoryControl.value.subcategory.length > 0) {
-        //         innerSubCategoryControl.value.subcategory.find(
-        //           (data1: any, i: number) => {
-        //             if (
-        //               data1.subcategoryname === data.name
-                     
-        //             ) {
-                   
-        //                 categoryControl.at(rowIindex).setErrors({ categoryError: true });
+          //           ) {
 
-        //             } else {
-        //                 categoryControl.at(rowIindex).setErrors({ categoryError: false });
+          //               categoryControl.at(rowIindex).setErrors({ categoryError: true });
 
-                   
-        //             }
-        //           }
-        //         );
-        //       }
-        //     }
-        //   );
+          //           } else {
+          //               // categoryControl.at(rowIindex).setErrors({ categoryError: false });
 
-            // categoryControl.at(rowIindex).setErrors({ categoryError: false });
+          //           }
+          //         }
+          //       );
+          //     }
+          //   }
+          // );
+
+          // categoryControl.at(rowIindex).setErrors({ categoryError: false });
         }
       });
     });

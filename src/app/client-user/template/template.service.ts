@@ -83,7 +83,9 @@ export class TemplateService {
   }
 
   deleteSelectedDrafts(selectedDrafts:any){
-    return this.http.delete(`${environment.url}/drafts/${selectedDrafts}`);
+    return this.http.delete(`${environment.url}/drafts/${selectedDrafts}`,{
+      responseType:'json'
+    });
   }
 
   deleteDraftTemplate(draftId: number) {

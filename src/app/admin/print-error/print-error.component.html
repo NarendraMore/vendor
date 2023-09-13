@@ -188,6 +188,7 @@
   <div *ngIf="clientName.errors.pattern">
     <small
       >Enter Name with minimum of 3 and maximum of 155 characters</small>
+      
 
   </div>
 </div>
@@ -206,7 +207,7 @@
   </div>
   <div *ngIf="contactNumberControl.errors.pattern">
     <small
-    >Please enter valid mobile number (Should start with 5,6,7,8,9)</small
+    >Please enter valid contact number between 3 to 20 digit</small
     >
   </div>
 </div>
@@ -221,10 +222,8 @@
     <small>This field is required</small>
   </div>
   <div *ngIf="firstName.errors.pattern">
-    <small
-      >This should contains alphabets only between 3 to 155
-      characters</small
-    >
+    <small>This field required between 3 to 155 characters with no special characters and numericals.</small> <br />
+
   </div>
 </div>
 

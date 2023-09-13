@@ -8,6 +8,10 @@ import {
 import { Router } from '@angular/router';
 import { AppModuleConstants } from '../app-constants';
 import { UserService } from '../services/user.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
+import { NotificationService } from '../services/notification.service';
+import { Subscription, interval, take } from 'rxjs';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -18,8 +22,10 @@ interface SideNavToggle {
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
+  providers: [ConfirmationService, MessageService, PrimeIcons],
 })
 export class AdminComponent implements OnInit {
+
   sidebar: boolean = false;
 
   checked1: boolean = false;
@@ -36,19 +42,68 @@ export class AdminComponent implements OnInit {
   userRole!: string;
   userName!: string;
   lastName!: string;
-  overlayVisible:boolean = false;
-  constructor(private router: Router, private userService: UserService) {}
+  overlayVisible: boolean = false;
+
+  iconClicked = false;
+
+
+
+
+  data: any;
+  private subscription!: Subscription;
+
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private messageService: MessageService,
+    private notificationService: NotificationService
+  ) {
+    // this.subscription = this.notificationService.getData().subscribe((data) => {
+    //   // Update the data in the second module
+    //   console.log("inside admin constructor: ",data);
+    //   // this.allNotifications = data;
+    // });
+  }
 
   allNotifications: any[] = [];
+  notificationCount: any;
 
   ngOnInit(): void {
+    // setInterval(() => {
+    // this.userService.getAllNotifications().subscribe((data: any) => {
+    //   this.allNotifications = this.filterNotificationData(data);
+    //   this.allNotifications.reverse();
+    //   console.log("updated notifications",this.allNotifications);
+    // });
+    // }, 15000); // Update every 1 second
+
+    // this.notificationService.dialogFormDataSubscriber$.subscribe(
+    //   (data: any) => {
+    //     console.log("inside admin subsciber: ",data);
+
+    //     this.userService.getAllNotifications().subscribe((data: any) => {
+    //       this.allNotifications = this.filterNotificationData(data);
+    //       this.allNotifications.reverse();
+    //       console.log('updated notifications', this.allNotifications);
+    //     });
+    //   }
+    // );
+
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    this.userService.getAllNotificationsCount().subscribe((data: any) => {
+      // console.log(data);
+      this.notificationCount = data;
+    });
+
     setInterval(() => {
-      this.userService.getAllNotifications().subscribe((data: any) => {
-        this.allNotifications = this.filterNotificationData(data);
-        this.allNotifications.reverse();
-        console.log("updated notifications",this.allNotifications);
+      this.userService.getAllNotificationsCount().subscribe((data: any) => {
+        // console.log(data);
+        this.notificationCount = data;
       });
-    }, 5000); // Update every 1 second
+    }, 15000); //execute after every 15 seconds
 
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
@@ -132,6 +187,13 @@ export class AdminComponent implements OnInit {
         image: 'assets/Images/dashboard.png',
         tooltip: 'Reports',
       },
+      // {
+      //   routeLink: '/Admin/azure',
+      //   icon: 'pi pi-chart-line',
+      //   label: 'Reports',
+      //   image: 'assets/Images/dashboard.png',
+      //   tooltip: 'Azure',
+      // },
 
       // {
       //   routeLink: '/Admin/template-list',
@@ -151,22 +213,26 @@ export class AdminComponent implements OnInit {
     ];
   }
 
-  filterNotificationData(inputData:any){
+  filterNotificationData(inputData: any) {
+    let filterData: any[] = [];
 
-    let filterData:any[]=[];
-
-     inputData.filter((data: any) => {
+    inputData.filter((data: any) => {
       // console.log('data././././', data);
-      if(data.userName===sessionStorage.getItem('email')){
-      filterData.push(data);
+      if (data.userName === sessionStorage.getItem('email')) {
+        filterData.push(data);
       }
-    })
+    });
     return filterData;
   }
 
-  onClickNotification(){
-
-    this.overlayVisible = !this.overlayVisible;  }
+  onClickNotification() {
+    this.userService.getAllNotifications().subscribe((data: any) => {
+      this.allNotifications = this.filterNotificationData(data);
+      this.allNotifications.reverse();
+      // console.log('updated notifications', this.allNotifications);
+    });
+    this.overlayVisible = !this.overlayVisible;
+  }
   sideBar() {
     if (this.sidebar == false) {
       this.sidebar = true;
@@ -282,13 +348,30 @@ export class AdminComponent implements OnInit {
     // window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
   }
 
-  onClearNotification(id:any){
+  onClearNotification(id: any) {
     // alert(id)
-    this.userService.clearNotification(id).subscribe(
-      (data:any)=>{
-        console.log("notification cleared");
-        
-      }
-    )
+    this.userService.clearNotification(id).subscribe((data: any) => {
+      // console.log('notification cleared');
+      this.userService.getAllNotifications().subscribe((data: any) => {
+        this.allNotifications = this.filterNotificationData(data);
+        this.allNotifications.reverse();
+        // console.log('updated notifications', this.allNotifications);
+      });
+    });
+  }
+
+  clearAllNotification() {
+    this.userService
+      .clearAllNotifications(sessionStorage.getItem('email'))
+      .subscribe((data: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success..!!',
+          detail: 'All notifications are cleared',
+        });
+      });
+    this.overlayVisible = false;
+    this.notificationCount = 0;
+    // this.notificationService.emitDialogFormData("event");
   }
 }

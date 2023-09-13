@@ -25,6 +25,7 @@ import { Role, Role1 } from 'src/app/admin/role/model/role';
 import { Project, Project1, newProject } from '../../project/model/project';
 import { TabView } from 'primeng/tabview';
 import { Vendor } from '../../vendor/model/vendor';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-view-proposal',
@@ -95,7 +96,8 @@ export class ViewProposalComponent implements OnInit {
     private vendorService1: VendorService,
 
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private notificationService:NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -129,7 +131,12 @@ export class ViewProposalComponent implements OnInit {
 
   reportComponent() {
     // alert('alert')
+    if(this.userRole===2){
     this.router.navigate(['/BusinessUser/report']);
+    }
+    else{
+    this.router.navigate(['/Admin/report']);
+    }
   }
 
   allService() {
@@ -280,18 +287,19 @@ export class ViewProposalComponent implements OnInit {
     this.showTabView = false;
   }
 
+  alreadyPresent:boolean=false;
   scorecards: any[] = [];
   private getData() {
     if (this.router.url.includes('scorecard')) {
-      console.log('scorecard');
+      // console.log('scorecard');
       this.viewType = 'scorecard';
       this.scoreCardView = true;
     } else if (this.router.url.includes('draftProposal-list')) {
-      console.log('draft');
+      // console.log('draft');
       this.viewType = 'draft';
       this.scoreCardView = false;
     } else {
-      console.log('proposal list');
+      // console.log('proposal list');
       this.viewType = 'proposal-list';
       this.scoreCardView = false;
     }
@@ -303,7 +311,7 @@ export class ViewProposalComponent implements OnInit {
         .getTemplateById(this.activatedRoute.snapshot.params['templateId'])
         .subscribe((data1: any) => {
           this.templateData = data1;
-          console.log('scorecard data: ', this.templateData);
+          // console.log('scorecard data: ', this.templateData);
 
           // this.generateReport=this.templateData.status;
           this.selectedTemplateData = this.templateData;
@@ -334,7 +342,7 @@ export class ViewProposalComponent implements OnInit {
             data,
             this.projectName1
           );
-          console.log('all scorecards: ', this.scorecards);
+          // console.log('all scorecards: ', this.scorecards);
           this.spinner.isLoading.next(false);
         },
         (error: HttpErrorResponse) => {}
@@ -346,10 +354,12 @@ export class ViewProposalComponent implements OnInit {
         .getDraftDataByDraftid(this.activatedRoute.snapshot.params['draftId'])
         .subscribe((data: any) => {
           this.loadView = true;
-          console.log('draft scorecard data: ', data);
+          // console.log('draft scorecard data for: ', data);
 
           this.selectedTemplateData = data;
           this.selectedVendor=this.selectedTemplateData.vendorName;
+          // console.log("selectedVendor draft: ",this.selectedVendor);
+          
           this.projectName1 =
             this.selectedTemplateData.projectDraft.projectName;
 
@@ -357,27 +367,27 @@ export class ViewProposalComponent implements OnInit {
           // get all scorecards
           this.proposalService.getscoreCards().subscribe(
             (data: any) => {
-              console.log('drfat template data: ', data);
+              // console.log('drfat template data: ', data);
 
               this.scorecards = this.transformScoredCardData(
                 data,
                 this.projectName1
               );
-              console.log('all scorecards: ', this.scorecards);
+              // console.log('all scorecards: ', this.scorecards);
               this.spinner.isLoading.next(false);
             },
             (error: HttpErrorResponse) => {}
           );
-          console.log('#########', this.selectedTemplateData);
+          // console.log('#########', this.selectedTemplateData);
 
-          this.vendorService1
-            .getVendorById(this.selectedTemplateData.vendorName)
-            .subscribe((data: any) => {
-              console.log('@@@@@@@@@@@', data);
+          // this.vendorService1
+          //   .getVendorById(this.selectedTemplateData.vendorName)
+          //   .subscribe((data: any) => {
+          //     console.log('@@@@@@@@@@@', data);
 
-              this.selectedVendor = data;
-              this.onSelectVendor();
-            });
+          //     this.selectedVendor = data;
+          //     this.onSelectVendor();
+          //   });
 
           this.templateService
             .getDocDataBYScoredcardId(
@@ -385,6 +395,16 @@ export class ViewProposalComponent implements OnInit {
             )
             .subscribe((data: any) => {
               this.draftPropsalDocData = data;
+              if(data!=''){
+              this.alreadyPresent=true
+            }else{
+              this.alreadyPresent=false;
+            }
+
+            },
+            (error:HttpErrorResponse)=>{
+              console.log(error);
+              
             });
 
           this.initOperationsPostGetData(
@@ -394,7 +414,7 @@ export class ViewProposalComponent implements OnInit {
           this.vendorList = this.vendorTranformation(
             this.selectedTemplateData.projectDraft.selectedVendors
           );
-          console.log('this.vendorList:', this.vendorList);
+          // console.log('this.vendorList:', this.vendorList);
         });
     } else {
       this.scorecards = [];
@@ -403,7 +423,7 @@ export class ViewProposalComponent implements OnInit {
           this.activatedRoute.snapshot.params['scoreCardId']
         )
         .subscribe((data: any) => {
-          console.log('selected scorecard data: ', data);
+          // console.log('selected scorecard data: ', data);
 
           this.selectedTemplateData = data;
           this.generateReport = this.selectedTemplateData.status;
@@ -412,10 +432,10 @@ export class ViewProposalComponent implements OnInit {
 
           this.projectName1 = this.selectedTemplateData.projectData.projectName;
           this.loadView = true;
-          console.log(
-            'selected vendor:',
-            this.selectedTemplateData.vendorObject.vendorName
-          );
+          // console.log(
+          //   'selected vendor:',
+          //   this.selectedTemplateData.vendorObject.vendorName
+          // );
 
           // this.selectedVendor =
           //   this.selectedTemplateData.vendorObject.vendorName;
@@ -424,12 +444,13 @@ export class ViewProposalComponent implements OnInit {
             this.selectedTemplateData.scoredTemplateData
           );
 
-          console.log('abababa', this.selectedTemplateData);
+          // console.log('abababa', this.selectedTemplateData);
           this.selectedVendor=this.selectedTemplateData.vendorObject.vendorName;
           this.selectedVendorObject=this.selectedTemplateData.vendorObject;
           this.vendorList = this.vendorTranformation(
             this.selectedTemplateData.projectData.selectedVendors
           );
+          // console.log(this.selectedVendor,"vendorList: ",this.vendorList);
         });
     }
   }
@@ -515,7 +536,7 @@ export class ViewProposalComponent implements OnInit {
   vendorTranformation(inputData: any) {
     return inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data;
       })
@@ -828,7 +849,7 @@ export class ViewProposalComponent implements OnInit {
   }
 
   openViewCommentOverlay(event: Event, nodeId: string, type?: string) {
-    // console.log('nodeId: ', nodeId);
+    // console.log('on click comment overlay: ', event, nodeId,type);
     this.issueType = type!;
     this.viewCommentOverlay.toggle(event);
 
@@ -925,6 +946,7 @@ export class ViewProposalComponent implements OnInit {
       this.templateService
         .postNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
           this.issueType = '';
           this.commentData = data;
           this.populateComments([
@@ -939,6 +961,7 @@ export class ViewProposalComponent implements OnInit {
       this.templateService
         .putNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
           this.populateComments([
             {
               caseStatus: 'Pending',
@@ -963,6 +986,7 @@ export class ViewProposalComponent implements OnInit {
     this.templateService
       .putNodeStatus(this.commentForm.get('nodeId')?.value, data)
       .subscribe((res: any) => {
+        //this.notificationService.emitDialogFormData("event");
         this.getComments(this.commentForm.get('nodeId')?.value);
       });
   }
@@ -1886,9 +1910,9 @@ export class ViewProposalComponent implements OnInit {
     // console.log('initial scorecard form data', this.templateForm.value);
 
     if (this.viewType == 'proposal-list') {
-      console.log("selectedTemplateData......:",this.selectedTemplateData);
+      // console.log("selectedTemplateData......:",this.selectedTemplateData);
       
-      console.log('check 1');
+      // console.log('check 1');
       let data = {
         vendorId: this.selectedVendorObject.vendorId,
         vendorObject: this.selectedVendorObject,
@@ -1901,27 +1925,31 @@ export class ViewProposalComponent implements OnInit {
         status: 'Pending',
         scoredTemplateData: JSON.stringify(this.templateForm.value.category),
       };
-      console.log('scorecard: ', data);
+      // console.log('scorecard: ', data);
 
       if (this.selectedFiles) {
         this.proposalService
           .updateProposalData(data)
           .subscribe((result: any) => {
-            let data = {
+            // console.log("result: ",result);
+            
+            let data1 = {
               vendorId: this.selectedVendorObject.vendorId,
               projectId: this.selectedTemplateData.project.projectId,
               scoreCardId: result.scoreCardId,
               scoreData: JSON.stringify(result.scoredTemplateData),
             };
-            // console.log(data, 'data all');
+            // console.log(data1, 'data all');
 
             // console.log('data.scoreData: ', data.scoreData);
 
-            this.proposalService.addDataTOFinalTable(data).subscribe(
-              (data: any) => {
-                // console.log('data addedd successfully');
+            this.proposalService.addDataTOFinalTable(data1).subscribe(
+              (data2: any) => {
+                // console.log('data addedd successfully',data2);
               },
               (error: HttpErrorResponse) => {
+                // console.log("error: ",error);
+                
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
@@ -1957,7 +1985,7 @@ export class ViewProposalComponent implements OnInit {
         });
       }
     } else if (this.viewType == 'draft') {
-      console.log('check 2', this.selectedVendorObject);
+      // console.log('check 2', this.selectedVendorObject);
 
       let data = {
         vendorId: this.selectedVendorObject.vendorId,
@@ -1971,7 +1999,7 @@ export class ViewProposalComponent implements OnInit {
         status: 'Pending',
         scoredTemplateData: JSON.stringify(this.templateForm.value.category),
       };
-      console.log('scorecard: ', data);
+      // console.log('scorecard: ', data);
 
       this.proposalService.updateProposalData(data).subscribe((result: any) => {
         let data = {
@@ -2004,7 +2032,7 @@ export class ViewProposalComponent implements OnInit {
           detail: 'Score added successfully..!!',
         });
         this.onClickProposalUpload(result.scoreCardId);
-
+        //this.notificationService.emitDialogFormData("event");
         setTimeout(() => {
           if (this.userRole === '2') {
             this.router.navigate(['/BusinessUser/proposal-list']);
@@ -2016,8 +2044,8 @@ export class ViewProposalComponent implements OnInit {
         // console.log(result, 'scorecard data.');
       });
     } else {
-      console.log('updated scorecard form data', this.selectedVendorObject);
-      console.log('check 3');
+      // console.log('updated scorecard form data', this.selectedVendorObject);
+      // console.log('check 3');
       let data = {
         scoreCardId: parseInt(
           this.activatedRoute.snapshot.params['scoreCardId']
@@ -2033,7 +2061,7 @@ export class ViewProposalComponent implements OnInit {
         status: 'Pending',
         scoredTemplateData: JSON.stringify(this.templateForm.value.category),
       };
-      console.log('all data: ', data);
+      // console.log('all data: ', data);
       // console.log('scorecard data (check 3): ', data.scoredTemplateData);
 
       this.proposalService
@@ -2083,7 +2111,7 @@ export class ViewProposalComponent implements OnInit {
               summary: 'Successfull',
               detail: 'Score updated successfully..!!',
             });
-
+            //this.notificationService.emitDialogFormData("event");
             setTimeout(() => {
               if (this.userRole === '2') {
                 this.router.navigate(['/BusinessUser/proposal-list']);
@@ -2164,7 +2192,7 @@ export class ViewProposalComponent implements OnInit {
       if (file) {
         this.projectService.uploadDoc(file).subscribe(
           (data: any) => {
-            console.log('data after propsal upload in draft', file);
+            // console.log('data after propsal upload in draft', file);
             if (data.type != 0) {
               let docData = {
                 docName: file.name,
@@ -2200,7 +2228,7 @@ export class ViewProposalComponent implements OnInit {
           (data: any) => {
             this.getDatabyScorecardId(scoreCardId, file, data);
 
-            console.log('data after propsal upload in draft', file);
+            // console.log('data after propsal upload in draft', file);
           },
           (error: HttpErrorResponse) => {
             this.messageService.add({
@@ -2284,7 +2312,7 @@ export class ViewProposalComponent implements OnInit {
   }
 
   downloadPropsal(data: any) {
-    console.log('downladable data:', data);
+    // console.log('downladable data:', data);
 
     this.projectService.downloadFile(data.docKey).subscribe(
       (x: any) => {
@@ -2332,7 +2360,7 @@ export class ViewProposalComponent implements OnInit {
 
   onClickSaveasDraft(): any {
     // console.log('selectedTemplateData: ', this.selectedTemplateData);
-    console.log("selectedVendor:",this.selectedVendor);
+    // console.log("selectedVendor:",this.selectedVendor);
     
 
     if (this.viewType === 'draft') {
@@ -2349,13 +2377,15 @@ export class ViewProposalComponent implements OnInit {
         draftId: this.selectedTemplateData.draftId,
       };
 
+      // console.log("request==> ",request);
+      
       this.templateService.updateAsDraft(request).subscribe((data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Data saved as a draft',
         });
-
+        //this.notificationService.emitDialogFormData("event");
         this.onClickUpdateProposalUpload(request.draftId);
 
         // console.log(data, ' data to be saved as a draft');
@@ -2378,16 +2408,16 @@ export class ViewProposalComponent implements OnInit {
         status: 'Pending',
         type: 'Scorecard',
         templateData: JSON.stringify(this.templateForm.value.category),
-        vendorName: this.selectedVendor.vendorId,
+        vendorName: this.selectedVendor,
       };
       // console.log(JSON.stringify(request), ' data after save as draft ');
       this.templateService.saveAsDraft(request).subscribe((data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Data saved as a draft',
         });
-
+        //this.notificationService.emitDialogFormData("event");
         this.onClickProposalUpload(data.draftId);
 
         // console.log(data, ' data to be saved as a draft');
@@ -2409,18 +2439,18 @@ export class ViewProposalComponent implements OnInit {
   scoredVendor1: boolean = true;
   selectedVendorObject!: Vendor;
   onSelectVendor() {
-    console.log('all scorecards: ', this.scorecards);
-    console.log('selected vendor: ', this.selectedVendor);
+    // console.log('all scorecards: ', this.scorecards);
+    // console.log('selected vendor: ', this.selectedVendor);
 
     this.vendorService1.getVendorByName(this.selectedVendor).subscribe(
       (data: any) => {
-        console.log('getting vendor data by vendor Id:', data);
+        // console.log('getting vendor data by vendor Id:', data);
         this.selectedVendorObject = data;
 
         this.allScoredVendorForSingleProject =
           this.transformScoredCardVendorData(this.scorecards, data.vendorId);
 
-        console.log(this.allScoredVendorForSingleProject);
+        // console.log(this.allScoredVendorForSingleProject);
 
         if (this.viewType === 'draft') {
           if (this.allScoredVendorForSingleProject.length > 0) {

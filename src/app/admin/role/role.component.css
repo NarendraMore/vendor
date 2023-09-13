@@ -11,6 +11,9 @@
 ::ng-deep .balancesheettable {
   border-radius: 0px;
   border: 2px solid #9aa4be;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
   /* overflow: hidden !important; */
 }
 
@@ -67,7 +70,7 @@ tr:nth-child(even) {
   background-color: #9aa4be !important;
 }
 
-::ng-deep input,
+::ng-deep
 textarea,
 .status {
   margin-top: 10px !important;

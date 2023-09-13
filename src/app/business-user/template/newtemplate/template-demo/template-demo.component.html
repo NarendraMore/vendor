@@ -4,6 +4,7 @@
     <i class="pi pi-chevron-left"></i>
     <span style="font-size: large">{{ templateDescription.name }}</span>
   </p>
+  <span *ngIf="duplicateErrormsg"><h3 style="color:red">There might be duplicate fields found</h3></span>
   <form [formGroup]="productsForm" autocomplete="off">
     <div
       class="template-form"
@@ -35,7 +36,12 @@
                                 <th class="header">Parameter</th>
                                 <th class="weightage">Weightage</th>
                                 <th class="weightage">Max Score</th>
-                                <th *ngIf="!scoringCriteriaColumn" class="header">Scoring Criteria</th>
+                                <th
+                                  *ngIf="!scoringCriteriaColumn"
+                                  class="header"
+                                >
+                                  Scoring Criteria
+                                </th>
                               </tr>
                             </table>
                           </tr>
@@ -84,7 +90,12 @@
                               [style]="{ width: '13.7rem' }"
                               placeholder="Select"
                               appendTo="body"
-                              (onChange)="onDropdownChange($event)"
+                              (onChange)="
+                                [
+                                  onDropdownChange($event),
+                                  onValidateCategory($event, 'category', i)
+                                ]
+                              "
                             ></p-cascadeSelect>
                             <p>
                               <mat-error
@@ -94,7 +105,7 @@
                                  ) &&
                                  getCategoryControls()?.at(i)?.errors?.['categoryError']"
                               >
-                                Duplicate category name is not allowed
+                                Duplicate category name selected
                               </mat-error>
                             </p>
                             <button
@@ -117,11 +128,18 @@
                               </button>
                               <button
                                 mat-menu-item
-                                (click)="onEditOption('category', i)"
+                                (click)="onAddCustom('category')"
                               >
                                 <mat-icon>edit</mat-icon>
                                 <span>Add Custom Category</span>
                               </button>
+                              <!-- <button
+                                mat-menu-item
+                                (click)="onEditOption('category', i)"
+                              >
+                                <mat-icon>edit</mat-icon>
+                                <span>Add Custom Category</span>
+                              </button> -->
                               <button
                                 mat-menu-item
                                 (click)="addSingleCategory()"
@@ -158,8 +176,9 @@
                  ) &&
                  getCategoryControls()?.at(i)?.errors?.['weightageError']"
                               >
-                              Weightage Addition should not be greater than 100
-                            </mat-error>
+                                Weightage Addition should not be greater than
+                                100
+                              </mat-error>
                             </p>
                             <p>
                               <mat-error
@@ -169,7 +188,7 @@
                  ) &&
                  getCategoryControls()?.at(i)?.errors?.['negativeWeightageError']"
                               >
-                              Only Positive decimal numbers are allowed
+                                Only Positive decimal numbers are allowed
                               </mat-error>
                             </p>
                           </td>
@@ -201,8 +220,17 @@
                                       ]"
                                       placeholder="Select"
                                       appendTo="body"
-                                      (onChange)="onDropdownChange($event)"
-
+                                      (onChange)="
+                                        [
+                                          onDropdownChange($event),
+                                          onValidateCategory(
+                                            $event,
+                                            'subcategory',
+                                            i,
+                                            j
+                                          )
+                                        ]
+                                      "
                                     >
                                     </p-cascadeSelect>
                                     <p>
@@ -213,8 +241,7 @@
                        ) &&
                        getSubCategoryControls(i)?.at(j)?.errors?.['subCategoryError']"
                                       >
-                                        Duplicate subcategory name is not
-                                        allowed</mat-error
+                                        Duplicate subcategory name selected</mat-error
                                       >
                                     </p>
                                     <button
@@ -237,16 +264,24 @@
                                       </button>
                                       <button
                                         mat-menu-item
-                                        (click)="
-                                          onEditOption('subCategory', i, j)
-                                        "
+                                        (click)="onAddCustom('Subcategory')"
                                       >
                                         <mat-icon>edit</mat-icon>
                                         <span>Add Custom Sub-Category</span>
                                       </button>
                                       <button
                                         mat-menu-item
-                                        (click)="addSubCategory(i)"
+                                        (click)="
+                                          [
+                                            addSubCategory(i),
+                                            onValidateCategory(
+                                              $event,
+                                              'subcategory',
+                                              i,
+                                              j + 1
+                                            )
+                                          ]
+                                        "
                                       >
                                         <mat-icon>add</mat-icon>
                                         <span>Add New Sub-Category</span>
@@ -297,8 +332,9 @@
                          ) &&
                          getSubCategoryControls(i)?.at(j)?.errors?.['weightageError']"
                                       >
-                                      Weightage Addition should not be greater than 100
-                                    </mat-error>
+                                        Weightage Addition should not be greater
+                                        than 100
+                                      </mat-error>
                                     </p>
                                     <p>
                                       <mat-error
@@ -308,7 +344,8 @@
                          ) &&
                          getSubCategoryControls(i)?.at(j)?.errors?.['negativeWeightageError']"
                                       >
-                                      Only Positive decimal numbers are allowed
+                                        Only Positive decimal numbers are
+                                        allowed
                                       </mat-error>
                                     </p>
                                   </td>
@@ -345,22 +382,33 @@
                                               ]"
                                               placeholder="Select"
                                               appendTo="body"
+                                              (onChange)="
+                                                [
+                                                  onDropdownChange($event),
+                                                  onValidateCategory(
+                                                    $event,
+                                                    'subcategoryTwo',
+                                                    i,
+                                                    j,
+                                                    k
+                                                  )
+                                                ]
+                                              "
                                             >
                                             </p-cascadeSelect>
-                                    
-                                              <p>
-                                                <mat-error
+
+                                            <p>
+                                              <mat-error
                                                 *ngIf="(
                                   getSubCategoryTwoControls(i,j)?.at(k)?.dirty ||
                                   getSubCategoryTwoControls(i,j)?.at(k)?.touched
                                  ) &&
                                  getSubCategoryTwoControls(i,j)?.at(k)?.errors?.['subcategoryTwoError']"
                                               >
-                                             Duplicate subcategory-two not allowed
-
+                                                Duplicate subcategoryTwo name selected
                                               </mat-error>
-                                              </p>
-                                         
+                                            </p>
+
                                             <button
                                               class="bottun-align"
                                               mat-icon-button
@@ -389,14 +437,7 @@
                                               </button>
                                               <button
                                                 mat-menu-item
-                                                (click)="
-                                                  onEditOption(
-                                                    'subCategoryTwo',
-                                                    i,
-                                                    j,
-                                                    k
-                                                  )
-                                                "
+                                                (click)="onAddCustom('Subcategory')"
                                               >
                                                 <mat-icon>edit</mat-icon>
                                                 <span
@@ -407,7 +448,16 @@
                                               <button
                                                 mat-menu-item
                                                 (click)="
-                                                  addSubCategoryTwo(i, j)
+                                                  [
+                                                    addSubCategoryTwo(i, j),
+                                                    onValidateCategory(
+                                                      $event,
+                                                      'subcategoryTwo',
+                                                      i,
+                                                      j,
+                                                      k + 1
+                                                    )
+                                                  ]
                                                 "
                                               >
                                                 <mat-icon>add</mat-icon>
@@ -479,8 +529,8 @@
                                  ) &&
                                  getSubCategoryTwoControls(i,j)?.at(k)?.errors?.['weightageError']"
                                               >
-                                              Weightage Addition should not be greater than 100
-
+                                                Weightage Addition should not be
+                                                greater than 100
                                               </mat-error>
                                             </p>
                                             <p>
@@ -491,7 +541,8 @@
                                  ) &&
                                  getSubCategoryTwoControls(i,j)?.at(k)?.errors?.['negativeWeightageError']"
                                               >
-                                              Only Positive decimal numbers are allowed
+                                                Only Positive decimal numbers
+                                                are allowed
                                               </mat-error>
                                             </p>
                                           </td>
@@ -530,19 +581,34 @@
                                                       ]"
                                                       placeholder="Select"
                                                       appendTo="body"
+                                                      (onChange)="
+                                                        [
+                                                          onDropdownChange(
+                                                            $event
+                                                          ),
+                                                          onValidateCategory(
+                                                            $event,
+                                                            'subcategoryThree',
+                                                            i,
+                                                            j,
+                                                            k,
+                                                            l
+                                                          )
+                                                        ]
+                                                      "
                                                     >
                                                     </p-cascadeSelect>
                                                     <p>
                                                       <mat-error
-                                                      *ngIf="(
+                                                        *ngIf="(
                                           getSubCategoryThreeControls(i,j,k)?.at(l)?.dirty ||
                                           getSubCategoryThreeControls(i,j,k)?.at(l)?.touched
                                          ) &&
                                          getSubCategoryThreeControls(i,j,k)?.at(l)?.errors?.['getSubCategoryThreeError']"
-                                                    >
-                                                    Duplicate subcategory-three not allowed
-
-                                                    </mat-error>
+                                                      >
+                                                        Duplicate
+                                                        subcategoryThree name selected
+                                                      </mat-error>
                                                     </p>
                                                     <button
                                                       class="bottun-align"
@@ -581,15 +647,7 @@
                                                       </button>
                                                       <button
                                                         mat-menu-item
-                                                        (click)="
-                                                          onEditOption(
-                                                            'subCategoryThree',
-                                                            i,
-                                                            j,
-                                                            k,
-                                                            l
-                                                          )
-                                                        "
+                                                        (click)="onAddCustom('Subcategory')"
                                                       >
                                                         <mat-icon
                                                           >edit</mat-icon
@@ -602,11 +660,21 @@
                                                       <button
                                                         mat-menu-item
                                                         (click)="
-                                                          addSubCategoryThree(
-                                                            i,
-                                                            j,
-                                                            k
-                                                          )
+                                                          [
+                                                            addSubCategoryThree(
+                                                              i,
+                                                              j,
+                                                              k
+                                                            ),
+                                                            onValidateCategory(
+                                                              $event,
+                                                              'subcategoryThree',
+                                                              i,
+                                                              j,
+                                                              k,
+                                                              l + 1
+                                                            )
+                                                          ]
                                                         "
                                                       >
                                                         <mat-icon>add</mat-icon>
@@ -693,8 +761,9 @@
                                            ) &&
                                            getSubCategoryThreeControls(i,j,k)?.at(l)?.errors?.['weightageError']"
                                                       >
-                                                      Weightage Addition should not be greater than 100
-
+                                                        Weightage Addition
+                                                        should not be greater
+                                                        than 100
                                                       </mat-error>
                                                     </p>
                                                     <p>
@@ -705,7 +774,8 @@
                                            ) &&
                                            getSubCategoryThreeControls(i,j,k)?.at(l)?.errors?.['negativeWeightageError']"
                                                       >
-                                                      Only Positive decimal numbers are allowed
+                                                        Only Positive decimal
+                                                        numbers are allowed
                                                       </mat-error>
                                                     </p>
                                                   </td>
@@ -752,9 +822,20 @@
                                                               placeholder="Select"
                                                               appendTo="body"
                                                               (onChange)="
-                                                                onDropdownChange1(
-                                                                  $event
-                                                                )
+                                                                [
+                                                                  onDropdownChange1(
+                                                                    $event
+                                                                  ),
+                                                                  onValidateCategory(
+                                                                    $event,
+                                                                    'parameter',
+                                                                    i,
+                                                                    j,
+                                                                    k,
+                                                                    l,
+                                                                    m
+                                                                  )
+                                                                ]
                                                               "
                                                             >
                                                             </p-cascadeSelect>
@@ -768,8 +849,7 @@
                                                               >
                                                                 Duplicate
                                                                 parameter name
-                                                                is not
-                                                                allowed</mat-error
+                                                                selected</mat-error
                                                               >
                                                             </p>
                                                             <button
@@ -810,16 +890,7 @@
                                                               </button>
                                                               <button
                                                                 mat-menu-item
-                                                                (click)="
-                                                                  onEditOption(
-                                                                    'parameter',
-                                                                    i,
-                                                                    j,
-                                                                    k,
-                                                                    l,
-                                                                    m
-                                                                  )
-                                                                "
+                                                                (click)="onAddCustom('parameter')"
                                                               >
                                                                 <mat-icon
                                                                   >edit</mat-icon
@@ -832,12 +903,14 @@
                                                               <button
                                                                 mat-menu-item
                                                                 (click)="
-                                                                  addParameter(
-                                                                    i,
-                                                                    j,
-                                                                    k,
-                                                                    l
-                                                                  )
+                                                                  [
+                                                                    addParameter(
+                                                                      i,
+                                                                      j,
+                                                                      k,
+                                                                      l
+                                                                    )
+                                                                  ]
                                                                 "
                                                               >
                                                                 <mat-icon
@@ -928,7 +1001,10 @@
                                                    ) &&
                                                    getParameterControls(i,j,k,l)?.at(m)?.errors?.['weightageError']"
                                                               >
-                                                              Weightage Addition should not be greater than 100
+                                                                Weightage
+                                                                Addition should
+                                                                not be greater
+                                                                than 100
                                                               </mat-error>
                                                             </p>
                                                             <p>
@@ -939,7 +1015,9 @@
                                                    ) &&
                                                    getParameterControls(i,j,k,l)?.at(m)?.errors?.['negativeWeightageError']"
                                                               >
-                                                              Only Positive decimal numbers are allowed
+                                                                Only Positive
+                                                                decimal numbers
+                                                                are allowed
                                                               </mat-error>
                                                             </p>
                                                           </td>
@@ -972,7 +1050,9 @@
                                                                ) &&
                                                                getParameterControls(i,j,k,l)?.at(m)?.get('maxschore')?.errors?.['MaxscoreError']"
                                                               >
-                                                              Only Positive decimal numbers are allowed
+                                                                Only Positive
+                                                                decimal numbers
+                                                                are allowed
                                                               </mat-error>
                                                             </p>
 
@@ -1207,11 +1287,17 @@
 >
   Save
 </button>
+<span style="color:black">
+<!-- {{isButtonEnabled}}
+{{isButtonEnabled1}}
+{{isButtonEnabled2}}
+{{isButtonEnabled3}} -->
+</span>
 <button
   [disabled]="saveAsDraftButton"
   pButton
   (click)="onClickDraft()"
-  class="SaveDraftButton"
+  class="p-button-sm p-button-outlined SaveDraftButton"
 >
   Save as Draft
 </button>
@@ -1287,6 +1373,42 @@
       </p-dialog>
     </div>
   </form>
+</div>
+
+<!-- to add custom line items -->
+<div class="card">
+  <p-dialog
+    styleClass="customDialog"
+    [visible]="addCustomDialog"
+    (onHide)="onClickCancelCustomDialog()"
+    dismissable="true"
+    [modal]="true"
+    [closable]="false"
+  >
+    <span>
+      <label>Enter Value</label>
+      <input
+        pInputText
+        [placeholder]="customType"
+        [(ngModel)]="selectedCustomValue"
+        class="customvalueInputBox"
+      />
+    </span>
+    <br />
+    <hr>
+    <button
+      pButton
+      label="Add"
+      class="customSubmitButton"
+      (click)="onSubmit()"
+    ></button>
+    <button
+      pButton
+      label="Cancel"
+      class="customCancelButton"
+      (click)="onClickCancelCustomDialog()"
+    ></button>
+  </p-dialog>
 </div>
 
 <!-- Notification msg's -->

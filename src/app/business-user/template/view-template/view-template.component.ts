@@ -24,6 +24,8 @@ import { UserService } from 'src/app/services/user.service';
 import { Project1, newProject } from '../../project/model/project';
 import { Role1 } from 'src/app/admin/role/model/role';
 import { TemplateValidations } from '../newtemplate/template-demo/template-validator/template-validator';
+import { LibraryService } from 'src/app/services/library.service';
+import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-view-template',
   templateUrl: './view-template.component.html',
@@ -62,6 +64,7 @@ export class ViewTemplateComponent implements OnInit {
   activeState: boolean[] = [true, false, false];
   allUsers: any[] = [];
   clientInfo: newProject[] = [];
+  errorLogs: any[] = [];
 
   constructor(
     private location: Location,
@@ -75,7 +78,9 @@ export class ViewTemplateComponent implements OnInit {
     private messageService: MessageService,
     private projectService: ProjectService,
     private userService: UserService,
-    private templateValidations: TemplateValidations
+    private templateValidations: TemplateValidations,
+    private masterRepoService: LibraryService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +152,9 @@ export class ViewTemplateComponent implements OnInit {
                 'this.selectedTemplateData: ',
                 this.selectedTemplateData
               );
+
+              this.loadData(this.selectedTemplateData.templateData);
+
               this.populateData(this.selectedTemplateData.templateData);
               this.loadView = true;
               this.getCategoryControls().valueChanges.subscribe(console.log);
@@ -185,6 +193,373 @@ export class ViewTemplateComponent implements OnInit {
 
       // });
     });
+  }
+
+  customValidation: any[] = [];
+  templateFormValidation: boolean = false;
+
+  loadData(data: any) {
+    console.log('=-=-=-=-=-=-=-=-=-=-=', data);
+
+    for (let i = 0; i < data.length; i++) {
+      // this.customValidation = [
+      //   {
+      //     name: data[i].name,
+      //     type: 'category',
+      //     i: i,
+      //   },
+      // ];
+
+      this.customValidation[i] = [
+        {
+          name: data[i].name,
+          type: 'category',
+          i: i,
+        },
+      ];
+      for (let j = 0; j < data[i].subcategory.length; j++) {
+        if (data[i].subcategory[j].subcategoryname != '') {
+          this.customValidation[i].push({
+            name: data[i].subcategory[j].subcategoryname,
+            type: 'subcategory',
+            i: i,
+            j: j,
+          });
+        }
+
+        for (let k = 0; k < data[i].subcategory[j].subcategoryTwo.length; k++) {
+          if (data[i].subcategory[j].subcategoryTwo[k].subcategoryname != '') {
+            this.customValidation[i].push({
+              name: data[i].subcategory[j].subcategoryTwo[k].subcategoryname,
+              type: 'subcategoryTwo',
+              i: i,
+              j: j,
+              k: k,
+            });
+          }
+
+          for (
+            let l = 0;
+            l <
+            data[i].subcategory[j].subcategoryTwo[k].subcategoryThree.length;
+            l++
+          ) {
+            if (
+              data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+                .subcategoryname != ''
+            ) {
+              this.customValidation[i].push({
+                name: data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[
+                  l
+                ].subcategoryname,
+                type: 'subcategoryThree',
+                i: i,
+                j: j,
+                k: k,
+                l: l,
+              });
+            }
+
+            // for (
+            //   let m = 0;
+            //   m <
+            //   data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+            //     .parameter.length;
+            //   m++
+            // ) {
+            //   if (
+            //     data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+            //       .parameter[m].parametername != ''
+            //   ) {
+            //     this.customValidation[i].push({
+            //       name: data[i].subcategory[j].subcategoryTwo[k]
+            //         .subcategoryThree[l].parameter[m].parametername,
+            //       type: 'parameter',
+            //       i: i,
+            //       j: j,
+            //       k: k,
+            //       l: l,
+            //       m: m,
+            //     });
+            //   }
+            // }
+          }
+        }
+      }
+    }
+    console.log('[][][][][][][][]', this.customValidation);
+
+    // to validate existing template data
+
+    for (let index = 0; index < this.customValidation.length; index++) {
+      for (let j = 0; j < this.customValidation[index].length; j++) {
+        for (let k = j + 1; k < this.customValidation[index].length; k++) {
+          if (
+            this.customValidation[index][j].name ==
+            this.customValidation[index][k].name
+          ) {
+            this.errorLogs.push(this.customValidation[index][k]);
+          }
+        }
+      }
+    }
+    console.log(this.errorLogs);
+  }
+
+  templateFormValid: boolean = false;
+
+  onValidateCategory(
+    event: any,
+    type: string,
+    i: number,
+    j?: any,
+    k?: any,
+    l?: any,
+    m?: any
+  ) {
+    for (let index = 0; index < this.errorLogs.length; index++) {
+      if (
+        type === 'category' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === undefined &&
+        this.errorLogs[index].k === undefined &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        index = 0;
+      } else if (
+        type === 'subcategory' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === undefined &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        index = 0;
+      } else if (
+        type === 'subcategoryTwo' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === k &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        index = 0;
+      } else if (
+        type === 'subcategoryThree' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === k &&
+        this.errorLogs[index].l === l &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        index = 0;
+      } else {
+        console.log('Error not found');
+      }
+    }
+
+    if (i < this.customValidation.length) {
+      for (let index = 0; index < this.customValidation.length; index++) {
+        for (let k = 0; k < this.customValidation[i].length; k++) {
+          if (k < this.customValidation[i].length) {
+            if (
+              type === 'category' &&
+              this.customValidation[i][k].i === i &&
+              this.customValidation[i][k].j === undefined &&
+              this.customValidation[i][k].k === undefined &&
+              this.customValidation[i][k].l === undefined &&
+              this.customValidation[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidation[i].splice(k, 1);
+              --k;
+            } else if (
+              type === 'subcategory' &&
+              this.customValidation[i][k].i === i &&
+              this.customValidation[i][k].j === j &&
+              this.customValidation[i][k].k === undefined &&
+              this.customValidation[i][k].l === undefined &&
+              this.customValidation[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidation[i].splice(k, 1);
+              --k;
+            } else if (
+              type === 'subcategoryTwo' &&
+              this.customValidation[i][k].i === i &&
+              this.customValidation[i][k].j === j &&
+              this.customValidation[i][k].k === k &&
+              this.customValidation[i][k].l === undefined &&
+              this.customValidation[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidation[i].splice(index, 1);
+              --k;
+            } else if (
+              type === 'subcategoryThree' &&
+              this.customValidation[i][k].i === i &&
+              this.customValidation[i][k].j === j &&
+              this.customValidation[i][k].k === k &&
+              this.customValidation[i][k].l === l &&
+              this.customValidation[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidation[i].splice(k, 1);
+              --k;
+            }
+            //  else if (
+            //   type === 'parameter' &&
+            //   this.customValidation[i][k].i === i &&
+            //   this.customValidation[i][k].j === j &&
+            //   this.customValidation[i][k].k === k &&
+            //   this.customValidation[i][k].l === l &&
+            //   this.customValidation[i][k].m === m
+            // ) {
+            //   // this.errorLogs.splice(index, 1);
+            //   this.customValidation[i].splice(k, 1);
+            //   --k;
+            // }
+            else {
+              console.log('not found');
+              // --index;
+            }
+          }
+        }
+      }
+    }
+
+    console.log('errorlogs2: ', this.errorLogs);
+
+    console.log('inside validate category:', this.customValidation);
+
+    if (this.customValidation.length > 0) {
+      switch (type) {
+        case 'category':
+          if (this.customValidation[i]) {
+            this.customValidation[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+            });
+          } else {
+            this.customValidation[i] = [
+              {
+                name: event.value,
+                type: type,
+                i: i,
+              },
+            ];
+          }
+
+          break;
+        case 'subcategory':
+          if (event.value != undefined) {
+            this.customValidation[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+            });
+          }
+
+          break;
+        case 'subcategoryTwo':
+          if (event.value != undefined) {
+            this.customValidation[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+              k: k,
+            });
+          }
+
+          break;
+        case 'subcategoryThree':
+          if (event.value != undefined) {
+            this.customValidation[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+              k: k,
+              l: l,
+            });
+          }
+
+          break;
+        // case 'parameter':
+        //   if (event.value != undefined) {
+        //     this.customValidation[i].push({
+        //       name: event.value,
+        //       type: type,
+        //       i: i,
+        //       j: j,
+        //       k: k,
+        //       l: l,
+        //       m: m,
+        //     });
+        //   }
+
+        //   break;
+      }
+
+      for (
+        let index = 0;
+        index < this.customValidation[i].length - 1;
+        index++
+      ) {
+        // for (let innerIndex = index; this.customValidationData[i].length<index; innerIndex++) {
+        if (this.customValidation[i][index].name == event.value) {
+          this.errorLogs.push(
+            this.customValidation[i][this.customValidation[i].length - 1]
+          );
+          this.templateFormValidation = true;
+          console.log(
+            'duplicate element found at: ',
+            this.customValidation[i][index].type
+          );
+        } else {
+        }
+      }
+
+      for (
+        let position = 0;
+        position <= this.customValidation.length - 1;
+        position++
+      ) {
+        for (let k = position + 1; k <= this.customValidation.length - 1; k++) {
+          if (this.customValidation[position][0].name === event.value) {
+            this.errorLogs.push(
+              this.customValidation[i][this.customValidation[i].length - 1]
+            );
+            // this.errorLogs.push(this.customValidation[k][0]);
+          }
+        }
+      }
+
+      console.log('errorLogs: ', this.errorLogs);
+
+      // }
+    } else {
+      if (type == 'category') {
+        this.customValidation[i] = [
+          {
+            name: event.value,
+            type: type,
+            i: i,
+          },
+        ];
+      }
+    }
   }
 
   toggleVisibility(id: any) {
@@ -655,11 +1030,11 @@ export class ViewTemplateComponent implements OnInit {
     });
 
     this.templateForm = new FormGroup(
-      { category: controls },
-      {
-        validators: [this.templateValidations.RunValidation()],
-        updateOn: 'change',
-      }
+      { category: controls }
+      // {
+      //   validators: [this.templateValidations.RunValidation()],
+      //   updateOn: 'change',
+      // }
     );
     console.log(this.templateForm);
   }
@@ -770,8 +1145,8 @@ export class ViewTemplateComponent implements OnInit {
     data?: any,
     isCopy?: boolean
   ) {
-    console.log("---===---===---===", subcategoryThree.parameter);
-    
+    console.log('---===---===---===', subcategoryThree.parameter);
+
     let parameterControls: any = new FormArray([]);
     subcategoryThree.parameter.forEach((parameter: any) => {
       parameterControls.push(
@@ -812,25 +1187,25 @@ export class ViewTemplateComponent implements OnInit {
     if (parameter.schoringcriteria.length === 0) {
       this.scoringCriteriaColumn = true;
     } else {
-    parameter.schoringcriteria.forEach((schoringcriteria: any) => {
-      scoringCriteriaControls.push(
-        new FormGroup({
-          badgeCount: new FormControl(0),
-          nodeId: new FormControl({
-            value: isCopy
-              ? this.templateService.getRandomNodeId()
-              : schoringcriteria.nodeId,
-            disabled: this.disableField,
-          }),
-          criteriaValue: new FormControl({
-            value: schoringcriteria.criteriaValue,
-            disabled: this.disableField,
-          }),
-          score: new FormControl(''),
-        })
-      );
-    });
-  }
+      parameter.schoringcriteria.forEach((schoringcriteria: any) => {
+        scoringCriteriaControls.push(
+          new FormGroup({
+            badgeCount: new FormControl(0),
+            nodeId: new FormControl({
+              value: isCopy
+                ? this.templateService.getRandomNodeId()
+                : schoringcriteria.nodeId,
+              disabled: this.disableField,
+            }),
+            criteriaValue: new FormControl({
+              value: schoringcriteria.criteriaValue,
+              disabled: this.disableField,
+            }),
+            score: new FormControl(''),
+          })
+        );
+      });
+    }
     return scoringCriteriaControls;
   }
 
@@ -976,9 +1351,12 @@ export class ViewTemplateComponent implements OnInit {
       if (inputEvent) {
         if (event?.keyCode == 13) {
           this.sendCommentMessage();
+          //this.notificationService.emitDialogFormData("event");
+
         }
       } else {
         this.sendCommentMessage();
+        //this.notificationService.emitDialogFormData("event");
       }
     }
   }
@@ -1000,6 +1378,8 @@ export class ViewTemplateComponent implements OnInit {
       ],
     };
 
+    console.log('comment data: ', JSON.stringify(data));
+
     this.commentForm.patchValue({ comment: '' });
     this.commentData.comments.push(data.comments[0]);
     setTimeout(() => {
@@ -1017,6 +1397,7 @@ export class ViewTemplateComponent implements OnInit {
               nodeId: this.commentForm.get('nodeId')?.value,
             },
           ]);
+          //this.notificationService.emitDialogFormData("event");
         });
     } else {
       this.templateService
@@ -1029,6 +1410,7 @@ export class ViewTemplateComponent implements OnInit {
               nodeId: this.commentForm.get('nodeId')?.value,
             },
           ]);
+          //this.notificationService.emitDialogFormData("event");
         });
     }
   }
@@ -1048,6 +1430,7 @@ export class ViewTemplateComponent implements OnInit {
       .subscribe((res: any) => {
         this.getComments(this.commentForm.get('nodeId')?.value);
       });
+      //this.notificationService.emitDialogFormData("event");
   }
 
   getUserCommentBadge(userName: string) {
@@ -1915,53 +2298,145 @@ export class ViewTemplateComponent implements OnInit {
     }
   }
 
+  duplicateErrormsg: boolean = false;
+  allNotifications: any[] = [];
   onClickSave() {
-    let data = {
-      templateData: JSON.stringify(this.templateForm.value['category']),
-      templateDescription: this.selectedTemplateData.templateDescription,
-      project: this.selectedTemplateData.project,
-      status: this.selectedTemplateData.status,
-      editedBy:sessionStorage.getItem('email')
-    };
-    console.log("updated template data: ",this.templateForm.value['category']);
-    this.templateService
-      .updateTemplateData(
-        this.activatedRoute.snapshot.params['templateId'],
-        data
-      )
-      .subscribe(
-        (result: any) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Successfull',
-            detail: 'Template updated successfully',
-          });
+    if (this.errorLogs.length > 0) {
+      this.duplicateErrormsg = true;
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Duplicate fields found..!!',
+      });
+    } else {
+      this.duplicateErrormsg = false;
+    }
+    console.log('errorlogs1: ', this.errorLogs);
 
-          setTimeout(() => {
-            if(this.userRole==='2'){
-            this.router.navigate(['/BusinessUser/template-list']);
-            }
-            else if(this.userRole==='1'){
-            this.router.navigate(['/Admin/template-list']);
-            }
-          }, 1300);
-        },
-        (error: HttpErrorResponse) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error..!!',
-            detail: 'Error while updating template..!!',
-          });
-        }
+    for (let index = 0; index < this.errorLogs.length; index++) {
+      console.log('type... :', this.errorLogs[index].type);
+
+      switch (this.errorLogs[index].type) {
+        case 'category':
+          this.getCategoryControls()
+            ?.at(this.errorLogs[index].i)
+            .setErrors({ categoryError: true });
+          break;
+        case 'subcategory':
+          this.getSubCategoryControls(this.errorLogs[index].i)
+            ?.at(this.errorLogs[index].j)
+            ?.setErrors({ subCategoryError: true });
+
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'subcategoryTwo':
+          this.getSubCategoryTwoControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j
+          )
+            ?.at(this.errorLogs[index].k)
+            ?.setErrors({ subcategoryTwoError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'subcategoryThree':
+          this.getSubCategoryThreeControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j,
+            this.errorLogs[index].k
+          )
+            ?.at(this.errorLogs[index].l)
+            ?.setErrors({ getSubCategoryThreeError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'parameter':
+          this.getParameterControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j,
+            this.errorLogs[index].k,
+            this.errorLogs[index].l
+          )
+            ?.at(this.errorLogs[index].m)
+            ?.setErrors({ parameterError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+      }
+      // this.errorLogs=[];
+    }
+
+    if (this.errorLogs.length == 0) {
+      let data = {
+        templateData: JSON.stringify(this.templateForm.value['category']),
+        templateDescription: this.selectedTemplateData.templateDescription,
+        project: this.selectedTemplateData.project,
+        status: this.selectedTemplateData.status,
+        editedBy: sessionStorage.getItem('email'),
+      };
+      console.log(
+        'updated template data: ',
+        this.templateForm.value['category']
       );
+      this.templateService
+        .updateTemplateData(
+          this.activatedRoute.snapshot.params['templateId'],
+          data
+        )
+        .subscribe(
+          (result: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Template updated successfully',
+            });
+
+            //this.notificationService.emitDialogFormData("event");
+
+            // this.userService.getAllNotifications().subscribe((data: any) => {
+            //   this.allNotifications = this.filterNotificationData(data);
+            //   this.allNotifications.reverse();
+            //   this.notificationService.setData(this.allNotifications);
+            //   console.log('updated notifications', this.allNotifications);
+            // });
+
+            setTimeout(() => {
+              if (this.userRole === '2') {
+                this.router.navigate(['/BusinessUser/template-list']);
+              } else if (this.userRole === '1') {
+                this.router.navigate(['/Admin/template-list']);
+              }
+            }, 1300);
+          },
+          (error: HttpErrorResponse) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error..!!',
+              detail: 'Error while updating template..!!',
+            });
+          }
+        );
+    }
+  }
+
+  filterNotificationData(inputData: any) {
+    let filterData: any[] = [];
+
+    inputData.filter((data: any) => {
+      // console.log('data././././', data);
+      if (data.userName === sessionStorage.getItem('email')) {
+        filterData.push(data);
+      }
+    });
+    return filterData;
   }
 
   onClickCancel() {
-    if(this.userRole==='2'){
-    this.router.navigate(['/BusinessUser/template-list']);
-    }
-    else if(this.userRole==='1'){
-    this.router.navigate(['/Admin/template-list']);
+    if (this.userRole === '2') {
+      this.router.navigate(['/BusinessUser/template-list']);
+    } else if (this.userRole === '1') {
+      this.router.navigate(['/Admin/template-list']);
     }
   }
 
@@ -2076,5 +2551,70 @@ export class ViewTemplateComponent implements OnInit {
           })
         );
       });
+  }
+
+  editForm!: FormGroup;
+  onSubmit() {
+    // console.log(this.editForm.value, 'Category.....');
+
+    const fieldvalueName1 = {
+      value: this.selectedCustomValue,
+      type: this.customType,
+    };
+
+    this.masterRepoService.addCategory(fieldvalueName1).subscribe(
+      (data1: any) => {
+        this.addCustomDialog = false;
+        this.selectedCustomValue = '';
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Line item added as category',
+        });
+
+        this.masterRepoService.getCategories().subscribe((data1: any) => {
+          console.log(data1, 'data./....');
+          // this.transformCategoryData1(data1);
+          this.categoriesData =
+            this.templateService.transformCategoryData(data1);
+        });
+
+        console.log(data1, 'data');
+      },
+      (error: HttpErrorResponse) => {
+        this.selectedCustomValue = '';
+
+        if (error.status === 500) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'error...!!',
+            detail: 'Line Item already present',
+          });
+          // this.spinner.isLoading.next(false);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'error...!!',
+            detail: 'Something went wrong, please try again',
+          });
+        }
+      }
+    );
+  }
+  // console.log(fieldvalueName1,'fieldvalueName1');
+  // console.log(fieldvalueName2,'fieldvalueName2');
+  // console.log(fieldvalueName2,'fieldvalueName3');
+
+  addCustomDialog: boolean = false;
+  customType!: string;
+  selectedCustomValue!: string;
+  onAddCustom(type: string) {
+    this.customType = type;
+    this.addCustomDialog = true;
+  }
+
+  onClickCancelCustomDialog() {
+    this.addCustomDialog = false;
   }
 }

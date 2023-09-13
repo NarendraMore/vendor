@@ -1,0 +1,10 @@
+{
+  "/powerbi": {
+    "target": "https://login.microsoftonline.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/powerbi": "https://login.microsoftonline.com/"
+    }
+  }
+}

@@ -1,8 +1,12 @@
-.roles,
+/* .roles,
 h1 {
   color: #415385;
   font-size: 34px;
   font-family: "Helvetica";
+}
+
+.roles{
+  margin-top: 20px;
 }
 
 .search {
@@ -41,6 +45,10 @@ ng-deep .templateTable {
 
 }
 
+input{
+  margin-top: 20px; 
+  margin-bottom: 10px; 
+}
 .status-badge {
   padding: 4px 15px;
   color: #fff;
@@ -71,7 +79,6 @@ ng-deep .templateTable {
 }
 
 .spinner {
-  /* backdrop-filter: blur(2px); */
   background-color: rgba(184, 167, 167, 0.2);
   content: " ";
   top: 0;
@@ -93,9 +100,109 @@ app-spinner {
   border-color: white;
   font-family: Helvetica;
   float: left;
+  margin-top: 25px !important;
 }
 
 .pbuttonclass:hover {
   background-color: #d04a02;
   border-color: white;
+}
+
+.searchIcon{
+  margin-top: -4px;
+} */
+
+.roles,h1{
+  color: #415385;
+  font-size: 34px;
+  font-family: "Helvetica";
+}
+
+.topView{
+  margin-top: 10px;
+}
+
+.createNewButton{
+  background-color: #d04a02;
+  border: none;
+  float: right;
+}
+.createNewButton:hover{
+  background-color: #d93954;
+  border: none;
+}
+
+::ng-deep .balancesheettable {
+  border-radius: 0px;
+  border: 2px solid #9aa4be !important;
+  overflow: hidden !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
+}
+
+tr:nth-child(even) {
+  background-color: #f3f3f3;
+}
+th{
+  background-color: #9aa4be !important;
+}
+
+.actionButton{
+  background-color: #d04a02;
+  border: none;
+}
+.actionButton:hover{
+  background-color: #d04a02;
+  border: none;
+}
+
+.status-badge {
+  padding: 4px 15px;
+  color: #fff;
+  border-radius: 20px;
+  display: block;
+  width: 126px;
+  text-align: center;
+}
+
+.status-badge-success {
+  background: #2d8531;
+}
+
+.status-badge-pending {
+  background: #D04A02;
+}
+
+.status-badge-progress {
+  background: #f7bc0c;
+}
+.editButton1 {
+  margin: 0px 10px;
+}
+::ng-deep .editButton {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
+}
+::ng-deep .editButton25 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
+}
+::ng-deep .editButton26 {
+  background-color: #d04a02 !important;
+  color: #ffffff !important;
+  margin-top: 8px !important;
+}
+::ng-deep .editButton27 {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
+}
+
+.active {
+  background-color: #415385 !important;
+  color: white !important;
+  
 }

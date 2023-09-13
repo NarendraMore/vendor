@@ -18,9 +18,9 @@
       (click)="onClickNotification()"
     >
       <i
-        class="pi pi-bell mr-4 p-text-secondary"
+        class="pi pi-bell mr-4 p-text-secondary notifyIcon"
         pBadge
-        [value]="allNotifications.length.toString()"
+        [value]="notificationCount"
       ></i>
     </span>
 
@@ -30,6 +30,11 @@
     appendTo="body"
     styleClass="notificationPanel"
   >
+  <div class="clearAllButton">
+    <label style="float: right; cursor: pointer;" (click)="clearAllNotification()">Clear All</label>
+  </div>
+  <br>
+  <hr>
     <p class="notify" *ngFor="let notification of allNotifications">
       <!-- <button
         pButton
@@ -43,27 +48,46 @@
       ></button> -->
       <p-tabView *ngIf="notification.event == 'Comment'">
         {{ notification.notificationMsg }} "{{ notification.template }}" on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
+        {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+        <label style="color: red;cursor: pointer;" (click)="onClearNotification(notification.id)"
+          >Clear</label
+        >
+      </p-tabView>
       <p-tabView *ngIf="notification.event == 'Issue Raised'">
         {{ notification.notificationMsg }} "{{ notification.template }}" on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
+        {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+        <label style="color: red;cursor: pointer;" (click)="onClearNotification(notification.id)"
+          >Clear</label
+        >
+      </p-tabView>
       <p-tabView *ngIf="notification.event == 'Template'">
-      "{{ notification.template }}" {{ notification.notificationMsg }} on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
-    
+        "{{ notification.template }}" {{ notification.notificationMsg }} on
+        {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+        <label style="color: red;cursor: pointer;" (click)="onClearNotification(notification.id)"
+          >Clear</label
+        >
+      </p-tabView>
+
       <p-tabView *ngIf="notification.event == 'Scorecard'">
-      "{{ notification.template }}" {{ notification.notificationMsg }} on
-      {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }} <a style="color: red;" (click)="onClearNotification(notification.id)">Clear</a>
-    </p-tabView>
+        "{{ notification.template }}" {{ notification.notificationMsg }} on
+        {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+        <label style="color: red;cursor: pointer;" (click)="onClearNotification(notification.id)"
+          >Clear</label
+        >
+      </p-tabView>
+      <!-- <p-tabView *ngIf="notification.event == 'Draft'">
+        "{{ notification.template }}" Template {{ notification.notificationMsg }} on
+        {{ notification.createdOn | date : "EEE, dd-MMM yyyy hh:mm:aa" }}
+        <label style="color: red;cursor: pointer;" (click)="onClearNotification(notification.id)"
+          >Clear</label
+        >
+      </p-tabView> -->
   </p>
-  <ng-template pTemplate="footer">
+  <!-- <ng-template pTemplate="footer">
     <div class="footer-section">
       <button pButton label="Clear all" class="notificationButton"></button>
     </div>
-  </ng-template>
+  </ng-template> -->
   <!-- <br /> -->
   </p-overlay>
 
@@ -88,12 +112,22 @@
   <div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed' : ''">
     <div class="logo-container">
       <span *ngIf="!collapsed" (click)="toggleCollapse()">
+        <div class="p-fluid grid">
+          <div class="field col-12 md:col-5">
         <img class="collapseIcon" src="assets/Images/collapse_out.png" alt="" pTooltip="Open" />
+        </div>
+        </div>
       </span>
 
       <span *ngIf="collapsed" (click)="toggleCollapse()">
+        <div class="p-fluid grid">
+          <div class="field col-12 md:col-5">
         <img class="collapseIcon" src="assets\Images\collapse_in.png" alt="" pTooltip="Collapse" />
+        </div>
+        <div class="field col-12 md:col-5" style="margin-top: 3%;">
         <label class="collapse">Collapse</label>
+        </div>
+        </div>
       </span>
       <div class="logo-text" *ngIf="collapsed"></div>
     </div>
@@ -106,14 +140,16 @@
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="toggleCollapse1()"
         >
+        <div class="icon-container">
           <img
             class="sidenav-link-icon"
             [src]="[data.image]"
             alt=""
             [pTooltip]="data.tooltip"
           />
+          </div>
 
-          <span class="sidenav-link-text" *ngIf="collapsed">
+          <span class="sidenav-link-text lableHover" *ngIf="collapsed">
             {{ data.label }}
           </span>
         </a>
@@ -128,3 +164,10 @@
 
   <div class="blank"></div>
 </div>
+
+<!-- Notification msg's -->
+<p-toast></p-toast>
+<p-confirmDialog
+  header="Confirmation"
+  icon="pi pi-exclamation-triangle"
+></p-confirmDialog>

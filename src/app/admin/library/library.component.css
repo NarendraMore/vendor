@@ -1,6 +1,9 @@
 ::ng-deep .categoryTable {
   margin-top: 20px !important;
   border: 2px solid #9aa4be !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
 }
 
 ::ng-deep .pi {
@@ -12,11 +15,26 @@
   background-color: #9aa4be !important;
 }
 
+::ng-deep .submitButton2 {
+  background-color: #d04a02 !important;
+  color: white !important;
+  border: none;
+  margin-left: 10px !important;
+  margin-top: 8px !important;
+}
 ::ng-deep .submitButton {
   background-color: #d04a02 !important;
   color: white !important;
   border: none;
   margin-left: 10px !important;
+  /* margin-top: 8px !important; */
+}
+::ng-deep .submitButton1 {
+  background-color: #d04a02 !important;
+  color: white !important;
+  border: none;
+  margin-left: 10px !important;
+  /* margin-top: 8px !important; */
 }
 
 h2 {
@@ -25,18 +43,23 @@ h2 {
   font-family: "Helvetica";
 }
 
-.actionButton{
+/* .actionButton{
   background-color: #d04a02;
   border-color: white;
   font-family: Helvetica;
   float: left;
+} */
+::ng-deep .actionButton {
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  margin-top: 8px !important;
 }
 .actionButton:hover{
   background-color: #d04a02;
   border-color: white;
 }
 
-::ng-deep .cancleButton {
+::ng-deep .cancleButtons {
   border-color: #d04a02 !important;
   color: #d04a02 !important;
 }
@@ -44,6 +67,7 @@ h2 {
 ::ng-deep .deleteButton {
   border-color: #d04a02 !important;
   color: #d04a02 !important;
+  margin-top: 8px !important;
 }
 
 ::ng-deep .lineItemDropdown {
@@ -52,9 +76,13 @@ h2 {
 }
 
 ::ng-deep .dropdownValue {
-  height: 2.6rem !important;
-  margin-top: 3px !important;
+  height: 2.7rem !important;
+  margin-top: 4px !important;
   width: 12rem !important;
+}
+
+.dropdownValue {
+  height: 2.7rem !important;
 }
 
 .spinner {

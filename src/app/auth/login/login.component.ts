@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
   getDecodedOpenIdToken(token: string): any {
     try {
       // console.log('openId token');
-      console.log(jwt_decode(token));
+      // console.log(jwt_decode(token));
 
       return jwt_decode(token);
     } catch (Error) {
@@ -99,7 +99,7 @@ export class LoginComponent implements OnInit {
         // console.log(response, 'login successfull');
         let data = this.getDecodedAccessToken(response.access_token);
         let data1 = this.getDecodedOpenIdToken(data);
-        console.log('extracted data from openID token:', data1);
+        // console.log('extracted data from openID token:', data1);
 
         if (data1.roles[0] === 'admin') {
           sessionStorage.setItem(AppModuleConstants.USER, data1.given_name);

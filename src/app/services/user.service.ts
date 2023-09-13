@@ -46,7 +46,18 @@ export class UserService {
     return this.http.get(`${environment.url}/getNotification`);    
   }
 
+  getAllNotificationsCount(){
+    return this.http.get(`${environment.url}/getNotificationCount/${sessionStorage.getItem('email')}`);    
+  }
+
+  deleteAllNotifications(id:string){
+    return this.http.get(`${environment.url}/getNotification/${id}`);    
+  }
+
   clearNotification(id:any){
     return this.http.delete(`${environment.url}/clearNotification/${id}`)
+  }
+  clearAllNotifications(id:any){
+    return this.http.delete(`${environment.url}/deleteAllNotification/${id}`)
   }
 }

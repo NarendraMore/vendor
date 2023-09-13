@@ -1,10 +1,11 @@
 <!-- <button pButton label="downoad" (click)="Download()"></button> -->
 <form [formGroup]="clientForm1" autocomplete="off">
   <p-dialog
+    [modal]="true"
     class="projectDialog"
     [(visible)]="newProjectDialog"
-    [breakpoints]="{ '960px': '75vw', '640px': '100vw' }"
-    [style]="{ width: '80%', margin: '0px 20px' }"
+    [breakpoints]="{ '100%': '75vw', '640px': '100%' }"
+    [style]="{ width: '80%', margin: '0px 20px', zoom: '80%' }"
     (onHide)="onClickCancel()"
     (onShow)="!editClientForm ? onShow() : null"
   >
@@ -36,6 +37,7 @@
                   pInputText
                   placeholder="Enter"
                   [readOnly]="editable"
+                  class="input"
                 />
                 <small style="color: red; font-size: 16px">
                   <app-print-error
@@ -60,8 +62,8 @@
                 >
                 <p-dropdown
                   [required]="true"
-                  [showClear]="true"
-                  styleClass="dropdown"
+                  [showClear]="!editable"
+                  styleClass="input"
                   [options]="industryNames"
                   formControlName="industry"
                   optionLabel="industryName"
@@ -83,15 +85,15 @@
               </span>
             </div>
 
-            <div class="field col-12 md:col-4">
+            <div class="field col-12 md:col-4" style="padding-top:3% ;">
               <button
-              [disabled]="editable"
+                [disabled]="editable"
                 pTooltip="Add Industry"
                 tooltipPosition="top"
-                class="skillButton1"
+                class="p-button-sm p-button-outlined addLOB1"
                 type="button"
                 pButton
-                icon="pi pi-plus"
+                icon="pi pi-plus-circle plus_icon"
                 (click)="onClickAddIndustry()"
               ></button>
             </div>
@@ -102,65 +104,6 @@
           <div>
             <h3>Business Owner Details</h3>
           </div>
-
-          <!-- business user using table -->
-
-          <!-- <div> -->
-          <!-- <p-table
-              responsiveLayout="scroll"
-              styleClass="p-datatable-sm businessOwnerTable"
-            >
-              <ng-template pTemplate="header">
-                <tr class="tableHeader">
-                  <th>First Name <span style="color: red">*</span></th>
-                  <th>Last Name <span style="color: red">*</span></th>
-                  <th>Email ID <span style="color: red">*</span></th>
-                  <th></th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body">
-                <tr class="tablerow">
-                  <td>
-                    <span>
-                      <input
-                        placeholder="Enter"
-                        pInputText
-                        type="text"
-                        formControlName="firstName"
-                        id="firstname"
-                        required="true"
-                        [readOnly]="editable"
-                      />
-                    </span>
-                  </td>
-                  <td>
-                    <span>
-                      <input
-                        placeholder="Enter"
-                        pInputText
-                        type="text"
-                        formControlName="lastName"
-                        required="true"
-                        [readOnly]="editable"
-                      />
-                    </span>
-                  </td>
-                  <td>
-                    <span>
-                      <input
-                        placeholder="Enter"
-                        pInputText
-                        type="email"
-                        formControlName="email"
-                        required="true"
-                        [readOnly]="editable"
-                      />
-                    </span>
-                  </td>
-                  <td></td>
-                </tr>
-              </ng-template>
-            </p-table> -->
 
           <div class="p-fluid grid">
             <div class="field col-12 md:col-4">
@@ -176,35 +119,16 @@
                   placeholder="Enter"
                   [readOnly]="editable"
                   required
+                  class="input"
                 />
-                 <span>
-               <!--   <small
-                  *ngIf="
-                    !clientForm1.get('firstName')?.valid &&
-                    clientForm1.get('firstName')?.touched
-                  "
-                >
-                  <span style="color: red">This field is required. </span>
-                </small> -->
-
-                <small style="color: red; font-size: 16px">
-                  <app-print-error
-                    [firstName]="clientForm1.get('firstName')"
-                  ></app-print-error>
-                </small>
+                <span>
+                  <small style="color: red; font-size: 16px">
+                    <app-print-error
+                      [firstName]="clientForm1.get('firstName')"
+                    ></app-print-error>
+                  </small>
+                </span>
               </span>
-              </span>
-              <!-- <small
-                *ngIf="
-                  !clientForm1.get('firstName')?.valid &&
-                  clientForm1.get('firstName')?.touched
-                "
-              >
-                <span style="color: red">
-                  This field is required. <br />
-                  Atleast 3 letters are required.</span
-                >
-              </small> -->
             </div>
             <div class="field col-12 md:col-4">
               <span>
@@ -219,6 +143,7 @@
                   placeholder="Enter"
                   [readOnly]="editable"
                   required
+                  class="input"
                 />
                 <span>
                   <small style="color: red; font-size: 16px">
@@ -226,8 +151,8 @@
                       [firstName]="clientForm1.get('lastName')"
                     ></app-print-error>
                   </small>
-              </span>
                 </span>
+              </span>
             </div>
             <div class="field col-12 md:col-4">
               <span>
@@ -242,6 +167,7 @@
                   placeholder="Enter"
                   [readOnly]="editable"
                   required
+                  class="input"
                 />
               </span>
               <span>
@@ -250,48 +176,48 @@
                     [email]="clientForm1.get('email')"
                   ></app-print-error>
                 </small>
-            </span>
+              </span>
             </div>
           </div>
           <br />
-          <p></p>
+          <div class="firstScreenButton">
+            <div *ngIf="!editClientForm" style="float: right; margin-top: 10px">
+              <button
+                pButton
+                class="p-button-sm p-button-outlined pbuttonclass45 mr-2"
+                label="Cancel"
+                icon="pi pi-times-circle"
+                (click)="onClickCancel()"
+              ></button>
 
-          <div *ngIf="!editClientForm" class="btn">
-            <button
-              pButton
-              class="p-button-sm pbuttonclass1 mr-2"
-              label="Cancel"
-              icon="pi pi-times-circle"
-              (click)="onClickCancel()"
-            ></button>
+              <button
+                pButton
+                pTooltip="Next"
+                tooltipPosition="top"
+                icon="pi pi-chevron-right"
+                class="p-button-sm p-button-outlined editButton11 mr-2"
+                (click)="openNext()"
+              ></button>
+            </div>
 
-            <button
-              pButton
-              pTooltip="Next"
-              tooltipPosition="top"
-              icon="pi pi-chevron-right"
-              class="p-button-sm pbuttonclass1 mr-2"
-              (click)="openNext()"
-            ></button>
-          </div>
+            <div *ngIf="editClientForm" style="float: right; margin-top: 10px">
+              <button
+                pButton
+                class="p-button-sm p-button-outlined pbuttonclass45 mr-2"
+                label="Cancel"
+                icon="pi pi-times-circle"
+                (click)="onClickCancel()"
+              ></button>
 
-          <div *ngIf="editClientForm" style="float: right; margin-top: 20px">
-            <button
-              pButton
-              class="p-button-sm pbuttonclass1 mr-2"
-              label="Cancel"
-              icon="pi pi-times-circle"
-              (click)="onClickCancel()"
-            ></button>
-
-            <button
-              pTooltip="Next"
-              tooltipPosition="top"
-              pButton
-              icon="pi pi-chevron-right"
-              class="p-button-sm pbuttonclass1 mr-2"
-              (click)="openNext()"
-            ></button>
+              <button
+                pTooltip="Next"
+                tooltipPosition="top"
+                pButton
+                icon="pi pi-chevron-right"
+                class="p-button-sm p-button-outlined editButton11 mr-2"
+                (click)="openNext()"
+              ></button>
+            </div>
           </div>
         </p-tabPanel>
 
@@ -314,6 +240,7 @@
                   formControlName="projectName"
                   pInputText
                   [readOnly]="editable"
+                  class="input"
                 />
                 <small style="color: red; font-size: 16px">
                   <app-print-error
@@ -324,15 +251,14 @@
             </div>
             <div class="field col-12 md:col-4">
               <span>
-                <label for="projectCode"
-                  >Project Code</label
-                >
+                <label for="projectCode">Project Code</label>
                 <input
                   type="text"
                   id="projectCode"
                   formControlName="projectCode"
                   pInputText
                   [readOnly]="editable"
+                  class="input"
                 />
                 <small style="color: red; font-size: 16px">
                   <app-print-error
@@ -353,6 +279,7 @@
                   formControlName="partnerName"
                   pInputText
                   [readOnly]="editable"
+                  class="input"
                 />
                 <small style="color: red; font-size: 16px">
                   <app-print-error
@@ -364,19 +291,6 @@
             <div class="field col-12 md:col-4">
               <span>
                 <label for="manager">Manager Name </label>
-                <!-- <p-dropdown
-                  [required]="true"
-                  [showClear]="true"
-                  styleClass="dropdown"
-                  [options]="managers"
-                  formControlName="managerName"
-                  optionLabel="name"
-                  optionValue="name"
-                  [filter]="true"
-                  filterBy="name"
-                  placeholder="Select"
-                  appendTo="body"
-                ></p-dropdown> -->
 
                 <input
                   type="email"
@@ -384,6 +298,7 @@
                   formControlName="managerName"
                   pInputText
                   [readOnly]="editable"
+                  class="input"
                 />
 
                 <small style="color: red; font-size: 16px">
@@ -401,7 +316,7 @@
 
                 <p-multiSelect
                   [showClear]="true"
-                  styleClass="dropdown"
+                  styleClass="input"
                   [options]="allUsers"
                   [showClear]="true"
                   formControlName="businessUser"
@@ -426,24 +341,18 @@
           <div *ngIf="!editClientForm" style="float: right; margin-top: 10px">
             <button
               pButton
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined pbuttonclass46 mr-2"
               label="Cancel"
               icon="pi pi-times-circle"
               (click)="onClickCancel()"
             ></button>
-            <!-- <button
-                pButton
-                label="Save as Draft"
-                class="p-button-sm pbuttonclass1 mr-2"
-                icon="pi pi-arrow-circle-down"
-                (click)="SaveDraftProjectForm2()"
-              ></button> -->
+
             <button
               pTooltip="Previous"
               tooltipPosition="top"
               pButton
               icon="pi pi-chevron-left"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton12 mr-2"
               (click)="openPrev()"
             ></button>
             <button
@@ -451,7 +360,7 @@
               tooltipPosition="top"
               pButton
               icon="pi pi-chevron-right"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton13 mr-2"
               (click)="openNext()"
             ></button>
           </div>
@@ -459,28 +368,26 @@
           <div *ngIf="editClientForm" style="float: right; margin-top: 10px">
             <button
               pButton
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined pbuttonclass46 mr-2"
               label="Cancel"
               icon="pi pi-times-circle"
               (click)="onClickCancel()"
             ></button>
-            <!-- <button
-              pButton
-              label="Save Changes"
-              class="p-button-sm pbuttonclass1 mr-2"
-              icon="pi pi-arrow-circle-down"
-              (click)="SaveDraftProjectForm2()"
-            ></button> -->
+
             <button
               pButton
+              pTooltip="Previous"
+              tooltipPosition="top"
               icon="pi pi-chevron-left"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton12 mr-2"
               (click)="openPrev()"
             ></button>
             <button
               pButton
+              pTooltip="Next"
+              tooltipPosition="top"
               icon="pi pi-chevron-right"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton13 mr-2"
               (click)="openNext()"
             ></button>
           </div>
@@ -490,12 +397,16 @@
         <!-- {{targetProducts}} -->
 
         <p-tabPanel class="thirdTab" header="Vendor Mapping">
-          <p-pickList
-          #picklist
+          <div class="title">
+            <h3>Vendor Mapping</h3>
+          </div>
+
+          <span *ngIf="!projectEditable">
+            <p-pickList
+              #picklist
               [source]="sourceProducts"
               [target]="targetProducts"
               sourceHeader="Available Vendors"
-
               targetHeader="Selected Vendors"
               [dragdrop]="false"
               [responsive]="true"
@@ -508,72 +419,98 @@
             >
               <ng-template let-product pTemplate="item">
                 <div class="product-item">
-                  <div class="image-container">
-                    
-                  </div>
+                  <div class="image-container"></div>
                   <div class="product-list-detail">
                     <h4 class="vendorName">{{ product.vendorName }}</h4>
                   </div>
-                  
                 </div>
               </ng-template>
-
-
-
-
             </p-pickList>
+          </span>
+          <span *ngIf="projectEditable">
+            <p-pickList
+              #picklist
+              [source]="sourceProducts"
+              [target]="targetProducts"
+              sourceHeader="Available Vendors"
+              targetHeader="Selected Vendors"
+              [dragdrop]="false"
+              [responsive]="true"
+              [sourceStyle]="{ height: '10rem' }"
+              [targetStyle]="{ height: '10rem' }"
+              filterBy="vendorName"
+              sourceFilterPlaceholder="Search by name"
+              targetFilterPlaceholder="Search by name"
+              styleClass="picklist"
+              (onMoveToSource)="onClickMoveToSource($event)"
+              (onMoveAllToSource)="onClickMoveToSource($event)"
+              (onMoveToTarget)="onClickMoveToTarget($event)"
+              (onMoveAllToTarget)="onClickMoveToTarget($event)"
+            >
+              <ng-template let-product pTemplate="item">
+                <div class="product-item">
+                  <div class="image-container"></div>
+                  <div class="product-list-detail">
+                    <h4 class="vendorName">{{ product.vendorName }}</h4>
+                  </div>
+                </div>
+              </ng-template>
+            </p-pickList>
+          </span>
 
-            <div *ngIf="!editClientForm" style="float: right; margin-top: 30px; margin-bottom: 30px;">
-              <button
-                pButton
-                class="p-button-sm pbuttonclass1 mr-2"
-                label="Cancel"
-                icon="pi pi-times-circle"
-                (click)="onClickCancel()"
-              ></button>
-            
-              <button
-                pTooltip="Previous"
-                tooltipPosition="top"
-                pButton
-                icon="pi pi-chevron-left"
-                class="p-button-sm pbuttonclass1 mr-2"
-                (click)="openPrev()"
-              ></button>
-              <button
+          <div
+            *ngIf="!editClientForm"
+            style="float: right; margin-top: 30px; margin-bottom: 30px"
+          >
+            <button
+              pButton
+              class="p-button-sm p-button-outlined pbuttonclass47 mr-2"
+              label="Cancel"
+              icon="pi pi-times-circle"
+              (click)="onClickCancel()"
+            ></button>
+
+            <button
+              pTooltip="Previous"
+              tooltipPosition="top"
+              pButton
+              icon="pi pi-chevron-left"
+              class="p-button-sm p-button-outlined editButton14 mr-2"
+              (click)="openPrev()"
+            ></button>
+            <button
               pTooltip="Next"
               tooltipPosition="top"
               pButton
               icon="pi pi-chevron-right"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton15 mr-2"
               (click)="openNext()"
             ></button>
-            </div>
+          </div>
 
+          <div *ngIf="editClientForm" style="float: right; margin-top: 10px">
+            <button
+              pButton
+              class="p-button-sm p-button-outlined pbuttonclass47 mr-2"
+              label="Cancel"
+              icon="pi pi-times-circle"
+              (click)="onClickCancel()"
+            ></button>
 
-            <div *ngIf="editClientForm" style="float: right; margin-top: 10px">
-              <button
-                pButton
-                class="p-button-sm pbuttonclass1 mr-2"
-                label="Cancel"
-                icon="pi pi-times-circle"
-                (click)="onClickCancel()"
-              ></button>
-          
-              <button
-                pButton
-                icon="pi pi-chevron-left"
-                class="p-button-sm pbuttonclass1 mr-2"
-                (click)="openPrev()"
-              ></button>
-              <button
-                pButton
-                icon="pi pi-chevron-right"
-                class="p-button-sm pbuttonclass1 mr-2"
-                (click)="openNext()"
-              ></button>
-            </div>
-            </p-tabPanel>
+            <button
+              pButton
+              icon="pi pi-chevron-left"
+              class="p-button-sm p-button-outlined editButton14 mr-2"
+              (click)="openPrev()"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-chevron-right"
+              class="p-button-sm p-button-outlined editButton15 mr-2"
+              (click)="openNext()"
+            ></button>
+          </div>
+        </p-tabPanel>
 
         <!-- 4th Tab -->
         <p-tabPanel class="thirdTab" header="RFP Details">
@@ -594,6 +531,7 @@
                   formControlName="rfpName"
                   pInputText
                   [readOnly]="editable"
+                  class="input"
                 />
                 <small style="color: red; font-size: 16px">
                   <app-print-error
@@ -619,7 +557,7 @@
                 <br />
 
                 <input
-                  class="p-inputtext-sm padding"
+                  class="p-inputtext-sm input"
                   type="file"
                   accept=".pdf"
                   pInputText
@@ -650,8 +588,8 @@
                 <br />
 
                 <input
-                *ngIf="!editable"
-                  class="p-inputtext-sm padding"
+                  *ngIf="!editable"
+                  class="p-inputtext-sm input"
                   type="file"
                   accept=".pdf"
                   pInputText
@@ -663,7 +601,6 @@
                   style="width: 100%"
                   (change)="selectFile1($event)"
                   #inputFile
-                  
                 />
                 <b>Previous Attached File: </b>
                 <a
@@ -690,6 +627,7 @@
                   pInputTextarea
                   formControlName="description"
                   [readOnly]="editable"
+                  class="input"
                 ></textarea>
                 <br />
                 <small style="color: red; font-size: 16px">
@@ -735,7 +673,7 @@
           <div *ngIf="!editClientForm" style="float: right; margin-top: 10px">
             <button
               pButton
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined pbuttonclass48 mr-2"
               label="Cancel"
               icon="pi pi-times-circle"
               (click)="onClickCancel()"
@@ -765,7 +703,7 @@
               "
               pButton
               label="Save"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm pbuttonclass mr-2"
               icon="pi pi-check-circle"
               (click)="onClickSaveClient()"
             ></button>
@@ -775,7 +713,7 @@
               tooltipPosition="top"
               pButton
               icon="pi pi-chevron-left"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton16 mr-2"
               (click)="openPrev()"
             ></button>
           </div>
@@ -783,7 +721,7 @@
           <div *ngIf="editClientForm" style="float: right; margin-top: 10px">
             <button
               pButton
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined pbuttonclass48 mr-2"
               label="Cancel"
               icon="pi pi-times-circle"
               (click)="onClickCancel()"
@@ -806,20 +744,71 @@
               "
               pButton
               label="Save Changes"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm pbuttonclass mr-2"
               icon="pi pi-check-circle"
               (click)="onClickUpdateClient()"
             ></button>
 
             <button
+            pTooltip="Previous"
+            tooltipPosition="top"
               pButton
               icon="pi pi-chevron-left"
-              class="p-button-sm pbuttonclass1 mr-2"
+              class="p-button-sm p-button-outlined editButton16 mr-2"
               (click)="openPrev()"
             ></button>
           </div>
         </p-tabPanel>
-   
+
+        <!-- 5th tab -->
+        <p-tabPanel
+          *ngIf="projectEditable"
+          class="fifth"
+          header="Detagged Vendors"
+        >
+          <div class="title">
+            <h3>Detagged Vendors</h3>
+          </div>
+          <br />
+          <p-table
+            styleClass="p-datatable-sm balancesheettable"
+            #dt
+            [value]="allDetaggedVendors"
+            [rows]="5"
+            [paginator]="true"
+            responsiveLayout="scroll"
+            [rowHover]="true"
+            dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr class="myTable">
+                <th pSortableColumn="projectName">Sr No.</th>
+                <th pSortableColumn="clientName">Vendor Name</th>
+                <th pSortableColumn="industry">Reason</th>
+                <th pSortableColumn="firstName">Detagged By</th>
+                <th pSortableColumn="email">Detagged On</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data let-rowIndex="rowIndex">
+              <tr class="tableRows">
+                <td>{{ rowIndex + 1 }}</td>
+                <td>{{ data.vendorName }}</td>
+                <td>{{ data.reason }}</td>
+                <td>{{ data.detaggedBy }}</td>
+                <td>{{ data.createdOn | date : "EEE, dd-MMM yyyy" }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+              <div class="flex align-items-center justify-content-between">
+                In total there are
+                {{ allDetaggedVendors ? allDetaggedVendors.length : 0 }}
+                Vendors.
+              </div>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
       </p-tabView>
     </ng-template>
   </p-dialog>
@@ -832,6 +821,8 @@
       [(visible)]="flagAdding"
       [style]="{ width: '30%', margin: '0px 20px' }"
       (onHide)="onClickCancle1()"
+      [modal]="true"
+      [closable]="false"
     >
       <div class="p-fluid grid">
         <div class="field col-12 md:col-12">
@@ -859,10 +850,17 @@
       </div>
       <div class="footer">
         <button
+          pButton
+          label="Cancel"
+          class="p-button-sm cancelButton"
+          icon="pi pi-times-circle"
+          (click)="onClickCancle1()"
+        ></button>
+        <button
           [disabled]="!addIndustryForm.valid"
           pButton
           label="Save"
-          class="p-button-sm pbuttonclass2"
+          class="p-button-sm pbuttonclassSave"
           icon="pi pi-check-circle"
           (click)="onClickSaveIndustry()"
         ></button>
@@ -872,7 +870,10 @@
 </form>
 
 <br />
-<h1>Projects</h1>
+
+<div class="roles">
+  <h1>Projects</h1>
+</div>
 <hr />
 <span class="p-input-icon-left">
   <i class="pi pi-search"></i>
@@ -891,99 +892,142 @@
     label="Create New Project"
     icon="pi pi-plus-circle plus_icon"
     (click)="onClickAddProject()"
-    class="p-button-sm pbuttonclass"
+    class="p-button-sm addVendor"
   ></button>
 </span>
 
 <!-- To show all project details -->
+<div style="margin-top: 10px">
+  <p-table
+    styleClass="p-datatable-sm balancesheettable"
+    #dt
+    [value]="clientInfo"
+    [rows]="5"
+    [paginator]="true"
+    responsiveLayout="scroll"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="[
+      'clientName',
+      'industry',
+      'projectName',
+      'partnerName',
+      'managerName',
+      'rfpName',
+      'createdOn',
+      'firstName',
+      'lastName',
+      'email',
+      'createdBy',
+      'modifiedBy'
+    ]"
+  >
+    <ng-template pTemplate="header">
+      <tr class="myTable">
+        <th pSortableColumn="projectName">Project Name</th>
+        <th pSortableColumn="clientName">Client Name</th>
+        <th pSortableColumn="industry">Industry/ Sector</th>
+        <th pSortableColumn="firstName">Business Owner</th>
+        <th pSortableColumn="email">Email Id</th>
+        <th pSortableColumn="managerName">Manager</th>
+        <th pSortableColumn="partnerName">Partner</th>
+        <th pSortableColumn="vendorName">RFP Name</th>
+        <th>RFP Doc</th>
+        <th pSortableColumn="createdBy">Created By</th>
+        <th pSortableColumn="createdOn">Created on</th>
+        <th pSortableColumn="modifiedBy">Edited By</th>
+        <th pSortableColumn="editedOn">Edited on</th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-data>
+      <tr class="tableRows">
+        <td>{{ data.projectName }}</td>
+        <td>{{ data.clientName }}</td>
+        <td>{{ data.industry }}</td>
+        <td>{{ data.firstName }} {{ data.lastName }}</td>
+        <td>
+          {{ data.email }}
+        </td>
 
-<p-table
-  styleClass="p-datatable-sm balancesheettable"
-  #dt
-  [value]="clientInfo"
-  [rows]="5"
-  [paginator]="true"
-  responsiveLayout="scroll"
-  [rowHover]="true"
-  dataKey="id"
-  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-  [showCurrentPageReport]="true"
-  [globalFilterFields]="[
-    'clientName',
-    'industry',
-    'projectName',
-    'partnerName',
-    'managerName',
-    'rfpName',
-    'createdOn',
-    'firstName',
-    'lastName',
-    'email',
-    'createdBy',
-    'modifiedBy'
-  ]"
->
-  <ng-template pTemplate="header">
-    <tr class="myTable">
-      
-      <th pSortableColumn="projectName">Project name</th>
-      <th pSortableColumn="clientName">Client Name</th>
-      <th pSortableColumn="industry">Industry/ Sector</th>
-      <th pSortableColumn="firstName">Business Owner</th>
-      <th pSortableColumn="email">Email Id</th>
-      <th pSortableColumn="managerName">Manager</th>
-      <th pSortableColumn="partnerName">Partner</th>
-      <th pSortableColumn="vendorName">RFP Name</th>
-      <th>RFP Doc</th>
-      <th pSortableColumn="createdBy">Created By</th>
-      <th pSortableColumn="createdOn">Created on</th>
-      <th pSortableColumn="modifiedBy">Edited By</th>
-      <th pSortableColumn="editedOn">Edited on</th>
-      <th>Action</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-data>
-    <tr class="tableRows">
-      <td>{{ data.projectName }}</td>
-      <td>{{ data.clientName }}</td>
-      <td>{{ data.industry }}</td>
-      <td>{{ data.firstName }} {{ data.lastName }}</td>
-      <td>
-        {{ data.email }}
-      </td>
-
-      <td>{{ data.managerName }}</td>
-      <td>{{ data.partnerName }}</td>
-      <td>{{ data.rfpName }}</td>
-      <td (click)="Download(data)">
-        <a class="link"><i class="pi pi-file"></i> Download</a>
-      </td>
-      <td>{{ data.createdBy }}</td>
-      <td>{{ data.createdOn | date : "EEE, dd-MMM yyyy" }}</td>
-      <td>{{ data.modifiedBy }}</td>
-      <td>{{ data.editedOn | date : "EEE, dd-MMM yyyy" }}</td>
-      <td>
-        <button
-          pTooltip="Edit"
-          tooltipPosition="top"
-          pButton
-          icon="pi pi-pencil"
-          (click)="editProject(data)"
-          class="pbuttonclass"
-          style="margin-right: 2rem !important;"
-        ></button>
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="summary">
-    <div class="flex align-items-center justify-content-between">
-      In total there are {{ clientInfo ? clientInfo.length : 0 }} Project.
-    </div>
-  </ng-template>
-</p-table>
-
+        <td>{{ data.managerName }}</td>
+        <td>{{ data.partnerName }}</td>
+        <td>{{ data.rfpName }}</td>
+        <td (click)="Download(data)">
+          <a class="link"><i class="pi pi-file"></i> Download</a>
+        </td>
+        <td>{{ data.createdBy }}</td>
+        <td>{{ data.createdOn | date : "EEE, dd-MMM yyyy" }}</td>
+        <td>{{ data.modifiedBy }}</td>
+        <td>{{ data.editedOn | date : "EEE, dd-MMM yyyy" }}</td>
+        <td>
+          <button
+            pTooltip="Edit"
+            tooltipPosition="top"
+            pButton
+            icon="pi pi-pencil"
+            (click)="editProject(data)"
+            class="p-button-sm p-button-outlined editButton"
+            style="margin-right: 2rem !important"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ clientInfo ? clientInfo.length : 0 }} Project.
+      </div>
+    </ng-template>
+  </p-table>
+</div>
 <p-card styleClass="cardd"></p-card>
 <!-- </div> -->
+
+<!-- dialog box to add reason for detagging vendor -->
+<p-dialog
+  [(visible)]="reasonToDetagDialog"
+  [modal]="true"
+  styleClass="detagReasonDialog"
+  [closable]="false"
+>
+  <ng-template pTemplate="header">
+    <h3>Reason For Detagging</h3>
+  </ng-template>
+  <textarea
+    pInputTextarea
+    [(ngModel)]="reasonForDetag"
+    class="reasonArea"
+    #reasonTextArea="ngModel"
+  ></textarea>
+  <div
+    *ngIf="
+      reasonTextArea.touched &&
+      (reasonForDetag.length < 3 || reasonForDetag.length > 255)
+    "
+    style="color: red"
+  >
+    Reason must be between 3 and 255 characters.
+  </div>
+  <ng-template pTemplate="footer">
+    <button
+      [disabled]="
+        reasonForDetag.length < 3 || reasonForDetag.length > 255 ? true : false
+      "
+      class="p-button-sm okButton"
+      pButton
+      label="OK"
+      (click)="onClickOk()"
+    ></button>
+    <button
+      class="p-button-sm okButton"
+      pButton
+      label="Cancel"
+      (click)="onClickCancelDetagDialog()"
+    ></button>
+  </ng-template>
+</p-dialog>
 
 <!-- Notification msg's -->
 <p-toast></p-toast>

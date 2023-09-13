@@ -2,11 +2,8 @@
   <br />
   <div class="roles">
     <h1>Vendors</h1>
-    <hr>
-
+    <hr />
   </div>
-  <br />
-
   <div style="float: left">
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
@@ -26,13 +23,14 @@
       label="Add New Vendor"
       icon="pi pi-plus-circle"
       (click)="onClickAddVendor()"
-      class="p-button-sm pbuttonclass"
+      class="p-button-sm addVendor"
     ></button>
   </div>
   <br /><br /><br />
   <!-- To add New Vendor Details -->
   <form [formGroup]="vendorForm" autocomplete="off">
     <p-dialog
+    [modal]="true"
       [(visible)]="updateButton"
       class="userDialog"
       [(visible)]="addVendorDialogBox"
@@ -59,7 +57,7 @@
                 formControlName="vendorName"
                 pInputText
                 placeholder="Enter"
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -80,7 +78,7 @@
                 formControlName="spocName"
                 pInputText
                 placeholder="Enter"
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -101,7 +99,7 @@
                 id="email"
                 formControlName="email"
                 pInputText
-                
+                class="input"
               />
               <small>
                 <app-print-error
@@ -127,13 +125,12 @@
               >Mobile Number <span style="color: red">*</span></label
             >
             <div class="p-inputgroup">
-              <span class="p-inputgroup-addon input">+91</span>
+              <!-- <span class="p-inputgroup-addon">+91</span> -->
               <input
-                type="number"
+                type="text"
                 pInputText
                 id="contactNumber"
                 formControlName="contactNumber"
-                
               />
             </div>
             <small>
@@ -176,9 +173,9 @@
                 >Line Of Business <span style="color: red">*</span></label
               >
               <p-dropdown
-                [showClear]="true"
+                [showClear]="!editable"
                 [required]="true"
-                styleClass="lineOfBusinessdropdown"
+                styleClass="input"
                 [options]="allLineOfBusiness"
                 formControlName="lineOfBusiness"
                 optionLabel="businessName"
@@ -187,7 +184,6 @@
                 [filter]="true"
                 filterBy="businessName"
                 placeholder="Select"
-                
               ></p-dropdown>
               <small
                 *ngIf="
@@ -195,89 +191,64 @@
                   vendorForm.get('lineOfBusiness')?.touched
                 "
               >
-                <span style="color: red; font-size: smaller;">This field is required. </span>
+                <span style="color: red; font-size: smaller"
+                  >This field is required.
+                </span>
               </small>
             </span>
           </div>
-          <div class="field col-12 md:col-1">
+          <div class="field col-12 md:col-1" >
             <button
               pTooltip="Add Line Of Business"
-             
               tooltipPosition="top"
-              class="skillButton2"
+              class="p-button-sm p-button-outlined addLOB2"
               type="button"
               pButton
-              icon="pi pi-plus"
+              icon="pi pi-plus-circle plus_icon"
               (click)="onClickAddLineOfBusiness()"
             ></button>
           </div>
-
-         
         </div>
       </ng-template>
 
       <ng-template pTemplate="footer">
-        <span *ngIf="!editVendorForm" style=" float: right;">
+        <span *ngIf="!editVendorForm" style="float: right">
+          <button
+          pButton
+          icon="pi pi-times-circle"
+          label="Cancel"
+          (click)="onClickCancle()"
+          class="p-button-sm p-button-outlined cancelButton33"
+        ></button>
+
           <button
             [disabled]="!vendorForm.valid"
             pButton
             icon="pi pi-check"
             label="{{ updateButton ? 'Update' : 'Save' }}"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
-            class="p-button-sm pbuttonclass"
+           
+            class="p-button-sm pbuttonclass91"
             (click)="save ? onClickSave() : onClickUpdate()"
           ></button>
-          <button
-            pButton
-            icon="pi pi-times"
-            label="Cancel"
-            (click)="onClickCancle()"
-            style="
-              background-color: #ffffff;
-              color: #d04a02;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
-            class="p-button-sm pbuttonclass"
-          ></button>
+        
         </span>
 
-        <span *ngIf="editVendorForm" style="float: right;">
+        <span *ngIf="editVendorForm" style="float: right">
           <button
             pButton
-            icon="pi pi-times"
+            icon="pi pi-times-circle"
             label="Cancel"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
             (click)="onClickCancle()"
-            class="p-button-sm pbuttonclass"
+            class="p-button-sm p-button-outlined cancelButton33"
           ></button>
 
           <button
             pButton
             icon="pi pi-trash"
             label="Delete"
-            style="
-              background-color: #ffffff;
-              color: #d04a02;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+            
             (click)="deleteVendor(vendorData.vendorId)"
-            class="p-button-sm p-button-outlined"
+            class="p-button-sm p-button-outlined cancelButton33"
           ></button>
 
           <button
@@ -285,14 +256,8 @@
             [disabled]="!vendorForm.valid"
             icon="pi pi-save"
             label="Update"
-            class="p-button-sm pbuttonclass"
-            style="
-              background-color: #d04a02;
-              color: #ffffff;
-              border-color: #d04a02;
-              font-family: Helvetica;
-              font-size: 18px;
-            "
+            class="p-button-sm pbuttonclass91"
+          
             (click)="onClickUpdate()"
           ></button>
         </span>
@@ -307,6 +272,8 @@
         [(visible)]="flagAdding"
         [style]="{ width: '30%', margin: '0px 20px' }"
         (onHide)="onClickCancle2()"
+        [modal]="true"
+        [closable]="false"
       >
         <div class="p-fluid grid">
           <div class="field col-12 md:col-12">
@@ -334,6 +301,13 @@
         </div>
         <div class="footer">
           <button
+            pButton
+            label="Cancel"
+            class="p-button-sm busibessCancelButton"
+            icon="pi pi-check-circle"
+            (click)="onClickCancelLOB()"
+          ></button>
+          <button
             [disabled]="!addlineOfBusinessForm.valid"
             pButton
             label="Save"
@@ -347,7 +321,7 @@
   </form>
 
   <!-- to view all Vendors -->
-  <div class="card" style="margin-top: 10px">
+  <div class="card">
     <p-table
       styleClass="p-datatable-sm balancesheettable"
       #dt
@@ -403,18 +377,20 @@
           <td>{{ vendor.contactNumber }}</td>
           <td>{{ vendor.lineOfBusiness }}</td>
           <td>{{ vendor.createdBy }}</td>
-          <td>{{ vendor.createdOn | date : "EEE, dd-MMM yyyy"}}</td>
+          <td>{{ vendor.createdOn | date : "EEE, dd-MMM yyyy" }}</td>
           <td>{{ vendor.modifiedBy }}</td>
-          <td>{{ vendor.editedOn  | date : "EEE, dd-MMM yyyy" }}</td>
+          <td>{{ vendor.editedOn | date : "EEE, dd-MMM yyyy" }}</td>
 
           <!-- <td>{{ vendor.project.projectName }}</td> -->
           <td>
             <button
-            style="float: left;"
+              style="float: left"
               pButton
+              pTooltip="Edit"
+              tooltipPosition="top"
               pRipple
               icon="pi pi-pencil"
-              class="p-button-sm pbuttonclass"
+              class="p-button-sm p-button-outlined editButtonVendor"
               (click)="editVendor(vendor)"
             ></button>
           </td>

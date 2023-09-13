@@ -1,9 +1,7 @@
 <!-- <span style="width: 100%; height: 7vh; background-color: orange;"> Role Management</span> -->
 <!-- <h4 class="heading">Role Management</h4> -->
 <span>
-<div class="buttons">
   <div class="roles"></div>
-</div>
 <br />
 <!-- To add New Role Details -->
 <form [formGroup]="roleForm" autocomplete="off">
@@ -33,6 +31,7 @@
               pInputText
               placeholder="Enter"
               required
+              style="margin-top: 8px;"
             />
             <small>
               <app-print-error
@@ -328,7 +327,7 @@
 
   <br /><br />
   <!-- to view all Users -->
-  <div class="card" style="margin-top: 10px">
+  <div class="card">
     <p-table
       styleClass="p-datatable-sm balancesheettable"
       #dt
@@ -360,7 +359,8 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-role>
-        <tr (click)="editRole(role)">
+        <!-- <tr (click)="editRole(role)"> -->
+        <tr>
           <td>{{ role.roleName }}</td>
           <td>{{ role.descriptions }}</td>
           <td>{{ role.totalCount }}</td>

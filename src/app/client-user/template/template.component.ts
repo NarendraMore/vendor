@@ -74,7 +74,7 @@ export class TemplateComponent implements OnInit {
 
         if (data.project.businessUser[i] === sessionStorage.getItem('email')) {
           this.allData.push(data)
-          // console.log(this.allData,'all data');
+          console.log(this.allData,'all data');
         }
       }
     });
@@ -89,7 +89,7 @@ export class TemplateComponent implements OnInit {
     
     let projectData = inputData
       .filter((data: any) => {
-        console.log('all project data????????????', data);
+        // console.log('all project data????????????', data);
 
         return data.project.projectName;
       })

@@ -120,9 +120,10 @@
     <small>This field is required.
     </small>
   </div>
-  <!-- <div *ngIf="description.errors.pattern">
-    <small>  Atleast 10 words are required.</small>
-  </div> -->
+  <div *ngIf="description.errors.pattern">
+    <small> Please enter a Brief Description with minimum 3 and maximum of 255
+      characters.</small>
+  </div>
 </div>
 
 
@@ -150,10 +151,7 @@
    </small>
   </div>
   <div *ngIf="spocName.errors.pattern">
-    <small>Atleast 3 letters are required. <br>
-      Numericals are not allowed. <br>
-      Special Characters Are not allowed.</small> <br />
-    
+    <small>This field required between 3 to 155 characters with no special characters and numericals.</small>
   </div>
 </div>
 
@@ -186,7 +184,7 @@
   </div>
   <div *ngIf="clientName.errors.pattern">
     <small
-      >Atleast 3 letters are required.</small
+      >Minimum 3 and maximum 155 characters allowed</small
     >
   </div>
 </div>
@@ -205,8 +203,7 @@
   </div>
   <div *ngIf="contactNumberControl.errors.pattern">
     <small
-      >Contact number should be start with either 5,6,7,8 or 9 and should have
-      10 digits</small
+      >Please enter valid contact number between 3 to 20 digit</small
     >
   </div>
 </div>
@@ -220,12 +217,10 @@
   <div *ngIf="firstName.errors.required">
     <small>This field is required</small>
   </div>
-  <!-- <div *ngIf="firstName.errors.pattern">
-    <small
-      >This should contains alphabets only and between 3 to 155
-      characters</small
-    >
-  </div> -->
+  <div *ngIf="firstName.errors.pattern">
+    <small>This field required between 3 to 155 characters with no special characters and numericals.</small> <br />
+
+  </div>
 </div>
 
 
@@ -239,9 +234,8 @@
     <small>This field is required</small>
   </div>
   <div *ngIf="name.errors.pattern">
-    <small
-      >This field required characters between 3 to 155</small
-    >
+    <small>This field required between 3 to 155 characters with no special characters and numericals.</small> <br />
+
   </div>
 </div>
 

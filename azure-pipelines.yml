@@ -1,0 +1,97 @@
+# Node.js with Angular
+# UI Pipeline
+
+parameters:
+  - name: ENVVG
+    displayName: Select Environment To Deploy
+    type: string
+    default: UAT
+    values:
+    - UAT
+    #- PROD
+ 
+trigger:
+- main
+
+# DEFINE VARIABLES
+variables:
+- name: build_agent_pool
+  value: windows-latest
+- name: build_content_path
+  value: "$(Build.SourcesDirectory)/dist/vendor-ui"
+
+- name: env
+  ${{ if eq(parameters.ENVVG, 'UAT') }}:
+    value: uat
+  ${{ if eq(parameters.ENVVG, 'PROD') }}:
+    value: prod
+
+- name: clientId
+  value: $(${{ parameters.ENVVG }}_clientId)
+- name: clientsecret
+  value: $(${{ parameters.ENVVG }}_clientsecret)
+- name: grant_type
+  value: $(${{ parameters.ENVVG }}_grant_type)
+- name: password
+  value: $(${{ parameters.ENVVG }}_password)
+- name: powerbiScope
+  value: $(${{ parameters.ENVVG }}_powerScope)
+- name: reportId
+  value: $(${{ parameters.ENVVG }}_reportId)
+- name: resource
+  value: $(${{ parameters.ENVVG }}_resource)
+- name: tenant_id
+  value: $(${{ parameters.ENVVG }}_tenant_id)
+- name: username
+  value: $(${{ parameters.ENVVG }}_username)
+- name: workSpaceId
+  value: $(${{ parameters.ENVVG }}_workSpaceId)
+- name: BACKEND_URL
+  value: $(${{ parameters.ENVVG }}_BACKEND_URL)
+             
+
+- group: vendor
+
+stages:
+  - stage: BUILD
+    displayName: 'Build ${{ parameters.ENVVG }}'
+
+    pool: 
+      vmImage: $(build_agent_pool)
+    jobs:
+      - job: Build
+        displayName: "Build UI"
+        workspace:
+          clean: all
+        steps:
+          - checkout: self     
+  
+
+          # Replace Variables & Tokens
+          - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+            displayName: 'Replace Tokens in Manifests'
+            inputs:
+              rootDirectory: '$(Build.SourcesDirectory)/src/environments/'
+              targetFiles: 'environment.prod.ts, environment.ts'
+              escapeType: none
+              verbosity: detailed
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '16.x'
+            displayName: 'Install Node.js'              
+
+          - script: npm install -g @angular/cli
+            displayName: 'Angular install'
+
+          - script: npm install
+            displayName: 'npm install'
+
+          - script: ng build
+            displayName: 'dist build'    
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(build_content_path)
+              artifactName: build_ui_$(env)
+            displayName: "Publish pipeline artifact"

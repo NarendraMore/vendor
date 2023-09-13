@@ -21,6 +21,8 @@ import { SaveAsDraftDialogComponent } from './save-as-draft-dialog/save-as-draft
 import { SearchOperationDialogComponent } from './search-operation-dialog/search-operation-dialog.component';
 import { TemplateValidations } from './template-validator/template-validator';
 import { AppModuleConstants } from 'src/app/app-constants';
+import { LibraryService } from 'src/app/services/library.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-template-demo',
@@ -47,6 +49,8 @@ export class TemplateDemoComponent implements OnInit {
 
   userRole!: string;
   userName!: string;
+
+  customValidationData: any = [];
   // draftVersionPattern= '^[0-9]*$';
 
   constructor(
@@ -58,15 +62,19 @@ export class TemplateDemoComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private location: Location,
-    private templateValidations: TemplateValidations
+    private templateValidations: TemplateValidations,
+    private masterRepoService: LibraryService,
+    private confirmationService: ConfirmationService,
+    private notificationService:NotificationService
   ) {}
 
   ngOnInit(): void {
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
+
     // alert(sessionStorage.getItem('saveEnable'))
     if (localStorage.getItem('saveEnable') === 'true') {
-      console.log('check1', localStorage.getItem('saveEnable'));
+      // console.log('check1', localStorage.getItem('saveEnable'));
 
       this.isButtonEnabled = true;
       this.isButtonEnabled1 = true;
@@ -74,7 +82,7 @@ export class TemplateDemoComponent implements OnInit {
       this.isButtonEnabled3 = true;
       // alert(this.saveEnable)
     } else {
-      console.log('check2', localStorage.getItem('saveEnable'));
+      // console.log('check2', localStorage.getItem('saveEnable'));
 
       this.isButtonEnabled = false;
       this.isButtonEnabled1 = false;
@@ -129,8 +137,16 @@ export class TemplateDemoComponent implements OnInit {
         this.vendorService.draftTemplateDetails.templateData
       ) {
         this.populateData(this.vendorService.draftTemplateDetails.templateData);
+        this.loadData(this.vendorService.draftTemplateDetails.templateData);
+        // console.log('check11');
       } else {
+        // console.log('check12: ', this.vendorService.draftTemplateDetails);
+        // console.log(
+        //   'check13: ',
+        //   JSON.stringify(this.templateService.masterTemplateData)
+        // );
         this.populateData(this.vendorService.draftTemplateDetails);
+        this.loadData(this.vendorService.draftTemplateDetails);
       }
       this.getCategoryControls().valueChanges.subscribe(console.log);
 
@@ -147,6 +163,121 @@ export class TemplateDemoComponent implements OnInit {
     //   draftVersion: new FormControl('', [Validators.required]),
     //   draftTag: new FormControl('', [Validators.required]),
     // });
+  }
+
+  // customValidationData: any[] = [];
+  loadData(data: any) {
+    // console.log('=-=-=-=-=-=-=-=-=-=-=', data);
+
+    for (let i = 0; i < data.length; i++) {
+      // this.customValidation = [
+      //   {
+      //     name: data[i].name,
+      //     type: 'category',
+      //     i: i,
+      //   },
+      // ];
+
+      this.customValidationData[i] = [
+        {
+          name: data[i].name,
+          type: 'category',
+          i: i,
+        },
+      ];
+      for (let j = 0; j < data[i].subcategory.length; j++) {
+        if (data[i].subcategory[j].subcategoryname != '') {
+          this.customValidationData[i].push({
+            name: data[i].subcategory[j].subcategoryname,
+            type: 'subcategory',
+            i: i,
+            j: j,
+          });
+        }
+
+        for (let k = 0; k < data[i].subcategory[j].subcategoryTwo.length; k++) {
+          if (data[i].subcategory[j].subcategoryTwo[k].subcategoryname != '') {
+            this.customValidationData[i].push({
+              name: data[i].subcategory[j].subcategoryTwo[k].subcategoryname,
+              type: 'subcategoryTwo',
+              i: i,
+              j: j,
+              k: k,
+            });
+          }
+
+          for (
+            let l = 0;
+            l <
+            data[i].subcategory[j].subcategoryTwo[k].subcategoryThree.length;
+            l++
+          ) {
+            if (
+              data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+                .subcategoryname != ''
+            ) {
+              this.customValidationData[i].push({
+                name: data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[
+                  l
+                ].subcategoryname,
+                type: 'subcategoryThree',
+                i: i,
+                j: j,
+                k: k,
+                l: l,
+              });
+            }
+
+            // for (
+            //   let m = 0;
+            //   m <
+            //   data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+            //     .parameter.length;
+            //   m++
+            // ) {
+            //   if (
+            //     data[i].subcategory[j].subcategoryTwo[k].subcategoryThree[l]
+            //       .parameter[m].parametername != ''
+            //   ) {
+            //     this.customValidationData[i].push({
+            //       name: data[i].subcategory[j].subcategoryTwo[k]
+            //         .subcategoryThree[l].parameter[m].parametername,
+            //       type: 'parameter',
+            //       i: i,
+            //       j: j,
+            //       k: k,
+            //       l: l,
+            //       m: m,
+            //     });
+            //   }
+            // }
+          }
+        }
+      }
+    }
+
+    // console.log('[][][][][][][][]', this.customValidationData);
+
+    // setTimeout(() => {
+
+    for (let i = 0; i < this.customValidationData.length; i++) {
+      for (let j = 0; j < this.customValidationData[i].length; j++) {
+        // console.log("this.customValidation at ", j, ": ", this.customValidation[i][j]);
+        for (let k = j + 1; k < this.customValidationData[i].length; k++) {
+          if (
+            this.customValidationData[i][j].name ===
+            this.customValidationData[i][k].name
+          ) {
+            // console.log('Duplicate elements found at index', j, 'and', k);
+            // Handle the duplicate elements as needed
+            this.errorLogs.push(this.customValidationData[i][j]);
+          }
+        }
+      }
+      // }, 2000);
+    }
+
+    // console.log('./././././.', this.errorLogs);
   }
 
   onClickBack() {
@@ -209,11 +340,11 @@ export class TemplateDemoComponent implements OnInit {
             ]),
           }),
         ]),
-      },
-      {
-        validators: [this.templateValidations.RunValidation()],
-        updateOn: 'change',
       }
+      // {
+      //   validators: [this.templateValidations.RunValidation()],
+      //   updateOn: 'change',
+      // }
     );
   }
 
@@ -837,14 +968,14 @@ export class TemplateDemoComponent implements OnInit {
     parameterIndex: number,
     schoringcriaIndex: number
   ) {
-    console.log(
-      categoryIndex,
-      subCategoryIndex,
-      subCategoryTwoIndex,
-      subCategoryThreeIndex,
-      parameterIndex,
-      schoringcriaIndex
-    );
+    // console.log(
+    //   categoryIndex,
+    //   subCategoryIndex,
+    //   subCategoryTwoIndex,
+    //   subCategoryThreeIndex,
+    //   parameterIndex,
+    //   schoringcriaIndex
+    // );
 
     if (
       (
@@ -898,7 +1029,7 @@ export class TemplateDemoComponent implements OnInit {
         control.value.weightage > 100
       ) {
         // alert(control.value.weightage)
-        console.log('check 1');
+        // console.log('check 1');
 
         this.isButtonEnabled3 = false;
         (control as FormGroup).setErrors({
@@ -906,7 +1037,7 @@ export class TemplateDemoComponent implements OnInit {
         });
       } else if (!validation) {
         this.isButtonEnabled3 = true;
-        console.log('check 2');
+        // console.log('check 2');
 
         if (index == list.controls.length - 1 && index > 0) {
           let weightage = control.value.weightage;
@@ -924,7 +1055,7 @@ export class TemplateDemoComponent implements OnInit {
             this.isButtonEnabled3 = true;
           }
         } else {
-          console.log('check 3');
+          // console.log('check 3');
           totalWeightage =
             Number(totalWeightage) + Number(control.value.weightage);
           if (totalWeightage != 100) {
@@ -934,7 +1065,7 @@ export class TemplateDemoComponent implements OnInit {
           }
         }
       } else {
-        console.log('check 4');
+        // console.log('check 4');
 
         this.isButtonEnabled3 = true;
 
@@ -1434,6 +1565,12 @@ export class TemplateDemoComponent implements OnInit {
       height: 'auto',
       minHeight: '100px',
     });
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Successful',
+      detail: 'Line item added as category',
+    });
   }
 
   public onSearchOption(
@@ -1564,58 +1701,132 @@ export class TemplateDemoComponent implements OnInit {
     }
   }
 
+  duplicateErrormsg: boolean = false;
   onSave() {
     // console.log(
     //   this.vendorService.templateDescriptionData.projectName,
     //   ' project data...!!'
     // );
-    if (this.vendorService.templateDescriptionData != null) {
-      const data = {
-        templateDescription: this.vendorService.templateDescriptionData,
-        project: this.vendorService.templateDescriptionData.projectName,
-        templateData: JSON.stringify(this.getCategoryControls().value),
-        status: 'Pending',
-      };
 
-      console.log(data.templateData, ' template to be added');
-
-      this.templateService.addTemplateData(data).subscribe(
-        (result: any) => {
-          // console.log('Template added', result);
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success...!!',
-            detail: 'Template created successfully',
-          });
-
-          this.deleteDraftTemplate();
-          setTimeout(() => {
-            if (this.userRole === '2') {
-              this.router.navigate(['/BusinessUser/template-list']);
-            } else if (this.userRole === '1') {
-              this.router.navigate(['/Admin/template-list']);
-            }
-          }, 1300);
-        },
-        (error: HttpErrorResponse) => {
-          if (error.status === 500) {
-            // alert("template already exist for the project:"+this.vendorService.project.projectName)
-            // alert('Something went wrong, please try again later');
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error...!!',
-              detail: 'Something went wrong, please try again later',
-            });
-          }
-        }
-      );
-    } else {
+    // console.log('errorlogs1: ', this.errorLogs);
+    if (this.errorLogs.length > 0) {
+      this.duplicateErrormsg = true;
       this.messageService.add({
         severity: 'error',
-        summary: 'Error...!!',
-        detail: 'Something went wrong, please try again later',
+        summary: 'Error',
+        detail: 'Duplicate fields found..!!',
       });
+    } else {
+      this.duplicateErrormsg = false;
+    }
+
+    for (let index = 0; index < this.errorLogs.length; index++) {
+      // console.log('type... :', this.errorLogs[index].type);
+
+      switch (this.errorLogs[index].type) {
+        case 'category':
+          this.getCategoryControls()
+            ?.at(this.errorLogs[index].i)
+            .setErrors({ categoryError: true });
+          break;
+        case 'subcategory':
+          this.getSubCategoryControls(this.errorLogs[index].i)
+            ?.at(this.errorLogs[index].j)
+            ?.setErrors({ subCategoryError: true });
+
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'subcategoryTwo':
+          this.getSubCategoryTwoControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j
+          )
+            ?.at(this.errorLogs[index].k)
+            ?.setErrors({ subcategoryTwoError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'subcategoryThree':
+          this.getSubCategoryThreeControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j,
+            this.errorLogs[index].k
+          )
+            ?.at(this.errorLogs[index].l)
+            ?.setErrors({ getSubCategoryThreeError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+        case 'parameter':
+          this.getParameterControls(
+            this.errorLogs[index].i,
+            this.errorLogs[index].j,
+            this.errorLogs[index].k,
+            this.errorLogs[index].l
+          )
+            ?.at(this.errorLogs[index].m)
+            ?.setErrors({ parameterError: true });
+          // this.customValidationData[i].pop();
+
+          break;
+      }
+      // this.errorLogs=[];
+    }
+
+    // actual logic
+
+    if (this.errorLogs.length == 0) {
+      if (this.vendorService.templateDescriptionData != null) {
+        const data = {
+          templateDescription: this.vendorService.templateDescriptionData,
+          project: this.vendorService.templateDescriptionData.projectName,
+          templateData: JSON.stringify(this.getCategoryControls().value),
+          status: 'Pending',
+        };
+
+        // console.log(data.templateData, ' template to be added');
+
+        this.templateService.addTemplateData(data).subscribe(
+          (result: any) => {
+            // console.log('Template added', result);
+
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success...!!',
+              detail: 'Template created successfully',
+            });
+
+            this.deleteDraftTemplate();
+            //this.notificationService.emitDialogFormData("event");
+
+            setTimeout(() => {
+              if (this.userRole === '2') {
+                this.router.navigate(['/BusinessUser/template-list']);
+              } else if (this.userRole === '1') {
+                this.router.navigate(['/Admin/template-list']);
+              }
+            }, 1300);
+          },
+          (error: HttpErrorResponse) => {
+            if (error.status === 500) {
+              // alert("template already exist for the project:"+this.vendorService.project.projectName)
+              // alert('Something went wrong, please try again later');
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error...!!',
+                detail: 'Something went wrong, please try again later',
+              });
+            }
+          }
+        );
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error...!!',
+          detail: 'Something went wrong, please try again later',
+        });
+      }
     }
   }
 
@@ -1711,7 +1922,7 @@ export class TemplateDemoComponent implements OnInit {
       this.templateService.saveAsDraft(request).subscribe((data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Data saved as a draft',
         });
 
@@ -1773,6 +1984,8 @@ export class TemplateDemoComponent implements OnInit {
   /* View Template */
 
   populateData(data: any) {
+    // console.log('tttttt');
+
     let controls: any = new FormArray([]);
     data.forEach((categoryControl: any, index: number) => {
       controls.push(
@@ -1865,7 +2078,7 @@ export class TemplateDemoComponent implements OnInit {
   private prepareScoringCriteriaControlView(parameter: any, isCopy?: boolean) {
     let scoringCriteriaControls: any = new FormArray([]);
 
-    console.log('@!@!@!@!@!@!@!@!@!@', parameter.schoringcriteria.length);
+    // console.log('@!@!@!@!@!@!@!@!@!@', parameter.schoringcriteria.length);
 
     if (parameter.schoringcriteria.length === 0) {
       // this.scoringCriteriaColumn = true;
@@ -1880,10 +2093,10 @@ export class TemplateDemoComponent implements OnInit {
       );
     } else {
       parameter.schoringcriteria.forEach((schoringcriteria: any) => {
-        console.log(
-          '----------schoringcriteria.criteriaValue: ',
-          schoringcriteria.criteriaValue
-        );
+        // console.log(
+        //   '----------schoringcriteria.criteriaValue: ',
+        //   schoringcriteria.criteriaValue
+        // );
 
         scoringCriteriaControls.push(
           new FormGroup({
@@ -1908,39 +2121,437 @@ export class TemplateDemoComponent implements OnInit {
   isButtonEnabled: boolean = false;
   isButtonEnabled2: boolean = false;
   isButtonEnabled3: boolean = true;
+  templateFormValidation: boolean = false;
   valueSet = new Set<string>();
+  errorLogs: any[] = [];
+
+  onValidateCategory(
+    event: any,
+    type: string,
+    i: number,
+    j?: any,
+    k?: any,
+    l?: any,
+    m?: any
+  ) {
+    for (let index = 0; index < this.errorLogs.length; index++) {
+      if (
+        type === 'category' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === undefined &&
+        this.errorLogs[index].k === undefined &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        --index;
+      } else if (
+        type === 'subcategory' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === undefined &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        --index;
+      } else if (
+        type === 'subcategoryTwo' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === k &&
+        this.errorLogs[index].l === undefined &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        --index;
+      } else if (
+        type === 'subcategoryThree' &&
+        this.errorLogs[index].i === i &&
+        this.errorLogs[index].j === j &&
+        this.errorLogs[index].k === k &&
+        this.errorLogs[index].l === l &&
+        this.errorLogs[index].m === undefined
+      ) {
+        this.errorLogs.splice(index, 1);
+        // this.customValidationData[i].splice(index,1)
+        --index;
+      }
+      //  else if (
+      //   type === 'parameter' &&
+      //   this.errorLogs[index].i === i &&
+      //   this.errorLogs[index].j === j &&
+      //   this.errorLogs[index].k === k &&
+      //   this.errorLogs[index].l === l &&
+      //   this.errorLogs[index].m === m
+      // ) {
+      //   this.errorLogs.splice(index, 1);
+      //   // this.customValidationData[i].splice(index,1)
+      //   --index;
+      // }
+       else {
+        console.log('Error not found');
+      }
+
+      // switch (type) {
+      //   case 'category':
+      //     if (
+      // this.errorLogs[index].i === i &&
+      // this.errorLogs[index].j === undefined &&
+      // this.errorLogs[index].k === undefined &&
+      // this.errorLogs[index].l === undefined &&
+      // this.errorLogs[index].m === undefined
+      //     ) {
+      //       // this.errorLogs.splice(index,1);
+      //       delete this.errorLogs[index];
+      //     }
+      //     break;
+      //   case 'subcategory':
+      //     if (
+      //       this.errorLogs[index].i === i &&
+      //       this.errorLogs[index].j === j &&
+      //       this.errorLogs[index].k === undefined &&
+      //       this.errorLogs[index].l === undefined &&
+      //       this.errorLogs[index].m === undefined
+      //     ) {
+      //       // this.errorLogs.splice(index,1);
+      //       delete this.errorLogs[index];
+      //     }
+      //     break;
+      //   case 'subcategoryTwo':
+      //     if (
+      // this.errorLogs[index].i === i &&
+      // this.errorLogs[index].j === j &&
+      // this.errorLogs[index].k === k &&
+      // this.errorLogs[index].l === undefined &&
+      // this.errorLogs[index].m === undefined
+      //     ) {
+      //       // this.errorLogs.splice(index,1);
+      //       delete this.errorLogs[index];
+      //     }
+      //     break;
+      //   case 'subcategoryThree':
+      //     if (
+      // this.errorLogs[index].i === i &&
+      // this.errorLogs[index].j === j &&
+      // this.errorLogs[index].k === k &&
+      // this.errorLogs[index].l === l &&
+      // this.errorLogs[index].m === undefined
+      //     ) {
+      //       // this.errorLogs.splice(index,1);
+      //       delete this.errorLogs[index];
+      //     }
+      //     break;
+      //   case 'parameter':
+      //     if (
+      // this.errorLogs[index].i === i &&
+      // this.errorLogs[index].j === j &&
+      // this.errorLogs[index].k === k &&
+      // this.errorLogs[index].l === l &&
+      // this.errorLogs[index].m === m
+      //     ) {
+      //       // this.errorLogs.splice(index,1);
+      //       delete this.errorLogs[index];
+      //     }
+      //     break;
+      // }
+    }
+
+    if (i < this.customValidationData.length) {
+      for (let index = 0; index < this.customValidationData.length; index++) {
+        for (let k = 0; k < this.customValidationData[i].length; k++) {
+          if (k < this.customValidationData[i].length) {
+            if (
+              type === 'category' &&
+              this.customValidationData[i][k].i === i &&
+              this.customValidationData[i][k].j === undefined &&
+              this.customValidationData[i][k].k === undefined &&
+              this.customValidationData[i][k].l === undefined &&
+              this.customValidationData[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidationData[i].splice(k, 1);
+              --k;
+            } else if (
+              type === 'subcategory' &&
+              this.customValidationData[i][k].i === i &&
+              this.customValidationData[i][k].j === j &&
+              this.customValidationData[i][k].k === undefined &&
+              this.customValidationData[i][k].l === undefined &&
+              this.customValidationData[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidationData[i].splice(k, 1);
+              --k;
+            } else if (
+              type === 'subcategoryTwo' &&
+              this.customValidationData[i][k].i === i &&
+              this.customValidationData[i][k].j === j &&
+              this.customValidationData[i][k].k === k &&
+              this.customValidationData[i][k].l === undefined &&
+              this.customValidationData[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidationData[i].splice(index, 1);
+              --k;
+            } else if (
+              type === 'subcategoryThree' &&
+              this.customValidationData[i][k].i === i &&
+              this.customValidationData[i][k].j === j &&
+              this.customValidationData[i][k].k === k &&
+              this.customValidationData[i][k].l === l &&
+              this.customValidationData[i][k].m === undefined
+            ) {
+              // this.errorLogs.splice(index, 1);
+              this.customValidationData[i].splice(k, 1);
+              --k;
+            } 
+            // else if (
+            //   type === 'parameter' &&
+            //   this.customValidationData[i][k].i === i &&
+            //   this.customValidationData[i][k].j === j &&
+            //   this.customValidationData[i][k].k === k &&
+            //   this.customValidationData[i][k].l === l &&
+            //   this.customValidationData[i][k].m === m
+            // ) {
+            //   // this.errorLogs.splice(index, 1);
+            //   this.customValidationData[i].splice(k, 1);
+            //   --k;
+            // }
+             else {
+              console.log('not found');
+              // --index;
+            }
+          }
+        }
+      }
+    }
+
+    // console.log('errorlogs2: ', this.errorLogs);
+
+    // console.log('inside validate category:', this.customValidationData);
+
+    if (this.customValidationData.length > 0) {
+      switch (type) {
+        case 'category':
+          if (this.customValidationData[i]) {
+            this.customValidationData[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+            });
+          } else {
+            this.customValidationData[i] = [
+              {
+                name: event.value,
+                type: type,
+                i: i,
+              },
+            ];
+          }
+
+          break;
+        case 'subcategory':
+          if (event.value != undefined) {
+            this.customValidationData[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+            });
+          }
+
+          break;
+        case 'subcategoryTwo':
+          if (event.value != undefined) {
+            this.customValidationData[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+              k: k,
+            });
+          }
+
+          break;
+        case 'subcategoryThree':
+          if (event.value != undefined) {
+            this.customValidationData[i].push({
+              name: event.value,
+              type: type,
+              i: i,
+              j: j,
+              k: k,
+              l: l,
+            });
+          }
+
+          break;
+        // case 'parameter':
+        //   if (event.value != undefined) {
+        //     this.customValidationData[i].push({
+        //       name: event.value,
+        //       type: type,
+        //       i: i,
+        //       j: j,
+        //       k: k,
+        //       l: l,
+        //       m: m,
+        //     });
+        //   }
+
+          break;
+      }
+
+      for (
+        let index = 0;
+        index < this.customValidationData[i].length - 1;
+        index++
+      ) {
+        // for (let innerIndex = index; this.customValidationData[i].length<index; innerIndex++) {
+        if (this.customValidationData[i][index].name == event.value) {
+          this.errorLogs.push(
+            this.customValidationData[i][
+              this.customValidationData[i].length - 1
+            ]
+          );
+          this.templateFormValidation = true;
+          // console.log(
+          //   'duplicate element found at: ',
+          //   this.customValidationData[i][index].type
+          // );
+          // switch (type) {
+          //   case 'category':
+          //     this.getCategoryControls()
+          //       ?.at(i)
+          //       .setErrors({ categoryError: true });
+          //     break;
+          //   case 'subcategory':
+          //     this.getSubCategoryControls(i)
+          //       ?.at(j)
+          //       ?.setErrors({ subCategoryError: true });
+
+          //       this.customValidationData[i].pop();
+
+          //     break;
+          //   case 'subcategoryTwo':
+          //     this.getSubCategoryTwoControls(i, j)
+          //       ?.at(k)
+          //       ?.setErrors({ subcategoryTwoError: true });
+          //       this.customValidationData[i].pop();
+
+          //     break;
+          //   case 'subcategoryThree':
+          //     this.getSubCategoryThreeControls(i, j, k)
+          //       ?.at(l)
+          //       ?.setErrors({ getSubCategoryThreeError: true });
+          //       this.customValidationData[i].pop();
+
+          //     break;
+          //   case 'parameter':
+          //     this.getParameterControls(i, j, k, l)
+          //       ?.at(m)
+          //       ?.setErrors({ parameterError: true });
+          //       this.customValidationData[i].pop();
+
+          //     break;
+          // }
+          // break;
+        } else {
+          // this.templateFormValidation=false;
+          // switch (type) {
+          //   case 'category':
+          //     this.getCategoryControls()
+          //       ?.at(i)
+          //       .setErrors({ categoryError: false });
+          //     break;
+          //   case 'subcategory':
+          //     this.getSubCategoryControls(i)
+          //       ?.at(j)
+          //       ?.setErrors({ subCategoryError: false });
+          //     break;
+          //   case 'subcategoryTwo':
+          //     this.getSubCategoryTwoControls(i, j)
+          //       ?.at(k)
+          //       ?.setErrors({ subcategoryTwoError: false });
+          //     break;
+          //   case 'subcategoryThree':
+          //     this.getSubCategoryThreeControls(i, j, k)
+          //       ?.at(l)
+          //       ?.setErrors({ getSubCategoryThreeError: false });
+          //     break;
+          //   case 'parameter':
+          //     this.getParameterControls(i, j, k, l)
+          //       ?.at(m)
+          //       ?.setErrors({ parameterError: false });
+          //     break;
+          // }
+        }
+      }
+
+      for (
+        let position = 0;
+        position <= this.customValidationData.length - 1;
+        position++
+      ) {
+        for (
+          let k = position + 1;
+          k <= this.customValidationData.length - 1;
+          k++
+        ) {
+          if (
+            this.customValidationData[position][0].name ===
+            this.customValidationData[k][0].name
+          ) {
+            this.errorLogs.push(this.customValidationData[k][0]);
+          }
+        }
+      }
+
+      // console.log('errorLogs: ', this.errorLogs);
+
+      // }
+    } else {
+      if (type == 'category') {
+        this.customValidationData[i] = [
+          {
+            name: event.value,
+            type: type,
+            i: i,
+          },
+        ];
+      }
+    }
+  }
 
   onDropdownChange(event: any) {
-    console.log(event);
+    // console.log('inside change event of category');
 
-// if(this.valueSet.has(event.value)){
-//   console.log(this.valueSet);
-  
-//   alert('error')
-// }else{
-//   this.valueSet.add(event.value);
-// }
+    // old code
     if (event.value) {
-      console.log(event.value, 'event.value');
+      // console.log(event.value, 'event.value');
 
       this.isButtonEnabled = true;
-      console.log(this.isButtonEnabled, 'isButtonEnabled');
+      // console.log(this.isButtonEnabled, 'isButtonEnabled');
     } else {
-      console.log(event.value, 'event.value');
+      // console.log(event.value, 'event.value');
       this.isButtonEnabled = false;
-      console.log(this.isButtonEnabled, 'isButtonEnabled');
+      // console.log(this.isButtonEnabled, 'isButtonEnabled');
     }
   }
   onDropdownChange1(event: any) {
     if (event.value) {
-      console.log(event.value, 'event.value');
+      // console.log(event.value, 'event.value');
 
       this.isButtonEnabled1 = true;
-      console.log(this.isButtonEnabled1, 'isButtonEnabled');
+      // console.log(this.isButtonEnabled1, 'isButtonEnabled');
     } else {
       // console.log(event.value,'event.value');
       this.isButtonEnabled1 = false;
-      console.log(this.isButtonEnabled1, 'isButtonEnabled');
+      // console.log(this.isButtonEnabled1, 'isButtonEnabled');
     }
   }
   enabled: boolean = false;
@@ -1950,4 +2561,68 @@ export class TemplateDemoComponent implements OnInit {
   //   this.enabled = !this.enabled;
 
   // }
+
+  editForm!: FormGroup;
+  onSubmit() {
+    // console.log(this.editForm.value, 'Category.....');
+
+    const fieldvalueName1 = {
+      value: this.selectedCustomValue,
+      type: this.customType,
+    };
+
+    this.masterRepoService.addCategory(fieldvalueName1).subscribe(
+      (data1: any) => {
+        this.addCustomDialog = false;
+        this.selectedCustomValue = '';
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Line item added as category',
+        });
+
+        this.masterRepoService.getCategories().subscribe((data1: any) => {
+          // console.log(data1, 'data./....');
+          // this.transformCategoryData1(data1);
+          this.categoriesData =
+            this.templateService.transformCategoryData(data1);
+        });
+
+        // console.log(data1, 'data');
+      },
+      (error: HttpErrorResponse) => {
+        this.selectedCustomValue = '';
+
+        if (error.status === 500) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'error...!!',
+            detail: 'Line Item already present',
+          });
+          // this.spinner.isLoading.next(false);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'error...!!',
+            detail: 'Something went wrong, please try again',
+          });
+        }
+      }
+    );
+  }
+  // console.log(fieldvalueName1,'fieldvalueName1');
+  // console.log(fieldvalueName2,'fieldvalueName2');
+  // console.log(fieldvalueName2,'fieldvalueName3');
+
+  addCustomDialog: boolean = false;
+  customType!: string;
+  selectedCustomValue!: string;
+  onAddCustom(type: string) {
+    this.customType = type;
+    this.addCustomDialog = true;
+  }
+
+  onClickCancelCustomDialog() {
+    this.addCustomDialog = false;
+  }
 }

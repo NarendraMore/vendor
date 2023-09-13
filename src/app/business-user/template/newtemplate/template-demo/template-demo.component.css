@@ -45,8 +45,9 @@
   } */
 .SaveDraftButton {
   /* float: right !important; */
-  background-color: #d04a02 !important;
-  border: none;
+  border-color: #d04a02 !important;
+  color: #d04a02 !important;
+  /* margin-top: 10px !important; */
 }
 .display {
   display: contents;
@@ -104,4 +105,47 @@ input[type="number"]::-webkit-outer-spin-button {
 
 th{
   font-size: larger;
+}
+
+.customSubmitButton{
+  float: right;
+  margin-top: 10px;
+  background-color: #d04a02;
+  border: none;
+}
+.customCancelButton{
+  float: left;
+  margin-top: 10px;
+  background-color: #d04a02;
+  border: none
+}
+.customSubmitButton:hover{
+  float: right;
+  margin-top: 10px;
+  background-color: #d04a02 !important;
+  border: none;
+}
+.customCancelButton:hover{
+  float: left;
+  margin-top: 10px;
+  background-color: #d04a02 !important;
+  border: none
+}
+
+.customSubmitButton{
+  float: right;
+  margin-top: 10px;
+}
+.customCancelButton{
+  float: left;
+  margin-top: 10px;
+}
+
+.customDialog{
+  width: 20%;
+}
+
+.customvalueInputBox{
+  width: 100%;
+  padding: 10px;
 }

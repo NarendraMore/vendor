@@ -18,15 +18,26 @@ h1 {
   overflow-wrap: auto !important;
 }
 
+input{
+  margin-top:10px !important ;
+}
+
 ng-deep .templateTable {
   overflow-y: visible !important;
   overflow-wrap: visible !important;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 4px;
 }
 
 .actionButton{
-  padding: 0%;
-  height: 2rem;
-  width: 2rem;
+  background-color: #D04A02;
+  color: white;
+  border: none;
+}
+.actionButton:hover{
+  background-color: #D04A02 !important;
+  color: white;
 }
 
 .status-badge {

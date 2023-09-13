@@ -33,7 +33,7 @@ export class VendorComponent implements OnInit {
 
   vendorNamePattern ='^([0-9a-zA-Z!@#$%^&*()_+ -]{3,155})$';
   spocNamePattern = '^([a-zA-Z ]{3,200})$';
-  mobnumPattern = '^((\\+91-?)|0)?[5,6,7,8,9]{1}[0-9]{9}$';
+  mobnumPattern = '^((\\+?)|0)?[0-9]{3,20}$';
   emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
 
   vendorId!: string;
@@ -190,7 +190,7 @@ export class VendorComponent implements OnInit {
       (data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Succesful',
           detail: 'Vendor addedd successfully',
         });
         this.spinner.isLoading.next(false);
@@ -199,7 +199,7 @@ export class VendorComponent implements OnInit {
         this.ngOnInit();
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 406) {
+        if (error.status === 500) {
           this.messageService.add({
             severity: 'warn',
             summary: 'warning  ',
@@ -248,7 +248,7 @@ export class VendorComponent implements OnInit {
               this.ngOnInit();
             },
             (error: HttpErrorResponse) => {
-              if (error.status === 406) {
+              if (error.status === 500) {
                 this.messageService.add({
                   severity: 'warn',
                   summary: 'Warning',
@@ -291,7 +291,7 @@ export class VendorComponent implements OnInit {
     this.vendorService.getVendorById(vendor.vendorId).subscribe(
       (data: any) => {
 
-        console.log(vendor);
+        // console.log(vendor);
         
         this.vendorData = data;
         // this.save=false;
@@ -326,7 +326,7 @@ export class VendorComponent implements OnInit {
 
         this.user.getUserByMailId(vendor.createdBy).subscribe(
           (data: any) => {
-            console.log('logged in user: ', data);
+            // console.log('logged in user: ', data);
             if (data.email === sessionStorage.getItem('email')) {
               this.editable = false;
             }else{
@@ -367,7 +367,7 @@ export class VendorComponent implements OnInit {
 
 
   onClickSaveLineofBuisnes() {
-    console.log(this.addlineOfBusinessForm.value, 'line Of Business.....');
+    // console.log(this.addlineOfBusinessForm.value, 'line Of Business.....');
     const lineofBuisness ={
       value:this.addlineOfBusinessForm.value.lineOfBusiness,
       type :'Buisness'
@@ -380,7 +380,7 @@ export class VendorComponent implements OnInit {
  
     this.masterRepoService.getCategories().subscribe(
       (data: any) => {
-     console.log(data,'data./....');
+    //  console.log(data,'data./....');
      
       // console.log(this.categoriesData, ' data');
       // this.allLineOfBusiness.push(lineofBuisness) 
@@ -409,7 +409,7 @@ export class VendorComponent implements OnInit {
         // this.spinner.isLoading.next(false);
         // this.categoryForm.reset();
         // this.ngOnInit();
-        console.log(data,'data');
+        // console.log(data,'data');
         
 
       },
@@ -518,5 +518,11 @@ lineofBusinessData :any[]=[];
         });
       },
     });
+  }
+
+  onClickCancelLOB(){
+    this.addlineOfBusinessForm.reset();
+    this.flagAdding=false;
+
   }
 }

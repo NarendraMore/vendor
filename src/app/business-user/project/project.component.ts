@@ -92,7 +92,7 @@ export class ProjectComponent implements OnInit {
   }
   openPrev() {
     this.index = this.index === 0 ? 3 : this.index - 1;
-    this.index = this.index === 0 ? 3 : this.index - 1;
+    // this.index = this.index === 0 ? 3 : this.index - 1;
   }
 
   openNextUpdate() {
@@ -107,15 +107,15 @@ export class ProjectComponent implements OnInit {
   clientFormId!: string;
 
   // projectCodePattern = "^[a-zA-Z0-9]{3,15}$";
-  descriptionPattern = '^([0-9a-zA-Z!@#$%^&,.;:""*()_+ -]{10,255})$';
+  descriptionPattern = '^([0-9a-zA-Z!@#$%^&,.;:""*()_+ -]{3,255})$';
   emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
-  clientnamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ -]{3,50})$';
+  clientnamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ -]{3,155})$';
   //  clientnamePattern = '/^(?=.*\d)(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]+$/';
   // emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
 
-  firstNamePattern = '^([a-zA-Z ]{3,200})$';
-  lastNamePattern = '^([a-zA-Z ]{3,200})$';
-  projectnamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ ]{3,50})$';
+  firstNamePattern = '^([a-zA-Z ]{3,155})$';
+  lastNamePattern = '^([a-zA-Z ]{3,155})$';
+  projectnamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ ]{3,155})$';
   projectcodePattern = '^[a-zA-Z0-9 .]+$';
   rfpNamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ ]{3,50})$';
 
@@ -263,9 +263,9 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sourceProducts=[];
-    this.targetProducts=[];
-    this.clientInfo=[];
+    this.sourceProducts = [];
+    this.targetProducts = [];
+    this.clientInfo = [];
 
     this.spinner.isLoading.subscribe((val) => {
       this.isLoading = val;
@@ -294,8 +294,14 @@ export class ProjectComponent implements OnInit {
       projectCode: new FormControl('', [
         Validators.pattern(this.projectcodePattern),
       ]),
-      partnerName: new FormControl('', Validators.pattern(this.firstNamePattern)),
-      managerName: new FormControl('', Validators.pattern(this.firstNamePattern)),
+      partnerName: new FormControl(
+        '',
+        Validators.pattern(this.firstNamePattern)
+      ),
+      managerName: new FormControl(
+        '',
+        Validators.pattern(this.firstNamePattern)
+      ),
       businessUser: new FormControl(''),
       selectedVendors: new FormControl(''),
 
@@ -323,7 +329,7 @@ export class ProjectComponent implements OnInit {
         this.clientInfo = this.transferProjectName1(data);
 
         this.clientInfo.reverse();
-        console.log('all projects:', this.clientInfo);
+        // console.log('all projects:', this.clientInfo);
       },
       (error: HttpErrorResponse) => {
         alert(error);
@@ -334,7 +340,7 @@ export class ProjectComponent implements OnInit {
       (data: any) => {
         // this.allUsers = data;
         this.allUsers = this.getActiveUsers(data);
-        console.log('all active users: ', this.allUsers);
+        // console.log('all active users: ', this.allUsers);
 
         // for (let i = 0; i < this.allUsers.length; i++) {
         //   this.allUsers = this.allUsers.sort((a: any, b: any) => {
@@ -359,7 +365,7 @@ export class ProjectComponent implements OnInit {
     this.vendor.getVendors().subscribe(
       (data: any) => {
         this.sourceProducts = this.transformVendorNames(data);
-        console.log("all Vendors.....!!:",this.sourceProducts);
+        // console.log('all Vendors.....!!:', this.sourceProducts);
         this.spinner.isLoading.next(false);
       },
       (error: HttpErrorResponse) => {
@@ -386,12 +392,12 @@ export class ProjectComponent implements OnInit {
   // }
 
   getActiveUsers(data: any) {
-    console.log(data, ' all users');
+    // console.log(data, ' all users');
 
     const activeUsers = data
       .filter((user: any) => user.userStatus === 'Active')
       .sort((a: any, b: any) => {
-        console.log('abababababa?????', a, b);
+        // console.log('abababababa?????', a, b);
 
         const nameA = a.email.toLowerCase();
         const nameB = b.email.toLowerCase();
@@ -400,7 +406,7 @@ export class ProjectComponent implements OnInit {
         return 0;
       });
 
-    console.log('././.', activeUsers);
+    // console.log('././.', activeUsers);
     return activeUsers;
   }
 
@@ -446,7 +452,7 @@ export class ProjectComponent implements OnInit {
   }
 
   onClickSaveIndustry() {
-    console.log(this.addIndustryForm.value, 'Industry / Sector.....');
+    // console.log(this.addIndustryForm.value, 'Industry / Sector.....');
     const industryName1 = {
       // industryName:this.addIndustryForm.value.industry
       value: this.addIndustryForm.value.industry,
@@ -462,7 +468,7 @@ export class ProjectComponent implements OnInit {
       (data: any) => {
         this.masterRepoService.getCategories().subscribe(
           (data: any) => {
-            console.log(data, 'data./....');
+            // console.log(data, 'data./....');
 
             // console.log(this.categoriesData, ' data');
 
@@ -488,10 +494,10 @@ export class ProjectComponent implements OnInit {
         // this.spinner.isLoading.next(false);
         // this.categoryForm.reset();
         // this.ngOnInit();
-        console.log(data, 'data');
+        // console.log(data, 'data');
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 500  ) {
+        if (error.status === 500) {
           this.messageService.add({
             severity: 'warn',
             summary: 'error...!!',
@@ -528,12 +534,16 @@ export class ProjectComponent implements OnInit {
 
   onClickCancle1() {
     this.addIndustryForm.reset();
+    this.flagAdding = false;
   }
   onClickCancel() {
     this.editable = false;
     this.businessOwnerId = [];
+    this.sourceProducts=[];
+    this.targetProducts=[];
     this.editClientForm = false;
-
+    this.projectEditable=false;
+    this.reasonToDetagDialog=false;
     this.newProjectDialog = false;
     this.editProjectDialog = false;
     this.clientForm1.reset();
@@ -579,7 +589,7 @@ export class ProjectComponent implements OnInit {
   Download(data: any) {
     this.vendorService.getDocDataBYProjectId(data.projectId).subscribe(
       (data1: any) => {
-        console.log(data1, ' doc data by peoject id');
+        // console.log(data1, ' doc data by peoject id');
         let id = data1.docName;
         if (data1.docKey) {
           this.vendorService.downloadFile(data1.docKey).subscribe(
@@ -647,7 +657,7 @@ export class ProjectComponent implements OnInit {
 
     this.vendorService.uploadDoc(file).subscribe(
       (data: any) => {
-        console.log(data, 'file to be upload', projectData);
+        // console.log(data, 'file to be upload', projectData);
         if (data.type != 0) {
           this.document1(data, projectData, file);
         }
@@ -766,18 +776,26 @@ export class ProjectComponent implements OnInit {
           sessionStorage.getItem('email')
         );
 
+        for (let i = 0; i < this.allUsers.length; i++) {
+          if (this.allUsers[i].role.roleName === 'Admin') {
+            this.clientForm1.value.businessUser.push(this.allUsers[i].email);
+          }
+        }
+
         // console.log("this.skillsForm.value.skills: ",this.skillsForm.value.skills);
 
         // this.clientForm1.value.businessOwner = this.skillsForm.value.skills[0];
 
-        console.log('this.clientForm1.value: ', this.clientForm1.value);
+        // console.log('this.clientForm1.value: ', this.clientForm1.value);
 
-        this.clientForm1.value.selectedVendors =this.transformVendorNames1(this.targetProducts);
-        
-        console.log(
-          'this.clientForm1.value.selectedVendors: ',
-          this.clientForm1.value.selectedVendors
+        this.clientForm1.value.selectedVendors = this.transformVendorNames1(
+          this.targetProducts
         );
+
+        // console.log(
+        //   'this.clientForm1.value.selectedVendors: ',
+        //   this.clientForm1.value.selectedVendors
+        // );
 
         this.vendorService.addClient(this.clientForm1.value).subscribe(
           (data: any) => {
@@ -787,7 +805,7 @@ export class ProjectComponent implements OnInit {
 
             this.messageService.add({
               severity: 'success',
-              summary: 'Successfull',
+              summary: 'Successful',
               detail: 'Project data saved successfully',
             });
             this.spinner.isLoading.next(false);
@@ -834,77 +852,83 @@ export class ProjectComponent implements OnInit {
   transformVendorNames(inputData: any) {
     return inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.vendorName;
       })
       .map((data: any) => {
-        return {vendorName: data.vendorName} ;
-      }).sort((a: any, b: any) => {
+        return { vendorName: data.vendorName };
+      })
+      .sort((a: any, b: any) => {
         return a.vendorName.localeCompare(b.vendorName);
       });
 
-      // .sort((a: string, b: string) => a.localeCompare(b));
+    // .sort((a: string, b: string) => a.localeCompare(b));
   }
 
   transformVendorNames1(inputData: any) {
     return inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.vendorName;
       })
       .map((data: any) => {
-        return  data.vendorName ;
-      }).sort((a: string, b: string) => a.localeCompare(b));
+        return data.vendorName;
+      })
+      .sort((a: string, b: string) => a.localeCompare(b));
   }
 
   transformVendorNames2(inputData: any) {
     return inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data;
       })
       .map((data: any) => {
-        return  { vendorName: data} ;
-      }).sort((a: any, b: any) => {
+        return { vendorName: data };
+      })
+      .sort((a: any, b: any) => {
         return a.vendorName.localeCompare(b.vendorName);
       });
 
-      // .sort((a: string, b: string) => a.localeCompare(b));
+    // .sort((a: string, b: string) => a.localeCompare(b));
   }
 
   transformVendorNames3(inputData: any) {
-    console.log(this.sourceProducts, "-------------------", inputData);
-    
+    // console.log(this.sourceProducts, '-------------------', inputData);
+
     let newArray: any[] = [];
     for (let i = 0; i < this.sourceProducts.length; i++) {
       let found = false; // Flag to indicate if the vendor is found in inputData
-      
+
       for (let j = 0; j < inputData.length; j++) {
         if (this.sourceProducts[i].vendorName === inputData[j].vendorName) {
           found = true; // Vendor found in inputData, set the flag to true
-          break;        // No need to check further, exit the inner loop
+          break; // No need to check further, exit the inner loop
         }
       }
-      
+
       if (!found) {
         newArray.push(this.sourceProducts[i]); // Add the vendor to newArray if not found in inputData
       }
     }
-    
-    console.log("newArray''''''''''", newArray);
+
+    // console.log("newArray''''''''''", newArray);
     return newArray;
   }
-  
-  passengerData: any[] = [];
-  uploadedRfp: any;
 
+  passengerData: any[] = [];
+  allDetaggedVendors: any[] = [];
+  allScoredVendors: any[] = [];
+  uploadedRfp: any;
+  projectEditable: boolean = false;
   editProject(data: any) {
+    this.projectEditable = true;
     this.vendorService.getDocDataBYProjectId(data.projectId).subscribe(
       (data1: any) => {
-        console.log('projectRfp details: ', data1);
+        // console.log('projectRfp details: ', data1);
 
         this.uploadedRfp = data1.docName;
       },
@@ -917,7 +941,7 @@ export class ProjectComponent implements OnInit {
       (data: any) => {
         // this.sourceProducts=[];
         // this.targetProducts=[];
-        console.log(data, 'data');
+        // console.log(data, 'data');
 
         this.newprojectData = data;
 
@@ -973,20 +997,22 @@ export class ProjectComponent implements OnInit {
         this.clientForm1
           .get('lastName')
           ?.patchValue(this.newprojectData.lastName);
-        
-          this.clientForm1.get('email')?.patchValue(this.newprojectData.email);
-        
-          this.clientForm1.get('selectedVendors')?.patchValue(this.newprojectData.selectedVendors);
 
-          this.targetProducts=this.transformVendorNames2(this.newprojectData.selectedVendors);
-          // this.targetProducts=this.newprojectData.selectedVendors.sort((a: string, b: string) => a.localeCompare(b));;
+        this.clientForm1.get('email')?.patchValue(this.newprojectData.email);
 
-          // this.sourceProducts=this.sourceProducts.filter((x:any) => !this.newprojectData.selectedVendors.includes(x))
-             this.sourceProducts = this.transformVendorNames3(this.targetProducts);
+        this.clientForm1
+          .get('selectedVendors')
+          ?.patchValue(this.newprojectData.selectedVendors);
 
+        this.targetProducts = this.transformVendorNames2(
+          this.newprojectData.selectedVendors
+        );
+        // this.targetProducts=this.newprojectData.selectedVendors.sort((a: string, b: string) => a.localeCompare(b));;
 
+        // this.sourceProducts=this.sourceProducts.filter((x:any) => !this.newprojectData.selectedVendors.includes(x))
+        this.sourceProducts = this.transformVendorNames3(this.targetProducts);
 
-        console.log("/'/'/'/'/'/'/'/",this.clientForm1.value);
+        // console.log("/'/'/'/'/'/'/'/", this.clientForm1.value);
 
         // console.log(this.clientForm1.value,".//././././././.");
 
@@ -1012,10 +1038,36 @@ export class ProjectComponent implements OnInit {
         this.editClientForm = true;
         this.newProjectDialog = true;
 
+        // get all detagged vendors
+        this.vendorService
+          .getDetaggedVendors(this.newprojectData.projectId)
+          .subscribe(
+            (data: any) => {
+              // console.log('data affter tagged: ', data);
+              this.allDetaggedVendors = data;
+            },
+            (error: HttpErrorResponse) => {
+              alert(error);
+            }
+          );
+
+        // to get all scorecards by project id
+        // this.vendorService
+        //   .getScorecardsByProjectId(this.newprojectData.projectId)
+        //   .subscribe(
+        //     (data: any) => {
+        //       console.log('scorecards by project Id: ', data);
+        //       this.allScoredVendors = data;
+        //     },
+        //     (error: HttpErrorResponse) => {
+        //       alert(error);
+        //     }
+        //   );
+
         // check logged in user details
         this.user.getUserByMailId(this.newprojectData.createdBy).subscribe(
           (data: any) => {
-            console.log('logged in user: ', data);
+            // console.log('logged in user: ', data);
             if (data.email === sessionStorage.getItem('email')) {
               this.editable = false;
             } else {
@@ -1034,20 +1086,16 @@ export class ProjectComponent implements OnInit {
   }
 
   transformSourceVendorList(inputData: any) {
-    
-    
     return inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.projectDraft.projectName;
       })
       .map((data: any) => {
         return { projectName: data.projectDraft.projectName };
       });
-
-    }
-
+  }
 
   onClickUpdateClient() {
     this.clientForm1.value.businessOwner = this.skillsForm.value.skills;
@@ -1057,13 +1105,15 @@ export class ProjectComponent implements OnInit {
         this.newProjectDialog = false;
         this.spinner.isLoading.next(true);
         this.clientForm1.value.modifiedBy = sessionStorage.getItem('email');
-        this.clientForm1.value.selectedVendors =this.transformVendorNames1(this.targetProducts);
+        this.clientForm1.value.selectedVendors = this.transformVendorNames1(
+          this.targetProducts
+        );
 
         this.vendorService
           .updateProject(this.clientForm1.value, this.clientFormId)
           .subscribe(
             (data: any) => {
-              console.log('Project Details Updated' + data);
+              // console.log('Project Details Updated' + data);
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
@@ -1079,6 +1129,35 @@ export class ProjectComponent implements OnInit {
                 }
               }
 
+              if (this.detagVendorsWithReason.length > 0) {
+                this.detagVendorsWithReason.forEach((object) => {
+                  this.vendorService.addDetaggedVendor(object).subscribe(
+                    (data: any) => {
+                      // console.log(data);
+                    },
+                    (error: HttpErrorResponse) => {
+                      alert(error);
+                    }
+                  );
+                });
+              }
+
+              if (this.retaggedVendorsWithReason.length > 0) {
+                this.retaggedVendorsWithReason.forEach((object) => {
+                  this.vendorService.deleteRetaggedVendors(object).subscribe(
+                    (data: any) => {
+                      // console.log(data);
+                    },
+                    (error: HttpErrorResponse) => {
+                      alert(error);
+                    }
+                  );
+                });
+              }
+              this.projectEditable=false;
+              this.reasonToDetagDialog=false;
+              this.sourceProducts=[];
+              this.targetProducts=[];
               // this.deleteBusinessOwner();
 
               this.ngOnInit();
@@ -1243,5 +1322,118 @@ export class ProjectComponent implements OnInit {
 
     this.skills.removeAt(i);
     // console.log(i);
+  }
+
+  reasonForDetag!: string;
+  reasonToDetagDialog: boolean = false;
+  detaggedVendors: any[] = [];
+  onClickMoveToSource(event: any) {
+    this.detagVendorsWithReason = [];
+    this.detaggedVendors = [];
+    this.taggedVendors = [];
+    this.reasonForDetag = '';
+
+    // console.log(event.items);
+
+    // for (let i = 0; i < event.items.length; i++) {
+    //   let itemPresent = false; // Flag to check if item is present in allScoredVendors array
+
+    //   for (let j = 0; j < this.allScoredVendors.length; j++) {
+    //     if (
+    //       event.items[i].vendorName ===
+    //       this.allScoredVendors[j].vendorObject.vendorName
+    //     ) {
+    //       itemPresent = true;
+    //       this.detaggedVendors.push(event.items[i]);
+    //       this.reasonToDetagDialog = true;
+    //       break; // Exit the inner loop since item is found
+    //     }
+    //   }
+
+    //   if (!itemPresent) {
+    //     this.detaggedVendors.push(event.items[i]);
+    //   }
+    // }
+
+    for (let i = 0; i < event.items.length; i++) {
+          this.detaggedVendors.push(event.items[i]);
+          this.reasonToDetagDialog = true;
+    }
+  }
+
+
+  detagVendorsWithReason: any[] = [];
+  onClickOk() {
+    this.detaggedVendors.forEach((data) => {
+      let object = {
+        vendorName: data.vendorName,
+        reason: this.reasonForDetag,
+        projectId: this.newprojectData.projectId,
+        detaggedBy: sessionStorage.getItem('email'),
+      };
+
+      const vendorExist = this.detagVendorsWithReason.find(
+        (item: any) =>
+          item.vendorName === object.vendorName &&
+          item.projectId === object.projectId
+      );
+
+      if (!vendorExist) {
+        this.detagVendorsWithReason.push(object);
+      }
+    });
+
+    // console.log('detagVendorsWithReason: ', this.detagVendorsWithReason);
+
+    this.reasonToDetagDialog = false;
+  }
+
+  taggedVendors: any[] = [];
+  retaggedVendorsWithReason: any[] = [];
+  onClickMoveToTarget(event: any) {
+    this.detagVendorsWithReason = [];
+    this.taggedVendors = [];
+    this.detaggedVendors = [];
+    event.items.forEach((vendor: any) => {
+      let object = {
+        vendorName: vendor.vendorName,
+        projectId: this.newprojectData.projectId,
+      };
+      this.taggedVendors.push(object);
+    });
+
+    this.vendorService
+      .getDetaggedVendors(this.newprojectData.projectId)
+      .subscribe((data: any) => {
+        // console.log('data affter tagged: ', data);
+
+        data.forEach((object: any) => {
+          this.taggedVendors.forEach((object1: any) => {
+            if (object1.vendorName === object.vendorName) {
+              this.retaggedVendorsWithReason.push(object.id);
+            }
+          });
+        });
+        // console.log('this.taggedVendors: ', this.taggedVendors);
+        // console.log(
+        //   'detagVendorsWithReason in tagged: ',
+        //   this.detagVendorsWithReason
+        // );
+        // console.log(
+        //   'retaggedVendorsWithReason in tagged: ',
+        //   this.retaggedVendorsWithReason
+        // );
+      });
+  }
+
+  onClickCancelDetagDialog() {
+    this.detaggedVendors.forEach((vendor: any) => {
+      this.sourceProducts.pop(vendor);
+      this.targetProducts.push(vendor);
+
+      this.sourceProducts = [...this.sourceProducts];
+      this.targetProducts = [...this.targetProducts];
+    });
+    this.reasonToDetagDialog = false;
   }
 }

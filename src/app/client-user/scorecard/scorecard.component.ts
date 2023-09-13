@@ -43,13 +43,13 @@ export class ScorecardComponent implements OnInit {
     );
     this.service.getScorecards().subscribe(
       (data: any) => {
-        this.scorecards = data;
+        // this.scorecards = data;
         // console.log(this.scorecards, ' all scorecards');
         this.scorecards = this.transformTempalteClientuserData(data);
         this.projectList1 = this.transformDraftProjectList(this.scorecards);
-        // this.scorecards.reverse();
-        console.log("without reverse: ",this.scorecards);
-        console.log("with reverse:",this.scorecards.reverse());
+        this.scorecards.reverse();
+        // console.log("without reverse: ",this.scorecards);
+        // console.log("with reverse:",this.scorecards.reverse());
       },
       (error: any) => {
         alert('something went wrong while getting all scorecards');
@@ -78,7 +78,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   transformScorecardByVendor(inputData: any) {
-    console.log("scorecards for logged in users:",inputData);
+    // console.log("scorecards for logged in users:",inputData);
     
     let scorecardDataByVendor = inputData.filter((data: any) => {
       // console.log('draft data????????????', data);
@@ -88,7 +88,7 @@ export class ScorecardComponent implements OnInit {
         return data;
       }
     });
-    console.log("scorecardDataByVendor: ",scorecardDataByVendor);
+    // console.log("scorecardDataByVendor: ",scorecardDataByVendor);
     
     return scorecardDataByVendor;
   }

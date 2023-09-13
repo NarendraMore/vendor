@@ -12,6 +12,7 @@ export interface User{
     checked:boolean;
     userStatus:string;
     createdOn:Date;
+    createdBy:string;
 }
 
 

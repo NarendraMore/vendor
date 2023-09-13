@@ -94,18 +94,18 @@ export class ProposalComponent implements OnInit {
         (data: any) => {
           // this.proposalDetails = data;
           if (this.userRole === '2') {
-            this.proposalDetails = this.transformScoredCardData1(data);
+            this.proposalDetails = this.transformScoredCardData1(data).reverse();
             this.projectList1 = this.transformDraftProjectList(
               this.proposalDetails      
             );
     
           } else if (this.userRole === '1') {
-            this.proposalDetails = data;
+            this.proposalDetails = data.reverse();
             this.projectList1 = this.transformDraftProjectList(
               this.proposalDetails      
             );
           }
-          console.log('all templates', this.proposalDetails);
+          // console.log('all templates', this.proposalDetails);
         },
         (error: HttpErrorResponse) => {}
       );
@@ -114,21 +114,21 @@ export class ProposalComponent implements OnInit {
     this.service.getscoreCards().subscribe(
       (data: any) => {
         if (this.userRole === '2') {
-          this.scorecards = this.transformScoredCardData(data);
-          console.log("this.scorecards: ",this.scorecards);
+          this.scorecards = this.transformScoredCardData(data).reverse();
+          // console.log("this.scorecards: ",this.scorecards);
           // debugger
           this.projectList2 = this.transformDraftProjectList1(
             this.scorecards      
           );
           
         } else if (this.userRole === '1') {
-          this.scorecards = data;
+          this.scorecards = data.reverse();
           this.projectList2 = this.transformDraftProjectList1(
             this.scorecards      
           );
-          console.log("console.log(this.scorecards):",this.scorecards);
+          // console.log("console.log(this.scorecards):",this.scorecards);
         }
-        console.log('this.scorecards: ', this.scorecards);
+        // console.log('this.scorecards: ', this.scorecards);
 
         // this.transformScoredCardData(this.scorecards);
         // console.log('all scorecards', this.scorecards);
@@ -145,18 +145,20 @@ export class ProposalComponent implements OnInit {
       // console.log(data);
 
       // this.getDraftTemplateData = data;
-      console.log('this.draftTemplateData: ', data);
+      // console.log('this.draftTemplateData: ', data);
       if (this.userRole === '2') {
-        this.draftTemplateData = this.transformTempalteDraftData(data);
+        this.draftTemplateData = this.transformTempalteDraftData(data).reverse();
 
         this.projectList3 = this.transformDraftProjectList2(
           this.draftTemplateData      
         );
       } else if (this.userRole === '1') {
-        this.allDraftData = data;
+        this.allDraftData = data.reverse();
         this.projectList3 = this.transformDraftProjectList2(
           this.allDraftData      
         );
+        // console.log("projectList3---> ",this.projectList3);
+        
       }
       this.spinner.isLoading.next(false);
     });
@@ -166,7 +168,7 @@ export class ProposalComponent implements OnInit {
   transformDraftProjectList(inputData: any) {
   let projectData = inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.project.projectName;
       })
@@ -189,7 +191,7 @@ export class ProposalComponent implements OnInit {
   transformDraftProjectList1(inputData: any) { 
     let projectData = inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.projectData.projectName;
       })
@@ -213,7 +215,7 @@ export class ProposalComponent implements OnInit {
   transformDraftProjectList2(inputData: any) { 
     let projectData = inputData
       .filter((data: any) => {
-        console.log('draft data????????????', data);
+        // console.log('draft data????????????', data);
 
         return data.projectDraft.projectName;
       })
@@ -244,7 +246,7 @@ export class ProposalComponent implements OnInit {
     const categoryData = inputData.filter((data: any) => {
       // console.log(data, "data of single project");
       for (let i = 0; i < data.projectDraft.businessUser.length; i++) {
-        console.log(data.projectDraft.businessUser[i]);
+        // console.log(data.projectDraft.businessUser[i]);
 
         if (
           data.projectDraft.businessUser[i] === sessionStorage.getItem('email')
@@ -253,7 +255,7 @@ export class ProposalComponent implements OnInit {
         }
       }
     });
-    console.log("allDraftData by filter:",this.allDraftData);
+    // console.log("allDraftData by filter:",this.allDraftData);
     
     return this.allDraftData;
   }
@@ -369,9 +371,16 @@ export class ProposalComponent implements OnInit {
               life: 3000,
             });
             this.ngOnInit();
+
           },
           (error: HttpErrorResponse) => {
-            alert(error);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Successful',
+              detail: 'Draft Deleted',
+              life: 3000,
+            });
+            this.ngOnInit();
           }
         );
       },
@@ -383,5 +392,6 @@ export class ProposalComponent implements OnInit {
         });
       },
     });
+
   }
 }

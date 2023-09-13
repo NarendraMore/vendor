@@ -30,7 +30,7 @@
                 label="Generate Report"
                 icon="pi pi-settings"
                 (click)="reportComponent()"
-                class="p-button-sm pbuttonclass standard-button"
+                class="p-button-sm generateButton standard-button"
               ></button>
             </span>
             <!-- <button
@@ -100,18 +100,7 @@
 
         <div>
           <p-divider></p-divider>
-          <div>
-            <span *ngIf="scoreCardView">
-              <button
-                style="margin-right: 20px !important; width: 13rem"
-                pButton
-                label="Download Proposal"
-                icon="pi pi-download"
-                class="p-button-sm pbuttonclass standard-button"
-                (click)="onClickViewProposal()"
-              ></button>
-            </span>
-
+          
             <div
               *ngIf="!scoreCardView"
               class="right-aligned"
@@ -149,21 +138,27 @@
                   (click)="downloadPropsal(draftPropsalDocData)"
                   style="color: blue; cursor: pointer"
                   ><i
-                    ><u pTooltip="Download">{{
-                      draftPropsalDocData.docName
-                    }}</u></i
+                    >
+                    <u *ngIf="alreadyPresent" pTooltip="Download">{{draftPropsalDocData.docName}}</u>
+                    </i
                   ></a
                 ></span
               >
-              <!-- <button
-                pButton
-                label="View Proposal"
-                icon="pi pi-eye"
-                class="p-button-sm pbuttonclass standard-button"
-                style="margin-right: 20px"
-                (click)="onClickViewProposal()"
-              ></button> -->
+          
             </div>
+          <div>
+            <span *ngIf="scoreCardView">
+              <button
+                style="margin-right: 20px !important; width: 13rem"
+                pButton
+                label="Download Proposal"
+                icon="pi pi-download"
+                class="p-button-sm pbuttonclass standardbutton1"
+                (click)="onClickViewProposal()"
+              ></button>
+            </span>
+
+
             <div class="left-aligned dropdown">
               <p-dropdown
                 [options]="vendorList"
@@ -179,6 +174,7 @@
                 style="margin-left: 20px"
                 appendTo="body"
               ></p-dropdown>
+
               <br />
               <span
                 *ngIf="!scoredVendor1"
@@ -195,11 +191,20 @@
     </div>
   </ng-template>
   <hr style="width: 100%" />
-
+  <!-- <p-dropdown
+  [options]="vendorList"
+    [(ngModel)]="selectedVendor"
+    optionLabel="vendorName"
+  ></p-dropdown> -->
   <div *ngIf="!loadView" class="erroBox">
     <p>Template is not Approved.</p>
   </div>
-
+  <!-- <p-dropdown
+                [options]="vendorList"
+                [(ngModel)]="selectedVendor"
+                placeholder="Select Vendor"
+          
+              ></p-dropdown> -->
   <div *ngIf="loadView">
     <form [formGroup]="templateForm" autocomplete="off">
       <div formArrayName="category" class="container-with-scrollbar">
@@ -1313,7 +1318,7 @@
         pButton
         label="Save"
         icon="pi pi-check-circle"
-        class="p-button-sm pbuttonclass standard-button"
+        class="p-button-sm pbuttonclass68 standard-button"
         (click)="onClickSave()"
         [disabled]="
           templateForm.invalid ||
@@ -1326,7 +1331,7 @@
         pButton
         label="Cancel"
         icon="pi pi-times-circle"
-        class="p-button-sm pbuttonclass standard-button"
+        class="p-button-sm pbuttonclass77 standard-button"
         style="margin-right: 20px"
         (click)="onClickCancel()"
       ></button>

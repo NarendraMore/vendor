@@ -163,4 +163,20 @@ export class ProjectService {
       `${environment.url}/documents/documentByScorecardId/${id}`
     );
   }
+
+  addDetaggedVendor(data:any){
+      return this.http.post(`${environment.url}/detag/`,data);
+  }
+
+  deleteRetaggedVendors(data:any){
+    return this.http.delete(`${environment.url}/detag/${data}`)
+  }
+
+  getDetaggedVendors(projectId:any){
+    return this.http.get(`${environment.url}/detag/${projectId}`);
+  }
+
+  getScorecardsByProjectId(projectId:any){
+    return this.http.get(`${environment.url}/score_cards/scorecard/${projectId}`);
+  }
 }

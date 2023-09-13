@@ -22,6 +22,7 @@ import { LoadingSpinnerService } from 'src/app/services/loading-spinner.service'
 import { Project1, newProject } from 'src/app/business-user/project/model/project';
 import { Role1 } from 'src/app/admin/role/model/role';
 import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-view-template',
@@ -74,6 +75,7 @@ export class ViewTemplateComponent implements OnInit {
     private spinner: LoadingSpinnerService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private notificationService:NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -83,7 +85,7 @@ export class ViewTemplateComponent implements OnInit {
         this.allUsers = data;
 
          this.transformuserData(data);
-        console.log(this.allUsers, ' all Users');
+        // console.log(this.allUsers, ' all Users');
         this.spinner.isLoading.next(false);
       },
       (error: HttpErrorResponse) => {
@@ -94,7 +96,7 @@ export class ViewTemplateComponent implements OnInit {
       (data: any) => {
         this.clientInfo = data;
         this.transformProjectData(data);
-        console.log(this.clientInfo,'data///');
+        // console.log(this.clientInfo,'data///');
 
       },
       (error: HttpErrorResponse) => {
@@ -117,11 +119,11 @@ export class ViewTemplateComponent implements OnInit {
     this.templateService.getCategoriesData().subscribe((categgoryData: any) => {
       this.categoriesData =
         this.templateService.transformCategoryData(categgoryData);
-      console.log(this.activatedRoute.snapshot.params['templateId']);
+      // console.log(this.activatedRoute.snapshot.params['templateId']);
       // this.templateService.getSelectedTemplateData(this.activatedRoute.snapshot.params['templateId']).subscribe((data: any) => {
 
       this.selectedTemplateData = this.vendorService.templateDetails[0];
-      console.log(this.selectedTemplateData);
+      // console.log(this.selectedTemplateData);
       this.populateData(this.selectedTemplateData.templateData);
       this.loadView = true;
       this.getCategoryControls().valueChanges.subscribe(console.log);
@@ -310,7 +312,7 @@ export class ViewTemplateComponent implements OnInit {
     const calculateWeightage = Math.floor(
       100 / ((this.templateForm.get('category') as FormArray).length + rowCount)
     );
-    console.log(calculateWeightage);
+    // console.log(calculateWeightage);
     let i = 0;
     while (i < rowCount) {
       (this.templateForm.get('category') as FormArray).push(
@@ -371,7 +373,7 @@ export class ViewTemplateComponent implements OnInit {
   private subscribeOperation() {
     this.templateBuilderService.dialogFormDataSubscriber$.subscribe(
       (data: any) => {
-        console.log('subscription data: ', data);
+        // console.log('subscription data: ', data);
 
         switch (data.action) {
           case 'combine':
@@ -468,7 +470,7 @@ export class ViewTemplateComponent implements OnInit {
     });
 
     this.templateForm = new FormGroup({ category: controls });
-    console.log(this.templateForm.getRawValue());
+    // console.log(this.templateForm.getRawValue());
   }
 
   private prepareSubCategoryControl(category: any, isCopy?: boolean) {
@@ -541,19 +543,19 @@ export class ViewTemplateComponent implements OnInit {
   onCheck(){
     if (this.selectedValues) {
       // a value is selected
-      console.log(this.selectedValues);
+      // console.log(this.selectedValues);
     } else {
       // no value is selected
-      console.log('Please select a value');
+      // console.log('Please select a value');
     }
   }
   onChecks(){
     if (this.selectedValue) {
       // a value is selected
-      console.log(this.selectedValue);
+      // console.log(this.selectedValue);
     } else {
       // no value is selected
-      console.log('Please select a value');
+      // console.log('Please select a value');
     }
   }
 
@@ -573,10 +575,10 @@ export class ViewTemplateComponent implements OnInit {
   ) {
     let subcategoryThreeControls: any = new FormArray([]);
     subcategoryTwo.subcategoryThree.forEach((subcategoryThree: any) => {
-      console.log(
-        'subcategoryThree.subcategoryname: ',
-        subcategoryThree.subcategoryname
-      );
+      // console.log(
+      //   'subcategoryThree.subcategoryname: ',
+      //   subcategoryThree.subcategoryname
+      // );
       subcategoryThreeControls.push(
         new FormGroup({
           nodeId: new FormControl({
@@ -667,7 +669,7 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   openViewCommentOverlay(event: Event, nodeId: string, type?: string) {
-    console.log('nodeId: ', nodeId);
+    // console.log('nodeId: ', nodeId);
     this.issueType = type!;
     this.viewCommentOverlay.toggle(event);
 
@@ -694,7 +696,7 @@ export class ViewTemplateComponent implements OnInit {
 
   private getComments(nodeId: string) {
     this.templateService.getNodeComments(nodeId).subscribe((res: any) => {
-      console.log('this.commentData: ', this.commentData);
+      // console.log('this.commentData: ', this.commentData);
       this.viewComment = true;
       this.commentData = res;
       setTimeout(() => {
@@ -712,7 +714,7 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   postComment(event?: KeyboardEvent, inputEvent: boolean = false) {
-    console.log('event: ', ' inputEvent: ', inputEvent);
+    // console.log('event: ', ' inputEvent: ', inputEvent);
     if (
       this.commentForm.get('comment')?.value ||
       (this.issueType = 'new' && this.commentForm.get('description')?.value)
@@ -749,6 +751,9 @@ export class ViewTemplateComponent implements OnInit {
       ],
     };
 
+    // console.log("comment data: ", JSON.stringify(data));
+    
+
     if (this.issueType == 'new') {
       data.issueText = this.commentForm.get('description')?.value;
       data.comments[0].commentText = 'Hey, raised new issue !';
@@ -764,6 +769,7 @@ export class ViewTemplateComponent implements OnInit {
       this.templateService
         .postNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
           this.issueType = '';
           this.commentData = data;
           this.populateComments([
@@ -778,6 +784,8 @@ export class ViewTemplateComponent implements OnInit {
       this.templateService
         .putNodeComment(this.commentForm.get('nodeId')?.value, data)
         .subscribe((res: any) => {
+          //this.notificationService.emitDialogFormData("event");
+
           this.populateComments([
             {
               caseStatus: 'Pending',
@@ -951,14 +959,14 @@ export class ViewTemplateComponent implements OnInit {
       category.subcategory.forEach((subCategory: any) => {
         if (operation == 'subCategory') {
           if (subCategory.subcategoryname != value) {
-            console.log('subCategory: ', subCategory);
+            // console.log('subCategory: ', subCategory);
             temp.push({ name: subCategory.subcategoryname });
           }
         } else {
           subCategory.subcategoryTwo.forEach((subCategoryTwo: any) => {
             if (operation == 'subCategoryTwo') {
               if (subCategoryTwo.subcategoryname != value) {
-                console.log('subCategoryTwo: ', subCategoryTwo);
+                // console.log('subCategoryTwo: ', subCategoryTwo);
                 temp.push({ name: subCategoryTwo.subcategoryname });
               }
             } else {
@@ -966,14 +974,14 @@ export class ViewTemplateComponent implements OnInit {
                 (subCategoryThree: any) => {
                   if (operation == 'subCategoryThree') {
                     if (subCategoryThree.subcategoryname != value) {
-                      console.log('subCategoryThree: ', subCategoryThree);
+                      // console.log('subCategoryThree: ', subCategoryThree);
                       temp.push({ name: subCategoryThree.subcategoryname });
                     }
                   } else {
                     subCategoryThree.parameter.forEach((parameter: any) => {
                       if (operation == 'parameter') {
                         if (parameter.parametername != value) {
-                          console.log('parameter: ', parameter);
+                          // console.log('parameter: ', parameter);
                           temp.push({ name: parameter.parametername });
                         }
                       }
@@ -1392,7 +1400,7 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   private combineSubCategory(data: any): void {
-    console.log('combine into index: ', data.categoryIndex);
+    // console.log('combine into index: ', data.categoryIndex);
     this.getSubCategoryTwoControls(
       data.categoryIndex,
       data.subCategoryIndex
@@ -1427,7 +1435,7 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   private combineSubCategoryTwo(data: any): void {
-    console.log('combine into index: ', data.categoryIndex);
+    // console.log('combine into index: ', data.categoryIndex);
     this.getSubCategoryThreeControls(
       data.categoryIndex,
       data.subCategoryIndex,
@@ -1465,7 +1473,7 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   private combineSubCategoryThree(data: any): void {
-    console.log('combine into index: ', data.categoryIndex);
+    // console.log('combine into index: ', data.categoryIndex);
     this.getParameterControls(
       data.categoryIndex,
       data.subCategoryIndex,
@@ -1564,13 +1572,13 @@ export class ViewTemplateComponent implements OnInit {
   }
 
   private subscribeEditOperation(data: any) {
-    console.log('Edit subscription data: ', data);
+    // console.log('Edit subscription data: ', data);
     this.patchValue(data);
     this.dialog.closeAll();
   }
 
   private subscribeSearchOperation(data: any) {
-    console.log('Search subscription data: ', data);
+    // console.log('Search subscription data: ', data);
     this.patchValue(data);
     this.dialog.closeAll();
   }
@@ -1632,10 +1640,10 @@ export class ViewTemplateComponent implements OnInit {
 
       status: 'Done',
     };
-    console.log(data);
+    // console.log(data);
     this.messageService.add({
       severity: 'success',
-      summary: 'Successfull',
+      summary: 'Successful',
       detail: 'Template approved successfully',
     });
 
@@ -1645,9 +1653,10 @@ export class ViewTemplateComponent implements OnInit {
         data
       )
       .subscribe((result: any) => {
+        //this.notificationService.emitDialogFormData("event");
         this.selectedTemplateData.status = 'Done';
         this.router.navigate(['/ClientUser/template-list']);
-        console.log(result, 'Updated successfully');
+        // console.log(result, 'Updated successfully');
       });
   }
 

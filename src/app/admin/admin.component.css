@@ -241,6 +241,10 @@ i {
   width: 5rem;
   height: 100vh;
 }
+
+
+
+
 .logo-container {
   display: flex;
   position: fixed;
@@ -285,6 +289,7 @@ i {
 
 .sidenav-collapsed {
   width: 16.5625rem;
+  
 }
 
 .sidenav-nav {
@@ -313,6 +318,7 @@ i {
 .sidenav-link-icon {
   font-size: 22px;
   width: 2rem;
+  height: 2rem;
   min-width: 2rem;
   margin: 0 0.5rem;
   text-align: center;
@@ -321,7 +327,7 @@ i {
   font-size: 22px;
   width: 2rem;
   min-width: 2rem;
-  margin: 0 0.8rem;
+  margin: 0 1.5rem;
   text-align: center;
 }
 
@@ -338,6 +344,8 @@ i {
 
 .active {
   background-color: #415385 !important;
+  color: white !important;
+  
 }
 
 .sidenav-link-text {
@@ -378,6 +386,7 @@ i {
 
 ::ng-deep .collapse {
   color: #7d7d7d;
+  font-size: 22px;
 }
 
 ::ng-deep .blank {
@@ -400,6 +409,9 @@ i {
   padding: 0px 10px;
   font-size: x-large !important;
 }
+.topOptions i.notifyIcon {
+  font-size: 33px !important; 
+}
 
 ::ng-deep .options {
   margin: 1rem !important;
@@ -418,12 +430,15 @@ i {
   float: left;
   margin-top: 1rem;
   zoom: 120%;
+  margin-top: 19px !important;
   margin-left: 10px;
+
 }
 
 .notify{
   font-size: larger;
   padding: 0.5rem !important;
+  /* margin-top: 10rem !important; */
 }
 
 ::ng-deep .matMenu{
@@ -434,10 +449,15 @@ i {
   background-color: white !important;
   color: black !important;
   border: 1px solid black;
-  width: 25% !important;
-  height: 40% !important;
+  width: 35% !important;
+  height: 40%;
   overflow: auto !important;
 }
+
+.notifyIcon:hover{
+  background-color: #f2f2f2 !important;
+  color: #7c7c7c;
+  }
 
 .footer-section {
   /* position: fixed; */
@@ -449,4 +469,61 @@ i {
   padding: 0%;
   height: 20px !important;
   width: 20px;
+}
+
+.customMenu {
+  width: 700px; /* Adjust the width value as needed */
+}
+
+::ng-deep .notificationPanel{
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black;
+}
+
+::ng-deep .clearAllButton{
+color: red !important;
+padding: 10px !important;
+font-size: larger !important;
+font-weight: bold;
+cursor: pointer;
+}
+/* 
+::ng-deep .notificationData{
+  margin-top: 10rem !important;
+} */
+
+/* .icon-container {
+  display: inline-block;
+}
+
+.icon {
+  width: 100px; 
+  height: 24px;
+  fill: #666666; 
+  transition: fill 0.1s ease; 
+}
+
+.icon:hover {
+  fill: #ffffff; 
+} */
+
+/* Define the initial icon style */
+.icon-container {
+  display: inline-block;
+  position: relative;
+}
+
+.icon-container img {
+
+  height: auto;
+  transition: color 0.1s ease; 
+}
+
+/* Change the color on hover */
+.icon-container:hover img {
+  filter: brightness(4.5); 
+}
+.lableHover:hover {
+  color: rgb(255, 255, 255); 
 }
