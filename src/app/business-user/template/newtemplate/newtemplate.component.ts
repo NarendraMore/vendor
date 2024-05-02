@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppModuleConstants } from 'src/app/app-constants';
+import { UserService } from 'src/app/services/user.service';
 import { VendorMngServiceService } from 'src/app/vendor-mng-service.service';
 @Component({
   selector: 'app-newtemplate',
@@ -15,11 +16,26 @@ export class NewtemplateComponent implements OnInit {
   userName!: string;
   templateDetailsRoute: any;
   templateCreationRoute: any;
-  constructor(private service: VendorMngServiceService) {}
+  currentRoute: any;
 
+  constructor(
+    private service: VendorMngServiceService,
+    private userService: UserService,
+    private router: Router
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute = this.router.url;
+      }
+    });
+  }
 
-  
   ngOnInit(): void {
+    
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
+    
     let draftId = window.location.pathname.split('/')[4];
 
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;

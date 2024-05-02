@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -25,7 +25,11 @@ import { UserService } from 'src/app/services/user.service';
 import { LoadingSpinnerService } from 'src/app/services/loading-spinner.service';
 import { LibraryService } from 'src/app/services/library.service';
 import { VendorService } from 'src/app/services/vendor.service';
-
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
+export interface encreptedDataObject {
+  encreptedData?: any;
+}
 @Component({
   selector: 'app-project',
   templateUrl: './project.component.html',
@@ -86,7 +90,8 @@ export class ProjectComponent implements OnInit {
   editable: boolean = false;
   sourceProducts: any;
   targetProducts: any[] = [];
-
+  allDecryptedprojectData: any
+  allDecryptedvendorData: any
   openNext() {
     this.index = this.index === 3 ? 0 : this.index + 1;
   }
@@ -118,7 +123,7 @@ export class ProjectComponent implements OnInit {
   projectnamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ ]{3,155})$';
   projectcodePattern = '^[a-zA-Z0-9 .]+$';
   rfpNamePattern = '^([0-9a-zA-Z!@#$%^&*()_+ ]{3,50})$';
-
+  industryPattern = '[^<>]*'
   constructor(
     private fb: FormBuilder,
     private vendorService: ProjectService,
@@ -257,7 +262,18 @@ export class ProjectComponent implements OnInit {
   isLoading: boolean = false;
 
   skillsForm!: FormGroup;
-
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
+  newEncryptedObject!: encreptedDataObject;
+  encryptUserData: any
+  userDataString:any
+  allDecryptedData: any
   onShow() {
     this.skills.push(this.newSkill());
   }
@@ -274,7 +290,7 @@ export class ProjectComponent implements OnInit {
     this.spinner.isLoading.next(true);
 
     this.addIndustryForm = new FormGroup({
-      industry: new FormControl('', [Validators.required]),
+      industry: new FormControl('', [Validators.required, Validators.pattern(this.industryPattern)]),
     });
 
     this.clientForm1 = new FormGroup({
@@ -314,7 +330,7 @@ export class ProjectComponent implements OnInit {
         Validators.required,
         Validators.pattern(this.descriptionPattern),
       ]),
-      date: new FormControl(''),
+      // date: new FormControl(''),
       // createdOn: new FormControl(''),
       createdBy: new FormControl(''),
       modifiedBy: new FormControl(''),
@@ -325,11 +341,46 @@ export class ProjectComponent implements OnInit {
     // to fetch all clients info
     this.vendorService.getClients().subscribe(
       (data: any) => {
-        // this.clientInfo = data;
-        this.clientInfo = this.transferProjectName1(data);
+        console.log(data, 'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData = decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
 
-        this.clientInfo.reverse();
-        // console.log('all projects:', this.clientInfo);
+        this.clientInfo = [];
+        this.clientInfo = this.allDecryptedprojectData.reverse();
+        console.log("all project data for admin: ", this.clientInfo);
+
+        // this.clientInfo = this.transferProjectName1(data);
+
+        console.log('all projects for admin:', this.clientInfo);
       },
       (error: HttpErrorResponse) => {
         alert(error);
@@ -338,8 +389,44 @@ export class ProjectComponent implements OnInit {
 
     this.user.getuUser().subscribe(
       (data: any) => {
+
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+        const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedData = decryptedObject
+          console.log(this.allDecryptedData, 'decrypted object in user for project');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+
         // this.allUsers = data;
-        this.allUsers = this.getActiveUsers(data);
+        this.allUsers = this.getActiveUsers(this.allDecryptedData);
         // console.log('all active users: ', this.allUsers);
 
         // for (let i = 0; i < this.allUsers.length; i++) {
@@ -364,7 +451,47 @@ export class ProjectComponent implements OnInit {
     // to get all vendors
     this.vendor.getVendors().subscribe(
       (data: any) => {
-        this.sourceProducts = this.transformVendorNames(data);
+
+        console.log(data, 'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+        const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+
+        console.log(cText1, 'cetext1');
+
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedvendorData = decryptedObject
+          console.log(this.allDecryptedvendorData, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+
+        this.sourceProducts = this.transformVendorNames(this.allDecryptedvendorData);
         // console.log('all Vendors.....!!:', this.sourceProducts);
         this.spinner.isLoading.next(false);
       },
@@ -413,16 +540,20 @@ export class ProjectComponent implements OnInit {
   transferProjectName1(inputData: any) {
     let allProjectName: any[] = [];
     // console.log(inputData, 'inputData1');
-    const categoryData = inputData.filter((data: any) => {
-      // console.log(data, 'data of single project');
-      for (let i = 0; i < data.businessUser.length; i++) {
-        // console.log(data.businessUser[i]);
+    const allProjectSet = new Set();
 
+    inputData.forEach((data: any) => {
+      for (let i = 0; i < data.businessUser.length; i++) {
         if (data.businessUser[i] === sessionStorage.getItem('email')) {
-          allProjectName.push(data);
+          allProjectSet.add(data);
+          break; // Exit the loop after adding the project once
         }
       }
     });
+
+    allProjectName = Array.from(allProjectSet);
+    console.log("all project list with transformed: ", allProjectName);
+
     return allProjectName;
   }
   passengerForm = [
@@ -539,11 +670,11 @@ export class ProjectComponent implements OnInit {
   onClickCancel() {
     this.editable = false;
     this.businessOwnerId = [];
-    this.sourceProducts=[];
-    this.targetProducts=[];
+    this.sourceProducts = [];
+    this.targetProducts = [];
     this.editClientForm = false;
-    this.projectEditable=false;
-    this.reasonToDetagDialog=false;
+    this.projectEditable = false;
+    this.reasonToDetagDialog = false;
     this.newProjectDialog = false;
     this.editProjectDialog = false;
     this.clientForm1.reset();
@@ -574,17 +705,145 @@ export class ProjectComponent implements OnInit {
 
     this.ngOnInit();
   }
+  @ViewChild('inputFile') fileInputRef!: ElementRef<HTMLInputElement>;
+  // selectFile(event: any): void {
+  //   // console.log(event.target.files);
+  //   // console.log(event.target.files[0].name);
 
+  //   this.selectedFiles = event.target.files;
+  //   if (this.selectedFiles && this.selectedFiles.length > 0) {
+  //     const parts = this.selectedFiles[0].name.split('.');
+  //     const fileExtension = parts[parts.length - 1];
+  //     console.log('fileExtension: ', fileExtension);
+
+  //     if (fileExtension !== 'pdf') {
+  //       alert('Please select file of type pdf');
+
+  //       if (this.fileInputRef && this.fileInputRef.nativeElement) {
+  //         this.fileInputRef.nativeElement.value = '';
+  //       }
+  //     }else if(this.selectedFiles[0].type !== 'application/pdf'){
+  //       alert('Please select file of type pdf');
+
+  //       if (this.fileInputRef && this.fileInputRef.nativeElement) {
+  //         this.fileInputRef.nativeElement.value = '';
+  //       }
+  //     }
+  //   }
+  //   // event.target.value = null;
+  // }
   selectFile(event: any): void {
-    // console.log(event.target.files);
-    // console.log(event.target.files[0].name);
+    const files = event.target.files;
 
-    this.selectedFiles = event.target.files;
-    // event.target.value = null;
+    console.log("files:", files);
+
+    const file = files.item(0);
+
+    if (file) {
+      this.getMimeType(file).then(mimeType => {
+        console.log('MIME Type:', mimeType);
+        if (mimeType !== 'pdf') {
+          alert('Please select a file of type pdf');
+          this.clearFileInput();
+        }else{
+          this.selectedFiles=event.target.files;
+        }
+      });
+    }
   }
+
+
+  private getMimeType(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const arr = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
+        let header = '';
+        for (let i = 0; i < arr.length; i++) {
+          header += arr[i].toString(16);
+        }
+
+        // Check the MIME type based on the file header
+        let mimeType = '';
+        switch (header) {
+          case '89504e47':
+            mimeType = 'image/png';
+            break;
+          case '47494638':
+            mimeType = 'image/gif';
+            break;
+          case '25504446':
+            mimeType = 'pdf';
+            break;
+          case 'ffd8ffe1':
+          case 'ffd8ffe2':
+            mimeType = 'image/jpeg';
+            break;
+          default:
+            mimeType = 'application/octet-stream'; // Default MIME type
+            break;
+        }
+
+        resolve(mimeType);
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+
+
+
+  // selectFile1(event: any): void {
+  //   this.selectedFiles1 = event.target.files;
+  //   if(this.selectedFiles1 && this.selectedFiles1.length > 0){
+  //     const parts1 = this.selectedFiles1[0].name.split('.');
+  //     const fileExtension1 =parts1[parts1.length-1];
+  //     console.log('fileExtension1:',fileExtension1);
+
+  //     if(fileExtension1 !== 'pdf'){
+  //       alert(' Please select file of type pdf');
+
+  //       if(this.fileInputRef && this.fileInputRef.nativeElement){
+  //         this.fileInputRef.nativeElement.value = '';
+  //       } else if(this.selectedFiles1[0].type !== 'application/pdf'){
+  //         alert('Please select file of type pdf')
+
+  //         if(this.fileInputRef && this.fileInputRef.nativeElement){
+  //           this.fileInputRef.nativeElement.value = '';
+  //         }
+  //       }
+  //     }
+
+  //   }
+  // }
+
   selectFile1(event: any): void {
-    this.selectedFiles1 = event.target.files;
+    const files = event.target.files;
+
+    console.log("files:", files);
+
+    const file = files.item(0);
+
+    if (file) {
+      this.getMimeType(file).then(mimeType => {
+        console.log('MIME Type:', mimeType);
+        if (mimeType !== 'pdf') {
+          alert('Please select a file of type pdf');
+          this.clearFileInput();
+        }else{
+          this.selectedFiles1=event.target.files;
+        }
+      });
+    }
   }
+
+  clearFileInput(): void {
+    if (this.fileInputRef && this.fileInputRef.nativeElement) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+  }
+
 
   Download(data: any) {
     this.vendorService.getDocDataBYProjectId(data.projectId).subscribe(
@@ -781,7 +1040,6 @@ export class ProjectComponent implements OnInit {
             this.clientForm1.value.businessUser.push(this.allUsers[i].email);
           }
         }
-
         // console.log("this.skillsForm.value.skills: ",this.skillsForm.value.skills);
 
         // this.clientForm1.value.businessOwner = this.skillsForm.value.skills[0];
@@ -797,10 +1055,44 @@ export class ProjectComponent implements OnInit {
         //   this.clientForm1.value.selectedVendors
         // );
 
-        this.vendorService.addClient(this.clientForm1.value).subscribe(
+
+        const jsonString = JSON.stringify(this.clientForm1.value);
+        const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(salt),
+          {
+            keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+          }
+        );
+        console.log('key ###', key);
+        console.log('jsonString ###', jsonString);
+        let cText = CryptoJS.AES.encrypt(
+          jsonString,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+        console.log('key ###', key);
+        console.log('Iv ###', iv);
+        console.log('salt ###', salt);
+        let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+        let aesFinalText = btoa(aesText);
+        console.log("aesText: ", aesFinalText);
+        this.newEncryptedObject = {};
+        this.newEncryptedObject.encreptedData = aesFinalText;
+        console.log('string data', aesFinalText);
+
+
+        this.vendorService.addClient(this.newEncryptedObject).subscribe(
           (data: any) => {
             this.projectId = data.projectid;
-            this.projectData1 = JSON.parse(data);
+            // this.projectData1 = JSON.parse(data);
+            this.projectData1 = data;
             this.newProjectDialog = false;
 
             this.messageService.add({
@@ -809,6 +1101,7 @@ export class ProjectComponent implements OnInit {
               detail: 'Project data saved successfully',
             });
             this.spinner.isLoading.next(false);
+
             this.ngOnInit();
             this.onUpload(this.projectData1, file);
             this.clientForm1.reset();
@@ -1065,10 +1358,89 @@ export class ProjectComponent implements OnInit {
         //   );
 
         // check logged in user details
-        this.user.getUserByMailId(this.newprojectData.createdBy).subscribe(
+
+        const jsonString = JSON.stringify(this.newprojectData.createdBy);
+        const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(salt),
+          {
+            keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+          }
+        );
+        console.log('key ###', key);
+        console.log('jsonString ###', jsonString);
+        let cText = CryptoJS.AES.encrypt(
+          jsonString,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+        console.log('key ###', key);
+        console.log('Iv ###', iv);
+        console.log('salt ###', salt);
+    
+    
+    
+        let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+        let aesFinalText = btoa(aesText);
+        console.log("aesText: ", aesFinalText);
+    
+        this.newEncryptedObject = {};
+    
+        this.newEncryptedObject.encreptedData = aesFinalText;
+        this.encryptUserData = aesFinalText
+        console.log('email string data', this.encryptUserData);
+    
+        this.user.getUserByMailId(this.encryptUserData).subscribe(
           (data: any) => {
             // console.log('logged in user: ', data);
-            if (data.email === sessionStorage.getItem('email')) {
+            console.log(data,'encrypted data');
+            
+            const base64EncodedData = data;
+            const decodedData = atob(base64EncodedData);
+            console.log(decodedData, 'decode data');
+            let toArray = decodedData.split(this.environment.kSeparator);
+            console.log(toArray, 'array');
+    
+            const key = CryptoJS.PBKDF2(
+              `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+              CryptoJS.enc.Hex.parse(toArray[1]),
+              {
+                keySize: this.environment.kSize / 32,
+                iterations: this.environment.cIter
+              }
+            );
+            let cipherParams = CryptoJS.lib.CipherParams.create({
+              ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+            });
+            console.log(key, 'key');
+            const _iv = toArray[0]
+            let cText1 = CryptoJS.AES.decrypt(
+              cipherParams,
+              key,
+              {
+                iv: CryptoJS.enc.Hex.parse(_iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+              }
+            );
+            try {
+              // debugger
+              const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+              // const decryptedObject = JSON.parse(decryptedString);
+              console.log(decryptedString, 'decrypted object user in project');
+               this.userDataString = decryptedString;
+            }catch (error){
+              console.error('Error parsing decrypted data as JSON:', error)
+            }
+
+
+            if (this.userDataString.email === sessionStorage.getItem('email')) {
               this.editable = false;
             } else {
               this.editable = true;
@@ -1154,10 +1526,10 @@ export class ProjectComponent implements OnInit {
                   );
                 });
               }
-              this.projectEditable=false;
-              this.reasonToDetagDialog=false;
-              this.sourceProducts=[];
-              this.targetProducts=[];
+              this.projectEditable = false;
+              this.reasonToDetagDialog = false;
+              this.sourceProducts = [];
+              this.targetProducts = [];
               // this.deleteBusinessOwner();
 
               this.ngOnInit();
@@ -1356,8 +1728,8 @@ export class ProjectComponent implements OnInit {
     // }
 
     for (let i = 0; i < event.items.length; i++) {
-          this.detaggedVendors.push(event.items[i]);
-          this.reasonToDetagDialog = true;
+      this.detaggedVendors.push(event.items[i]);
+      this.reasonToDetagDialog = true;
     }
   }
 

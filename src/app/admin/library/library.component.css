@@ -76,10 +76,12 @@ h2 {
 }
 
 ::ng-deep .dropdownValue {
-  height: 2.7rem !important;
-  margin-top: 4px !important;
+  height: 2.5rem !important;
+  margin-top: 10px !important;
   width: 12rem !important;
 }
+
+
 
 .dropdownValue {
   height: 2.7rem !important;

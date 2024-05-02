@@ -23,7 +23,8 @@ import { Project1, newProject } from 'src/app/business-user/project/model/projec
 import { Role1 } from 'src/app/admin/role/model/role';
 import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
 import { NotificationService } from 'src/app/services/notification.service';
-
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-view-template',
   templateUrl: './view-template.component.html',
@@ -60,7 +61,16 @@ export class ViewTemplateComponent implements OnInit {
   issueType!: string; 
    clientInfo: newProject[] = [];
   allUsers: any[] = [];
-
+  allDecryptedprojectData:any;
+  allDecryptedData:any
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
 
   constructor(
     private location: Location,
@@ -82,9 +92,54 @@ export class ViewTemplateComponent implements OnInit {
 
     this.userService.getuUser().subscribe(
       (data: any) => {
-        this.allUsers = data;
+   // console.log(data, 'encrypted data');
+   const base64EncodedData = data;
+   const decodedData = atob(base64EncodedData);
+   // const decodedData = CryptoJS.enc.Base64.parse(base64EncodedData).toString(CryptoJS.enc.Utf8);
+   // console.log(decodedData, 'decode data');
+   let toArray = decodedData.split(this.environment.kSeparator);
+   // console.log(toArray, 'split array');
 
-         this.transformuserData(data);
+   const key = CryptoJS.PBKDF2(
+     `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+     CryptoJS.enc.Hex.parse(toArray[1]),
+     {
+       keySize: this.environment.kSize / 32,
+       iterations: this.environment.cIter
+     }
+   );
+   let cipherParams = CryptoJS.lib.CipherParams.create({
+     ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+   });
+   console.log(key, 'key');
+
+   
+    const _iv = toArray[0]
+   let cText1 = CryptoJS.AES.decrypt(
+     cipherParams,
+     key,
+     {
+       iv: CryptoJS.enc.Hex.parse(_iv),
+       mode: CryptoJS.mode.CBC,
+       padding: CryptoJS.pad.Pkcs7
+     }
+   );
+  
+   // console.log( cText1.toString(CryptoJS.enc.Utf8),'decrypt data');
+
+
+   try {
+     const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+     const decryptedObject = JSON.parse(decryptedString);
+     this.allDecryptedData =decryptedObject
+     // console.log(decryptedObject, 'decrypted object');
+   } catch (error) {
+     // console.error('Error parsing decrypted data as JSON:', error);
+   }
+
+        this.allUsers = this.allDecryptedData;
+
+         this.transformuserData(this.allDecryptedData);
         // console.log(this.allUsers, ' all Users');
         this.spinner.isLoading.next(false);
       },
@@ -94,8 +149,40 @@ export class ViewTemplateComponent implements OnInit {
     );
     this.projectService.getClients().subscribe(
       (data: any) => {
-        this.clientInfo = data;
-        this.transformProjectData(data);
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        this.clientInfo = this.allDecryptedprojectData;
+        this.transformProjectData(this.allDecryptedprojectData);
         // console.log(this.clientInfo,'data///');
 
       },

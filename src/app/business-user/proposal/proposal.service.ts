@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -14,15 +14,25 @@ export class ProposalService {
     }
 
     getscoreCards() {
-        return this.http.get(`${environment.url}/score_cards`);
+        return this.http.get(`${environment.url}/score_cards`,{
+
+            responseType:'text'
+        });
     }
 
     updateProposalData(data: any) {
-      return this.http.post(`${environment.url}/score_cards`, data);
+        console.log(data,'data in service==================');
+        
+      const  encreptedData=data.encreptedData;
+      console.log(encreptedData,'in service data');
+      
+      return this.http.post(`${environment.url}/score_cards`, {encreptedData});
     }
 
     getVendorList() {
-        return this.http.get(`${environment.url}/vendors`);
+        return this.http.get(`${environment.url}/vendors`,{
+            responseType:'text'
+        });
     }
 
     updateScorcard(scorcardId: number, data: any) {

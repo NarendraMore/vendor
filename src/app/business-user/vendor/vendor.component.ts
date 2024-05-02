@@ -8,7 +8,12 @@ import { lineOfBusiness, Vendor } from './model/vendor';
 import { ProjectService } from 'src/app/services/project.service';
 import { LibraryService } from 'src/app/services/library.service';
 import { UserService } from 'src/app/services/user.service';
-
+import { NavigationEnd, Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
+export interface encreptedDataObject {
+  encreptedData?: any;
+}
 @Component({
   selector: 'app-vendor',
   templateUrl: './vendor.component.html',
@@ -35,7 +40,7 @@ export class VendorComponent implements OnInit {
   spocNamePattern = '^([a-zA-Z ]{3,200})$';
   mobnumPattern = '^((\\+?)|0)?[0-9]{3,20}$';
   emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
-
+  lineofBuisnessPattern ='[^<>]*'
   vendorId!: string;
   editVendorForm: boolean = false;
   projects: any;
@@ -44,7 +49,21 @@ export class VendorComponent implements OnInit {
   update: boolean = false;
   isLoading: boolean = false;
   flagAdding: boolean = false;
+  allDecryptedvendorData: any
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
 
+  currentRoute:any;
+  newEncryptedObject!: encreptedDataObject;
+  encryptUserData: any
+  encryptUseridData:any
+  userDataString:any
   constructor(
     private vendorService: VendorService,
     private messageService: MessageService,
@@ -52,12 +71,21 @@ export class VendorComponent implements OnInit {
     private masterRepoService: LibraryService,
     private confirmationService: ConfirmationService,
     private spinner: LoadingSpinnerService,
-    private user: UserService
+    private user: UserService,
+    private router:Router
   ) {
-    
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
 }
 
   ngOnInit(): void {
+    if(this.currentRoute.includes('vendor')){
+      this.user.activeNavIcon('vendors');
+    }
+
     this.spinner.isLoading.subscribe((val) => {
       this.isLoading = val;
     });
@@ -81,7 +109,7 @@ export class VendorComponent implements OnInit {
     // ];
 
     this.addlineOfBusinessForm = new FormGroup({
-      lineOfBusiness: new FormControl('', [Validators.required]),
+      lineOfBusiness: new FormControl('', [Validators.required,Validators.pattern(this.lineofBuisnessPattern)]),
     });
 
 
@@ -107,10 +135,52 @@ export class VendorComponent implements OnInit {
     // to fetch all users
     this.vendorService.getVendors().subscribe(
       (data: any) => {
-        this.allVendors = data;
+
+        console.log(data, 'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+        const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+
+        console.log(cText1,'cetext1');
+        
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedvendorData = decryptedObject
+          console.log(this.allDecryptedvendorData, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+
+
+        // this.allVendors = this.allDecryptedvendorData;
+        this.allVendors = this.allDecryptedvendorData;
+        this.allVendors.reverse();
         // console.log(this.allVendors);
         this.spinner.isLoading.next(false);
-   
       },
       (error: HttpErrorResponse) => {
         alert('something went wrong');
@@ -162,7 +232,7 @@ export class VendorComponent implements OnInit {
     //     if (data.status === 200) {
     //       this.messageService.add({
     //         severity: 'success',
-    //         summary: 'Successfull',
+    //         summary: 'Successful',
     //         detail: 'Vendor addedd successfully',
     //       });
     //       console.log(data,"response...!!");
@@ -179,18 +249,50 @@ export class VendorComponent implements OnInit {
 
     // this.vendorForm.value.lineOfBusiness = this.selectedLineOfBusiness;
 
+    this.vendorForm.value.createdBy = sessionStorage.getItem('email');
+    this.vendorForm.value.modifiedBy = sessionStorage.getItem('email');
+
     this.addVendorDialogBox = false;
     this.spinner.isLoading.next(true);
 
-    this.vendorForm.value.createdBy=sessionStorage.getItem('email');
-    this.vendorForm.value.modifiedBy=sessionStorage.getItem('email');
+    // Encrypted data 
+    const jsonString = JSON.stringify(this.vendorForm.value);
+    const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+    const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
 
+    const key = CryptoJS.PBKDF2(
+      `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+      CryptoJS.enc.Hex.parse(salt),
+      {
+        keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+      }
+    );
+    console.log('key ###', key);
+    console.log('jsonString ###', jsonString);
+    let cText = CryptoJS.AES.encrypt(
+      jsonString,
+      key,
+      {
+        iv: CryptoJS.enc.Hex.parse(iv),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      }
+    );
+    console.log('key ###', key);
+    console.log('Iv ###', iv);
+    console.log('salt ###', salt);
+    let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+    let aesFinalText = btoa(aesText);
+    console.log("aesText: ", aesFinalText);
+    this.newEncryptedObject = {};
+    this.newEncryptedObject.encreptedData = aesFinalText;
+    console.log('string data', this.encryptUserData);
 
-    this.vendorService.addVendor(this.vendorForm.value).subscribe(
+    this.vendorService.addVendor(this.newEncryptedObject).subscribe(
       (data: any) => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Succesful',
+          summary: 'Successful',
           detail: 'Vendor addedd successfully',
         });
         this.spinner.isLoading.next(false);
@@ -203,7 +305,7 @@ export class VendorComponent implements OnInit {
           this.messageService.add({
             severity: 'warn',
             summary: 'warning  ',
-            detail: 'Vender already Exist...!!',
+            detail: 'Vender already Exist for entered details...!!',
           });
           this.spinner.isLoading.next(false);
         } else {
@@ -219,9 +321,7 @@ export class VendorComponent implements OnInit {
         }
       }
     );
-   
   }
-
   onClickUpdate() {
     // console.log(this.vendorData);
 
@@ -324,10 +424,89 @@ export class VendorComponent implements OnInit {
         this.editVendorForm = true;
         this.addVendorDialogBox = true;
 
-        this.user.getUserByMailId(vendor.createdBy).subscribe(
+        const jsonString = JSON.stringify(vendor.createdBy);
+        const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(salt),
+          {
+            keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+          }
+        );
+        console.log('key ###', key);
+        console.log('jsonString ###', jsonString);
+        let cText = CryptoJS.AES.encrypt(
+          jsonString,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+        console.log('key ###', key);
+        console.log('Iv ###', iv);
+        console.log('salt ###', salt);
+    
+    
+    
+        let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+        let aesFinalText = btoa(aesText);
+        console.log("aesText: ", aesFinalText);
+    
+        this.newEncryptedObject = {};
+    
+        this.newEncryptedObject.encreptedData = aesFinalText;
+        this.encryptUseridData = aesFinalText
+        console.log('email string data', this.encryptUserData);
+    
+
+        this.user.getUserByMailId(this.encryptUseridData).subscribe(
           (data: any) => {
             // console.log('logged in user: ', data);
-            if (data.email === sessionStorage.getItem('email')) {
+
+            console.log(data,'encrypted data');
+            
+            const base64EncodedData = data;
+            const decodedData = atob(base64EncodedData);
+            console.log(decodedData, 'decode data');
+            let toArray = decodedData.split(this.environment.kSeparator);
+            console.log(toArray, 'array');
+    
+            const key = CryptoJS.PBKDF2(
+              `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+              CryptoJS.enc.Hex.parse(toArray[1]),
+              {
+                keySize: this.environment.kSize / 32,
+                iterations: this.environment.cIter
+              }
+            );
+            let cipherParams = CryptoJS.lib.CipherParams.create({
+              ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+            });
+            console.log(key, 'key');
+            const _iv = toArray[0]
+            let cText1 = CryptoJS.AES.decrypt(
+              cipherParams,
+              key,
+              {
+                iv: CryptoJS.enc.Hex.parse(_iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+              }
+            );
+            try {
+              // debugger
+              const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+              // const decryptedObject = JSON.parse(decryptedString);
+              console.log(decryptedString, 'decrypted object user in project');
+               this.userDataString = decryptedString;
+            }catch (error){
+              console.error('Error parsing decrypted data as JSON:', error)
+            }
+
+            if (this.userDataString.email === sessionStorage.getItem('email')) {
               this.editable = false;
             }else{
             this.editable = true;

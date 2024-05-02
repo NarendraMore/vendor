@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +25,7 @@ export class TemplateService {
   }
 
   getCategoriesData() {
+    console.log('check 6');
     return this.http.get(`${environment.url}/master`);
   }
 
@@ -103,6 +104,7 @@ export class TemplateService {
     const categoryData = inputData.filter((data: any) => {
       return (data.type).toLowerCase() == 'category';
     }).map((data: any) => {
+      console.log(data,'inside map for filter')
       return { name: data.value }
     });
 

@@ -80,7 +80,7 @@ table thead th {
 .standard-button {
     background-color: #d04a02;
     color: #f3f3f3;
-    font-family: Helvetica;
+    ;
     font-size: 18px;
     float: right;
     border: none;
@@ -89,7 +89,7 @@ table thead th {
 .standard-theme-button {
     background-color: #d04a02;
     color: #f3f3f3;
-    font-family: Helvetica;
+    ;
     font-size: 18px;
     border: none;
 }

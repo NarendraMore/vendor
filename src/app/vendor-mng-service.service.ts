@@ -244,6 +244,4 @@ export class VendorMngServiceService {
   getuserByroleName(roleName:string){
     return this.http.get(`${environment.url1}/vendor/user/getUsersByroleName/${roleName}`);
   }
-
-  
 }

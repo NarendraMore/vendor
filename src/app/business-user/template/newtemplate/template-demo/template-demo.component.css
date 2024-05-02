@@ -44,10 +44,13 @@
     height: 2.5rem !important;
   } */
 .SaveDraftButton {
-  /* float: right !important; */
-  border-color: #d04a02 !important;
+  /* border-color: #d04a02 !important; */
   color: #d04a02 !important;
-  /* margin-top: 10px !important; */
+}
+.SaveDraftButton:hover {
+  border-color: #d04a02 ;
+  background-color: #d04a02;
+  color: white;
 }
 .display {
   display: contents;

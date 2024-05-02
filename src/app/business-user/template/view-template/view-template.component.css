@@ -46,7 +46,7 @@
 ::ng-deep .pbuttonclass {
     background-color: #d04a02;
     color: white;
-    font-family: Helvetica ;
+     ;
     font-size: 8px;
   
   } */
@@ -137,7 +137,7 @@ table thead th {
 .standard-button {
   background-color: #d04a02;
   color: #f3f3f3;
-  font-family: Helvetica;
+  ;
   font-size: 18px;
   float: right;
   border: none;

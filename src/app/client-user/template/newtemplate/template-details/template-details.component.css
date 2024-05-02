@@ -18,19 +18,19 @@ textarea {
   background-color: #ffffff;
   color: #d04a02;
   border-color: #d04a02;
-  font-family: Helvetica;
+  ;
   margin-bottom: 10px;
 }
 
 .pbuttonclass:hover {
   background-color: #d04a02;
   border-color: #d04a02;
-  font-family: Helvetica ;
+   ;
   margin-bottom: 10px;
 }
 .para {
   font-size: 18px;
-  font-family: Helvetica;
+  ;
 }
 
 .myTable::ng-deep * {

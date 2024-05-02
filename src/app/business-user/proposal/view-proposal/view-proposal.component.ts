@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { AppModuleConstants } from 'src/app/app-constants';
@@ -26,7 +26,11 @@ import { Project, Project1, newProject } from '../../project/model/project';
 import { TabView } from 'primeng/tabview';
 import { Vendor } from '../../vendor/model/vendor';
 import { NotificationService } from 'src/app/services/notification.service';
-
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
+export interface encreptedDataObject {
+  encreptedData?: any;
+}
 @Component({
   selector: 'app-view-proposal',
   templateUrl: './view-proposal.component.html',
@@ -81,6 +85,19 @@ export class ViewProposalComponent implements OnInit {
   saveAsDraftForm!: FormGroup;
   draftVersionPattern = '^-?\\d*\\.?\\d*\\.?\\d+$';
   draftPropsalDocData: any;
+  currentRoute:any;
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
+  allDecryptedData:any
+  encryptScoreData:any
+  newEncryptedObject!: encreptedDataObject;
+  allDecryptedprojectData:any
   constructor(
     private location: Location,
     private templateService: TemplateService,
@@ -97,10 +114,22 @@ export class ViewProposalComponent implements OnInit {
 
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private notificationService:NotificationService
-  ) {}
+    private notificationService:NotificationService,
+    private userService:UserService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+  } 
+  
 
   ngOnInit(): void {
+    
+    if(this.currentRoute.includes('proposal')){
+      this.userService.activeNavIcon('proposal');
+    }
     this.allService();
     this.spinner.isLoading.subscribe((val) => {
       this.isLoading = val;
@@ -154,8 +183,40 @@ export class ViewProposalComponent implements OnInit {
 
     this.projectService.getClients().subscribe(
       (data: any) => {
-        this.clientInfo = data;
-        this.transformProjectData(data);
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        this.clientInfo = this.allDecryptedprojectData;
+        this.transformProjectData(this.allDecryptedprojectData);
       },
       (error: HttpErrorResponse) => {
         alert(error);
@@ -338,8 +399,52 @@ export class ViewProposalComponent implements OnInit {
       // get all scorecards
       this.proposalService.getscoreCards().subscribe(
         (data: any) => {
+          const base64EncodedData = data;
+          const decodedData = atob(base64EncodedData);
+          // const decodedData = CryptoJS.enc.Base64.parse(base64EncodedData).toString(CryptoJS.enc.Utf8);
+          // console.log(decodedData, 'decode data');
+          let toArray = decodedData.split(this.environment.kSeparator);
+          // console.log(toArray, 'split array');
+  
+          const key = CryptoJS.PBKDF2(
+            `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+            CryptoJS.enc.Hex.parse(toArray[1]),
+            {
+              keySize: this.environment.kSize / 32,
+              iterations: this.environment.cIter
+            }
+          );
+          let cipherParams = CryptoJS.lib.CipherParams.create({
+            ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+          });
+          console.log(key, 'key');
+  
+          
+           const _iv = toArray[0]
+          let cText1 = CryptoJS.AES.decrypt(
+            cipherParams,
+            key,
+            {
+              iv: CryptoJS.enc.Hex.parse(_iv),
+              mode: CryptoJS.mode.CBC,
+              padding: CryptoJS.pad.Pkcs7
+            }
+          );
+         
+          // console.log( cText1.toString(CryptoJS.enc.Utf8),'decrypt data');
+  
+  
+          try {
+            const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+            const decryptedObject = JSON.parse(decryptedString);
+            this.allDecryptedData =decryptedObject
+            // console.log(decryptedObject, 'decrypted object');
+          } catch (error) {
+            // console.error('Error parsing decrypted data as JSON:', error);
+          }
+
           this.scorecards = this.transformScoredCardData(
-            data,
+            this.allDecryptedData,
             this.projectName1
           );
           // console.log('all scorecards: ', this.scorecards);
@@ -473,6 +578,8 @@ export class ViewProposalComponent implements OnInit {
   projectNames: Project1[] = [];
   projectData: any[] = [];
   transformProjectData(inputData: any) {
+    console.log(inputData,'input data');
+    
     this.projectData = [];
     for (let i = 0; i < inputData.length; i++) {
       const abc1 = inputData[i].projectName;
@@ -1927,9 +2034,47 @@ export class ViewProposalComponent implements OnInit {
       };
       // console.log('scorecard: ', data);
 
+
+      const jsonString = JSON.stringify(data);
+      const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+      const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+      const key = CryptoJS.PBKDF2(
+        `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+        CryptoJS.enc.Hex.parse(salt),
+        {
+          keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+        }
+      );
+      console.log('key ###', key);
+      console.log('jsonString ###', jsonString);
+
+      let cText = CryptoJS.AES.encrypt(
+        jsonString,
+        key,
+        {
+          iv: CryptoJS.enc.Hex.parse(iv),
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
+        }
+      );
+      console.log('key ###', key);
+      console.log('Iv ###', iv);
+      console.log('salt ###', salt);
+
+
+
+      let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+      let aesFinalText = btoa(aesText);
+      console.log("aesText: ", aesFinalText);
+
+      this.newEncryptedObject = {};
+
+      this.newEncryptedObject.encreptedData = aesFinalText;
+      // console.log('string data', this.encryptScoreData);
+
       if (this.selectedFiles) {
         this.proposalService
-          .updateProposalData(data)
+          .updateProposalData(this.newEncryptedObject)
           .subscribe((result: any) => {
             // console.log("result: ",result);
             
@@ -1961,7 +2106,7 @@ export class ViewProposalComponent implements OnInit {
 
             this.messageService.add({
               severity: 'success',
-              summary: 'Successfull',
+              summary: 'Successful',
               detail: 'Score added successfully..!!',
             });
             this.onClickProposalUpload(result.scoreCardId);
@@ -2028,7 +2173,7 @@ export class ViewProposalComponent implements OnInit {
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Successfull',
+          summary: 'Successful',
           detail: 'Score added successfully..!!',
         });
         this.onClickProposalUpload(result.scoreCardId);
@@ -2108,7 +2253,7 @@ export class ViewProposalComponent implements OnInit {
 
             this.messageService.add({
               severity: 'success',
-              summary: 'Successfull',
+              summary: 'Successful',
               detail: 'Score updated successfully..!!',
             });
             //this.notificationService.emitDialogFormData("event");

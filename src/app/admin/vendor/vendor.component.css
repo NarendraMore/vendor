@@ -3,7 +3,7 @@
 ::ng-deep .pbuttonclass {
   background-color: #d04a02;
   border-color: white;
-  font-family: Helvetica;
+  ;
   float: left;
 }
 
@@ -23,7 +23,7 @@
 ::ng-deep .newroles {
   color: #415385;
   font-size: 34px;
-  font-family: Helvetica;
+  ;
 }
 
 tr:nth-child(even) {
@@ -33,7 +33,7 @@ tr:nth-child(even) {
 ::ng-deep .pbuttonclass {
   background-color: #d04a02;
   color: white;
-  font-family: Helvetica ;
+   ;
   font-size: 18px;
 }
 
@@ -45,7 +45,7 @@ tr:nth-child(even) {
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep input,
@@ -123,7 +123,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .roles,h1{
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep .balancesheettable {
@@ -231,9 +231,10 @@ small{
 }
 
 .busibessCancelButton{
-  background-color: #d04a02;
-  border: none;
+  /* background-color: #d04a02; */
+  border: 1px solid #d04a02;
   float: left;
+  color: #d04a02;
 }
 .pbuttonclass3:hover{
   background-color: #d04a02;
@@ -243,8 +244,8 @@ small{
 }
 
 .busibessCancelButton:hover{
-  background-color: #d04a02;
-  color: white;
-  border: none;
+  /* background-color: #d04a02; */
+  color: #d04a02 !important;
+  border: 1px solid #d04a02 !important;
   float: left;
 }

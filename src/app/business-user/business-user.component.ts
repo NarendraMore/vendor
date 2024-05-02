@@ -12,7 +12,8 @@ import { UserService } from '../services/user.service';
 import { ConfirmationService, MessageService, PrimeIcons } from 'primeng/api';
 import { NotificationService } from '../services/notification.service';
 import { Subscription,interval, take } from 'rxjs';
-
+import { Idle, DEFAULT_INTERRUPTSOURCES, IdleExpiry, NgIdleModule } from '@ng-idle/core';
+import { Keepalive,NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 
 
 interface SideNavToggle {
@@ -24,7 +25,7 @@ interface SideNavToggle {
   selector: 'app-business-user',
   templateUrl: './business-user.component.html',
   styleUrls: ['./business-user.component.css'],
-  providers: [ConfirmationService, MessageService, PrimeIcons],
+  providers: [ConfirmationService, MessageService, PrimeIcons,Idle,Keepalive],
 
 })
 export class BusinessUserComponent implements OnInit {
@@ -47,33 +48,90 @@ export class BusinessUserComponent implements OnInit {
   lastName!: string;
   private subscription!: Subscription;
 
+
+  userActiveRoute:any;
+  roleActiveRoute:any;
+  libraryActiveRoute:any;
+  projectActiveRoute:any;
+  vendorActiveRoute:any;
+  templateActiveRoute:any;
+  scorecardActiveRoute:any;
+  reportActiveRoute:any;
+  activeRoute:any;
+
+
   constructor(
     private router: Router,
     private service: VendorMngServiceService,
     private userService: UserService,
     private messageService: MessageService,
-    private notificationService:NotificationService
+    private notificationService:NotificationService,
+    private idle: Idle,
+    private keepalive: Keepalive
   ) {}
   allNotifications: any[] = [];
   notificationCount:any;
   ngOnInit(): void {
-    // setInterval(() => {
-      // this.userService.getAllNotifications().subscribe((data: any) => {
-      //   this.allNotifications = this.filterNotificationData(data);
-      //   this.allNotifications.reverse();
-      //   console.log('updated notifications', this.allNotifications);
-      // });
-    // }, 15000); // Update every 1 second
-
-
-    // this.notificationService.dialogFormDataSubscriber$.subscribe((data: any) => {
-    //   console.log("inside business user subsciber: ",data);
-    //   this.userService.getAllNotifications().subscribe((data: any) => {
-    //     this.allNotifications = this.filterNotificationData(data);
-    //     this.allNotifications.reverse();
-    //     console.log('updated notifications', this.allNotifications);
-    //   });
-    // })
+    this.userService.navIconSubscriber$.subscribe(
+      (data:any)=>{
+        // alert(data);
+        
+      
+          if(data==='project'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.projectActiveRoute='activeRoute';
+        }
+        else if(data==='vendors'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.vendorActiveRoute='activeRoute';
+        }
+        else if(data==='template'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.templateActiveRoute='activeRoute';
+        }
+        else if(data==='proposal'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.scorecardActiveRoute='activeRoute';
+        }
+        else if(data==='report'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.reportActiveRoute='activeRoute';
+        }
+        else{
+          this.userActiveRoute='inactiveRoute';
+        }
+      }
+    )
 
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -83,7 +141,7 @@ export class BusinessUserComponent implements OnInit {
       // console.log(data);
       this.notificationCount = data;
     });
-
+    
     setInterval(() => {
       this.userService.getAllNotificationsCount().subscribe((data: any) => {
         // console.log(data);
@@ -137,7 +195,16 @@ export class BusinessUserComponent implements OnInit {
       },
     ];
   }
-
+  onClickProjects(){
+    this.roleActiveRoute=null;
+    this.libraryActiveRoute=null;
+    this.vendorActiveRoute=null;
+    this.templateActiveRoute=null;
+    this.scorecardActiveRoute=null;
+    this.userActiveRoute=null;
+    this.reportActiveRoute=null;
+    this.projectActiveRoute='activeRoute';
+  }
   filterNotificationData(inputData: any) {
     let filterData: any[] = [];
 
@@ -268,8 +335,8 @@ export class BusinessUserComponent implements OnInit {
 
   onClickLogout() {
     sessionStorage.clear();
-    this.router.navigate(['/']);
-    // window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
+    // this.router.navigate(['/']);
+    window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
   }
 
   onClearNotification(id: any) {
@@ -303,5 +370,15 @@ export class BusinessUserComponent implements OnInit {
     })
 
    
+  }
+
+    collapse = false;
+  
+
+  closeSidenav1(){
+this.collapse=false
+  }
+  toggleCollapse11(){
+    this.collapse=!this.collapse
   }
 }

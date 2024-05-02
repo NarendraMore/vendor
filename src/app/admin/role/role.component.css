@@ -1,3 +1,4 @@
+
 ::ng-dee .pbuttonclass {
   background-color: #c2551f;
   border-color: white;
@@ -25,13 +26,12 @@
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
 }
 
 .newroles {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 ::ng-deep .accesscard {
   background-color: #f3f3f3;
@@ -41,7 +41,7 @@ h1 {
 h3 {
   color: #3a3a3a;
   font-size: 22px;
-  font-family: "Helvetica";
+  
   font-weight: bold;
   padding-top: 5px;
 }

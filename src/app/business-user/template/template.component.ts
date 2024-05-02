@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AppModuleConstants } from 'src/app/app-constants';
 import { LoadingSpinnerService } from 'src/app/services/loading-spinner.service';
@@ -11,7 +11,9 @@ import {
 } from './newtemplate/template-details/model/template';
 import { TemplateService } from './template.service';
 import { ProjectService } from 'src/app/services/project.service';
-
+import { UserService } from 'src/app/services/user.service';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-template',
   templateUrl: './template.component.html',
@@ -40,6 +42,16 @@ export class TemplateComponent implements OnInit {
   draftProjects: any[] = [];
   draftProjects1: any[] = [];
   navData: any = [];
+  currentRoute:any;
+  allDecryptedprojectData:any
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
   constructor(
     private router: Router,
     private service: VendorMngServiceService,
@@ -47,10 +59,24 @@ export class TemplateComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private spinner: LoadingSpinnerService,
-    private projectService: ProjectService
-  ) {}
+    private projectService: ProjectService,
+    private userService:UserService
+  ) {
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+
+  }
 
   ngOnInit(): void {
+
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
+
 
     this.navData = [
       {
@@ -94,9 +120,42 @@ export class TemplateComponent implements OnInit {
     this.projectService.getClients().subscribe(
       (data: any) => {
         // this.projects=;
-
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
         if (this.userRole === '2') {
-          this.projects = this.transferProjectName1(data).sort(
+          console.log(this.allDecryptedprojectData,'all data77668768676868');
+          
+          this.projects = this.transferProjectName1(this.allDecryptedprojectData).sort(
             (a: any, b: any) => {
               const nameA = a.projectName.toLowerCase();
               const nameB = b.projectName.toLowerCase();
@@ -146,13 +205,12 @@ export class TemplateComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-          // console.log('hello1', data);
+          this.templateDetails1 = [];
+          this.templateDetails = [];
 
-          // this.templateDetails = data;
           this.spinner.isLoading.next(false);
           this.templateDetails1 = this.transformTempalteData1(data).reverse();
-          // this.templateDetails1.reverse();
-          // console.log('this.templateDetails1: ', this.templateDetails1);
+
           this.createdByYouProjectList = this.transformProjectList(
             this.templateDetails1
           );
@@ -206,36 +264,40 @@ export class TemplateComponent implements OnInit {
 
   transformTempalteData(inputData: any) {
     this.allData = [];
-    // console.log(inputData, 'inputData1');
-    const categoryData = inputData.filter((data: any) => {
-      // console.log(data, "data of single project");
-      for (let i = 0; i < data.project.businessUser.length; i++) {
-        // console.log(data.project.businessUser[i]);
-
-        if (data.project.businessUser[i] === sessionStorage.getItem('email')) {
-          this.allData.push(data);
+    const allDataSet = new Set();
+    
+    inputData.forEach((data: any) => {
+        for (let i = 0; i < data.project.businessUser.length; i++) {
+            if (data.project.businessUser[i] === sessionStorage.getItem('email')) {
+                allDataSet.add(data);
+                break; // Exit the loop after adding the data once
+            }
         }
-      }
     });
+
+    this.allData = Array.from(allDataSet);
+    console.log('2nd tab data: ', this.allData);
+
     return this.allData;
   }
 
   transformTempalteData1(inputData: any) {
     this.createdByAllData = [];
-    // console.log(inputData, 'inputData1');
-    // const categoryData = inputData.filter((data: any) => {
-    // console.log(data, "data of single project");
-    for (let i = 0; i < inputData.length; i++) {
-      // console.log(data," for created by");
 
+    const createdByAllDataSet = new Set();
+
+    for (let i = 0; i < inputData.length; i++) {
       if (
         inputData[i].templateDescription.createdBy ===
         sessionStorage.getItem('email')
       ) {
-        this.createdByAllData.push(inputData[i]);
+        createdByAllDataSet.add(inputData[i]);
       }
-      // }
     }
+
+    this.createdByAllData = Array.from(createdByAllDataSet);
+    console.log('1st tab data: ', this.createdByAllData);
+
     return this.createdByAllData;
   }
 
@@ -296,56 +358,46 @@ export class TemplateComponent implements OnInit {
       // console.log('this.draftTemplateData: ', this.draftTemplateData);
 
       if (this.userRole === '2') {
-        this.draftTemplateData = this.transformTempalteDraftData(data).reverse();
+        this.draftTemplateData =
+          this.transformTempalteDraftData(data).reverse();
         this.draftProjects = this.transformDraftProjectList(
           this.draftTemplateData
         );
 
         this.draftProjects = [...new Set(this.draftProjects)];
-        //  this.draftProjects=[...new Set(this.draftProjects)]
-        //  this.draftProjects=this.draftProjects.filter(
-        //   (item,index)=>{
-        //     return this.draftProjects.indexOf(item)===index
-        //   }
-        // )
-        // console.log('this.draftProjects./././././', this.draftProjects);
+       
       } else if (this.userRole === '1') {
         this.draftTemplateData = data;
         this.draftProjects = this.transformDraftProjectList(
           this.draftTemplateData
         );
         this.draftProjects = [...new Set(this.draftProjects)];
-        // this.draftProjects=this.draftProjects.filter(
-        //   (item,index)=>{
-        //     return this.draftProjects.indexOf(item)===index
-        //   }
-        // )
+     
       }
       this.spinner.isLoading.next(false);
     });
   }
   transformTempalteDraftData(inputData: any) {
     this.allDraftData = [];
-    // console.log(inputData, 'inputData1');
-    const categoryData = inputData.filter((data: any) => {
-      // console.log(data, 'data of single project');
-      for (let i = 0; i < data.projectDraft.businessUser.length; i++) {
-        // console.log(data.projectDraft.businessUser[i]);
-
-        if (
-          data.projectDraft.businessUser[i] === sessionStorage.getItem('email')
-        ) {
-          this.allDraftData.push(data);
+    const allDraftDataSet = new Set();
+    
+    inputData.forEach((data: any) => {
+        for (let i = 0; i < data.projectDraft.businessUser.length; i++) {
+            if (data.projectDraft.businessUser[i] === sessionStorage.getItem('email')) {
+                allDraftDataSet.add(data);
+                break; // Exit the loop after adding the data once
+            }
         }
-      }
     });
-    // console.log("this.allDraftData:",this.allDraftData);
+
+    this.allDraftData = Array.from(allDraftDataSet);
+    console.log('3rd tab data:', this.allDraftData);
 
     return this.allDraftData;
   }
 
   onClickAddTemplate() {
-    localStorage.clear();
+   
     if (this.userRole === '2') {
       this.router.navigate(['/BusinessUser/create-template/templatedetails']);
     } else if (this.userRole === '1') {

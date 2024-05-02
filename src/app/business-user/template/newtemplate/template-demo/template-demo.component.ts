@@ -9,7 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { VendorMngServiceService } from 'src/app/vendor-mng-service.service';
 import { TemplateService } from '../../template.service';
@@ -23,6 +23,7 @@ import { TemplateValidations } from './template-validator/template-validator';
 import { AppModuleConstants } from 'src/app/app-constants';
 import { LibraryService } from 'src/app/services/library.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-template-demo',
@@ -51,6 +52,8 @@ export class TemplateDemoComponent implements OnInit {
   userName!: string;
 
   customValidationData: any = [];
+  currentRoute:any;
+
   // draftVersionPattern= '^[0-9]*$';
 
   constructor(
@@ -65,16 +68,30 @@ export class TemplateDemoComponent implements OnInit {
     private templateValidations: TemplateValidations,
     private masterRepoService: LibraryService,
     private confirmationService: ConfirmationService,
-    private notificationService:NotificationService
-  ) {}
+    private notificationService:NotificationService,
+    private userService:UserService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+  }
 
   ngOnInit(): void {
+    console.log(this.currentRoute,'current route');
+    
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
 
     // alert(sessionStorage.getItem('saveEnable'))
-    if (localStorage.getItem('saveEnable') === 'true') {
-      // console.log('check1', localStorage.getItem('saveEnable'));
+    if (sessionStorage.getItem('saveEnable') === 'true') {
+      // console.log('check1', sessionStorage.getItem('saveEnable'));
+      console.log('check 1');
+      
 
       this.isButtonEnabled = true;
       this.isButtonEnabled1 = true;
@@ -82,8 +99,8 @@ export class TemplateDemoComponent implements OnInit {
       this.isButtonEnabled3 = true;
       // alert(this.saveEnable)
     } else {
-      // console.log('check2', localStorage.getItem('saveEnable'));
-
+      // console.log('check2', sessionStorage.getItem('saveEnable'));
+      console.log('check 2');
       this.isButtonEnabled = false;
       this.isButtonEnabled1 = false;
       this.isButtonEnabled2 = false;
@@ -97,11 +114,13 @@ export class TemplateDemoComponent implements OnInit {
     // );
 
     if (this.activatedRoute.snapshot.params['draftId']) {
+      console.log('check 3');
       this.isButtonEnabled = true;
       this.isButtonEnabled1 = true;
       this.isButtonEnabled2 = true;
       this.vendorService.isDraftRedirect = true;
     } else {
+      console.log('check 4');
       this.vendorService.isDraftRedirect = false;
     }
     // console.log(
@@ -112,10 +131,13 @@ export class TemplateDemoComponent implements OnInit {
     this.isDraftRedirect = this.vendorService.isDraftRedirect;
     // console.log('this.isDraftRedirect: ', this.isDraftRedirect);
     if (this.vendorService.templateDescriptionData) {
+      console.log('check 5');
       this.saveButton = true;
       this.saveAsDraftButton = false;
     }
     this.templateService.getCategoriesData().subscribe((categgoryData: any) => {
+      console.log(categgoryData,'category data');
+      
       this.loadView = true;
 
       this.categoriesData =
@@ -281,7 +303,7 @@ export class TemplateDemoComponent implements OnInit {
   }
 
   onClickBack() {
-    localStorage.clear();
+    sessionStorage.clear();
 
     this.location.back();
   }

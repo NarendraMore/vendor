@@ -66,7 +66,7 @@
                 <p-accordionTab [selected]="true">
                   <ng-template pTemplate="header">
                     <div class="header1">
-                      {{ category.value.name }} ({{
+                     &nbsp; {{ category.value.name }} ({{
                         category.value.weightage
                       }}%)
                     </div>
@@ -114,44 +114,37 @@
                               [matMenuTriggerFor]="cat"
                               aria-label="Example icon-button with a menu"
                             >
-                              <mat-icon>more_vert</mat-icon>
+                              <i class="pi pi-ellipsis-v"></i>
                             </button>
-                            <!-- <button type="button" (click)="addCategory()">Add Category</button>
-                <button type="button" (click)="removeCategory(i)">Remove Category</button> -->
+                          
                             <mat-menu #cat="matMenu">
                               <button
                                 mat-menu-item
                                 (click)="onSearchOption('category', i)"
                               >
-                                <mat-icon>search</mat-icon>
+                              <i class="pi pi-search"></i> &nbsp;
                                 <span>Search Category</span>
                               </button>
                               <button
                                 mat-menu-item
                                 (click)="onAddCustom('category')"
                               >
-                                <mat-icon>edit</mat-icon>
+                              <i class="pi pi-pencil"></i> &nbsp;
                                 <span>Add Custom Category</span>
                               </button>
-                              <!-- <button
-                                mat-menu-item
-                                (click)="onEditOption('category', i)"
-                              >
-                                <mat-icon>edit</mat-icon>
-                                <span>Add Custom Category</span>
-                              </button> -->
+                             
                               <button
                                 mat-menu-item
                                 (click)="addSingleCategory()"
                               >
-                                <mat-icon>add</mat-icon>
+                              <i class="pi pi-plus-circle"></i> &nbsp;
                                 <span>Add New Category</span>
                               </button>
                               <button
                                 mat-menu-item
                                 (click)="initCombine(i, 'category')"
                               >
-                                <mat-icon>merge_type</mat-icon>
+                              <i class="pi pi-sync"></i> &nbsp;
                                 <span>Combine with</span>
                               </button>
                             </mat-menu>
@@ -250,8 +243,8 @@
                                       [matMenuTriggerFor]="sub"
                                       aria-label="Example icon-button with a menu"
                                     >
-                                      <mat-icon>more_vert</mat-icon>
-                                    </button>
+                                    <i class="pi pi-ellipsis-v"></i> &nbsp;
+                                  </button>
                                     <mat-menu #sub="matMenu">
                                       <button
                                         mat-menu-item
@@ -259,15 +252,15 @@
                                           onSearchOption('subCategory', i, j)
                                         "
                                       >
-                                        <mat-icon>search</mat-icon>
-                                        <span>Search Sub-Category</span>
+                                      <i class="pi pi-search"></i> &nbsp;
+                                      <span>Search Sub-Category</span>
                                       </button>
                                       <button
                                         mat-menu-item
                                         (click)="onAddCustom('Subcategory')"
                                       >
-                                        <mat-icon>edit</mat-icon>
-                                        <span>Add Custom Sub-Category</span>
+                                      <i class="pi pi-pencil"></i> &nbsp;
+                                      <span>Add Custom Sub-Category</span>
                                       </button>
                                       <button
                                         mat-menu-item
@@ -283,7 +276,8 @@
                                           ]
                                         "
                                       >
-                                        <mat-icon>add</mat-icon>
+                                      <i class="pi pi-plus-circle"></i> &nbsp;
+
                                         <span>Add New Sub-Category</span>
                                       </button>
                                       <button
@@ -292,8 +286,8 @@
                                           initCombine(i, 'subCategory', j)
                                         "
                                       >
-                                        <mat-icon>merge_type</mat-icon>
-                                        <span>Combine with</span>
+                                      <i class="pi pi-sync"></i> &nbsp;
+                                      <span>Combine with</span>
                                       </button>
                                       <button
                                         [disabled]="
@@ -304,8 +298,8 @@
                                         mat-menu-item
                                         (click)="removeSubCategory(i, j)"
                                       >
-                                        <mat-icon>delete</mat-icon>
-                                        <span>Remove Sub-Category</span>
+                                      <i class="pi pi-minus-circle"></i> &nbsp;
+                                      <span>Remove Sub-Category</span>
                                       </button>
                                     </mat-menu>
                                     <!-- <button type="button" (click)="addSubCategory(i)">Add Sub Category</button>
@@ -415,7 +409,7 @@
                                               [matMenuTriggerFor]="subCatTwo"
                                               aria-label="Example icon-button with a menu"
                                             >
-                                              <mat-icon>more_vert</mat-icon>
+                                            <i class="pi pi-ellipsis-v"></i> &nbsp;
                                             </button>
                                             <mat-menu #subCatTwo="matMenu">
                                               <button
@@ -429,7 +423,7 @@
                                                   )
                                                 "
                                               >
-                                                <mat-icon>search</mat-icon>
+                                              <i class="pi pi-search"></i> &nbsp;
                                                 <span
                                                   >Search Secondary
                                                   Sub-Category</span
@@ -439,7 +433,7 @@
                                                 mat-menu-item
                                                 (click)="onAddCustom('Subcategory')"
                                               >
-                                                <mat-icon>edit</mat-icon>
+                                              <i class="pi pi-pencil"></i> &nbsp;
                                                 <span
                                                   >Add Custom Secondary
                                                   Sub-Category</span
@@ -460,7 +454,7 @@
                                                   ]
                                                 "
                                               >
-                                                <mat-icon>add</mat-icon>
+                                              <i class="pi pi-plus-circle"></i> &nbsp;
                                                 <span
                                                   >Add New Secondary
                                                   Sub-Category</span
@@ -477,7 +471,7 @@
                                                   )
                                                 "
                                               >
-                                                <mat-icon>merge_type</mat-icon>
+                                              <i class="pi pi-sync"></i> &nbsp;
                                                 <span>Combine with</span>
                                               </button>
                                               <button
@@ -494,7 +488,7 @@
                                                   removeSubCategoryTwo(i, j, k)
                                                 "
                                               >
-                                                <mat-icon>delete</mat-icon>
+                                              <i class="pi pi-minus-circle"></i> &nbsp;
                                                 <span
                                                   >Remove Secondary
                                                   Sub-Category</span
@@ -618,9 +612,7 @@
                                                       "
                                                       aria-label="Example icon-button with a menu"
                                                     >
-                                                      <mat-icon
-                                                        >more_vert</mat-icon
-                                                      >
+                                                    <i class="pi pi-ellipsis-v"></i> &nbsp;
                                                     </button>
                                                     <mat-menu
                                                       #subCatThree="matMenu"
@@ -637,9 +629,7 @@
                                                           )
                                                         "
                                                       >
-                                                        <mat-icon
-                                                          >search</mat-icon
-                                                        >
+                                                      <i class="pi pi-search"></i> &nbsp;
                                                         <span
                                                           >Search Tertiary
                                                           Sub-Category</span
@@ -649,9 +639,7 @@
                                                         mat-menu-item
                                                         (click)="onAddCustom('Subcategory')"
                                                       >
-                                                        <mat-icon
-                                                          >edit</mat-icon
-                                                        >
+                                                      <i class="pi pi-pencil"></i> &nbsp;
                                                         <span
                                                           >Add Custom Tertiary
                                                           Sub-Category</span
@@ -677,7 +665,7 @@
                                                           ]
                                                         "
                                                       >
-                                                        <mat-icon>add</mat-icon>
+                                                      <i class="pi pi-plus-circle"></i> &nbsp;
                                                         <span
                                                           >Add new Tertiary
                                                           Sub-Category</span
@@ -695,9 +683,7 @@
                                                           )
                                                         "
                                                       >
-                                                        <mat-icon
-                                                          >merge_type</mat-icon
-                                                        >
+                                                      <i class="pi pi-sync"></i> &nbsp;
                                                         <span
                                                           >Combine Tertiary
                                                           Sub-Category</span
@@ -723,9 +709,7 @@
                                                           )
                                                         "
                                                       >
-                                                        <mat-icon
-                                                          >delete</mat-icon
-                                                        >
+                                                      <i class="pi pi-minus-circle"></i> &nbsp;
                                                         <span
                                                           >Remove Tertiary
                                                           Sub-Category</span
@@ -860,9 +844,7 @@
                                                               "
                                                               aria-label="Example icon-button with a menu"
                                                             >
-                                                              <mat-icon
-                                                                >more_vert</mat-icon
-                                                              >
+                                                            <i class="pi pi-ellipsis-v"></i> &nbsp;
                                                             </button>
                                                             <mat-menu
                                                               #para="matMenu"
@@ -880,9 +862,7 @@
                                                                   )
                                                                 "
                                                               >
-                                                                <mat-icon
-                                                                  >search</mat-icon
-                                                                >
+                                                              <i class="pi pi-search"></i> &nbsp;
                                                                 <span
                                                                   >Search
                                                                   Parameter</span
@@ -892,9 +872,7 @@
                                                                 mat-menu-item
                                                                 (click)="onAddCustom('parameter')"
                                                               >
-                                                                <mat-icon
-                                                                  >edit</mat-icon
-                                                                >
+                                                              <i class="pi pi-pencil"></i> &nbsp;
                                                                 <span
                                                                   >Add Custom
                                                                   Parameter</span
@@ -913,9 +891,7 @@
                                                                   ]
                                                                 "
                                                               >
-                                                                <mat-icon
-                                                                  >add</mat-icon
-                                                                >
+                                                              <i class="pi pi-plus-circle"></i> &nbsp;
                                                                 <span
                                                                   >Add New
                                                                   Parameter</span
@@ -934,9 +910,7 @@
                                                                   )
                                                                 "
                                                               >
-                                                                <mat-icon
-                                                                  >merge_type</mat-icon
-                                                                >
+                                                              <i class="pi pi-sync"></i> &nbsp;
                                                                 <span
                                                                   >Move to
                                                                   Existing
@@ -965,9 +939,7 @@
                                                                   )
                                                                 "
                                                               >
-                                                                <mat-icon
-                                                                  >delete</mat-icon
-                                                                >
+                                                              <i class="pi pi-minus-circle"></i> &nbsp;
                                                                 <span
                                                                   >Delete</span
                                                                 >
@@ -1135,9 +1107,7 @@
                                                                         "
                                                                         aria-label="Example icon-button with a menu"
                                                                       >
-                                                                        <mat-icon
-                                                                          >more_vert</mat-icon
-                                                                        >
+                                                                      <i class="pi pi-ellipsis-v"></i> &nbsp;
                                                                       </button>
                                                                       <mat-menu
                                                                         #maxScore="matMenu"
@@ -1154,9 +1124,7 @@
                                                                             )
                                                                           "
                                                                         >
-                                                                          <mat-icon
-                                                                            >edit</mat-icon
-                                                                          >
+                                                                        <i class="pi pi-plus-circle"></i> &nbsp;
                                                                           <span
                                                                             >Add
                                                                             Criteria</span
@@ -1188,9 +1156,7 @@
                                                                             )
                                                                           "
                                                                         >
-                                                                          <mat-icon
-                                                                            >delete</mat-icon
-                                                                          >
+                                                                        <i class="pi pi-minus-circle"></i> &nbsp;
                                                                           <span
                                                                             >Delete</span
                                                                           >
@@ -1229,19 +1195,19 @@
                               [matMenuTriggerFor]="rMenu"
                               aria-label="Example icon-button with a menu"
                             >
-                              <mat-icon>more_vert</mat-icon>
+                            <i class="pi pi-ellipsis-v"></i> &nbsp;
                             </button>
 
                             <mat-menu #rMenu="matMenu">
                               <button mat-menu-item (click)="addCategory()">
-                                <mat-icon>add</mat-icon>
-                                <span>Add New Row</span>
+                                <i class="pi pi-plus-circle"></i> &nbsp;
+                                                                <span>Add New Row</span>
                               </button>
                               <button
                                 mat-menu-item
                                 (click)="createCategoryCopy(i)"
                               >
-                                <mat-icon>file_copy</mat-icon>
+                              <i class="pi pi-angle-double-down"></i> &nbsp;
                                 <span>Copy Row</span>
                               </button>
                               <button
@@ -1253,7 +1219,7 @@
                                 mat-menu-item
                                 (click)="removeCategory(i)"
                               >
-                                <mat-icon>delete</mat-icon>
+                              <i class="pi pi-minus-circle"></i> &nbsp;
                                 <span>Remove Row</span>
                               </button>
                             </mat-menu>
@@ -1282,10 +1248,10 @@
     !isButtonEnabled3
   "
   pButton
-  class="SaveButton"
+  class="SaveButton p-button-sm"
   (click)="onSave()"
+  label="Save"
 >
-  Save
 </button>
 <span style="color:black">
 <!-- {{isButtonEnabled}}
@@ -1298,8 +1264,9 @@
   pButton
   (click)="onClickDraft()"
   class="p-button-sm p-button-outlined SaveDraftButton"
+  label="Save as Draft"
 >
-  Save as Draft
+
 </button>
 
 <div class="card">
@@ -1363,7 +1330,7 @@
         <ng-template pTemplate="footer">
           <button
             pButton
-            class="SaveDraftButton"
+            class="p-button-sm SaveDraftButton"
             (click)="onClickSave()"
             label="Save"
             icon="pi pi-draft"

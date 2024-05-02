@@ -1,7 +1,7 @@
 .roles,h1{
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep .balancesheettable {
@@ -34,14 +34,13 @@
   border: none;
 }
 .busibessCancelButton{
-  background-color: #d04a02;
-  color: white;
-  border: none;
+  color: #d04a02;
+  border: 1px solid #d04a02;
   float: left;
 }
 .busibessCancelButton:hover{
-  background-color: #d93954;
-  border: none;
+  border: 1px solid #d04a02 !important;
+  color: #d04a02 !important; 
 }
 
 ::ng-deep .cancelButton33 {

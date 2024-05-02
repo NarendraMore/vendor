@@ -10,6 +10,8 @@ export class ScorecardService {
   constructor(private http: HttpClient) { }
 
   getScorecards(){
-    return this.http.get(`${environment.url}/score_cards`);
+    return this.http.get(`${environment.url}/score_cards`,{
+      responseType:'text'
+    });
   }
 }

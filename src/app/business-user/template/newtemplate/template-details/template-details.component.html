@@ -201,6 +201,7 @@
         class="p-button-sm mr-2 pbuttonClassNext"
         (click)="openNext()"
         [disabled]="!templateForm.valid || templateExist"
+        
       ></button>
     </div>
   </div>
@@ -232,6 +233,7 @@
     (change)="selectFile1($event)"
     #inputFile
     placeholder="select proposal"
+    accept=".xlsx"
   />
 
   <button

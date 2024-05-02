@@ -27,6 +27,16 @@ export class ProposalComponent implements OnInit {
   userName!: string;
   projects:any;
   selectedProject!: string;
+  allDecryptedData:any
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
+
   constructor(
     private router: Router,
     private service: ProposalService,
@@ -49,7 +59,50 @@ export class ProposalComponent implements OnInit {
 // to fetch all score cards
     this.service.getscoreCards().subscribe(
       (data: any) => {
-        this.scorecards = data;
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        // const decodedData = CryptoJS.enc.Base64.parse(base64EncodedData).toString(CryptoJS.enc.Utf8);
+        // console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        // console.log(toArray, 'split array');
+
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+
+        
+         const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+       
+        // console.log( cText1.toString(CryptoJS.enc.Utf8),'decrypt data');
+
+
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedData =decryptedObject
+          // console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        this.scorecards = this.allDecryptedData;
         // console.log('all scorecards', this.scorecards);
       },
       (error: HttpErrorResponse) => {}

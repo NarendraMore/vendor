@@ -15,7 +15,7 @@ const routes: Routes = [
     loadChildren : () => AuthModule
   },
   {
-    path: 'login',
+    path: 'login/loginWithPwc',
     loadChildren : () => AuthModule
   },
   {

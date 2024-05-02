@@ -436,7 +436,7 @@ label{
 ::ng-deep .addLOB{
   border-color: #d04a02 !important;
   color: #d04a02 !important;
-  /* margin-top: 30px !important; */
+  margin-top: 5px !important;
 }
 
 
@@ -472,3 +472,7 @@ label{
   box-shadow: none;
 }
 
+::ng-deep .cardd {
+  margin-top: 50px;
+  box-shadow: none;
+}

@@ -10,7 +10,7 @@
     (onShow)="!editClientForm ? onShow() : null"
   >
     <ng-template pTemplate="header">
-      <h2 style="color: #415385; font-size: 34px; font-family: Helvetica">
+      <h2 style="color: #415385; font-size: 34px; ">
         {{ editClientForm ? "Edit Project" : "Create New Project" }}
       </h2>
     </ng-template>
@@ -588,7 +588,6 @@
                 <br />
 
                 <input
-                  *ngIf="!editable"
                   class="p-inputtext-sm input"
                   type="file"
                   accept=".pdf"
@@ -845,6 +844,9 @@
             >
               <span style="color: red"> field is required </span>
             </small>
+            <small *ngIf="addIndustryForm.get('industry')?.hasError('pattern')">
+              <span style="color: red;">Invalid Characters .</span>
+           </small>
           </span>
         </div>
       </div>

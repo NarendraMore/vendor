@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 export class LibraryService {
   constructor(private http: HttpClient) {}
 
-  addCategory(category: any) {
+  addCategory(category: any) {  
     return this.http.post(`${environment.url}/master`, category);
   }
 

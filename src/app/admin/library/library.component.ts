@@ -1,13 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { LibraryService } from 'src/app/services/library.service';
 import { LoadingSpinnerService } from 'src/app/services/loading-spinner.service';
+import { UserService } from 'src/app/services/user.service';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 
 export interface lineItemType {
   type: string;
 }
+export interface encreptedDataObject {
+  encreptedData?: any;
+}
+
 
 @Component({
   selector: 'app-library',
@@ -29,14 +37,28 @@ export class LibraryComponent implements OnInit {
   selectedType!: string;
   closable:boolean = false
   // valuePattern = "^[a-zA-Z .,]{3,155}$";
+  currentRoute:any;
+  newEncryptedObject!: encreptedDataObject;
+  encryptlibraryData:any
 
-
+lineItemNamePattern = '[^<>]*'
   constructor(
     private masterRepoService: LibraryService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private spinner: LoadingSpinnerService
+    private spinner: LoadingSpinnerService,
+    private router:Router,
+    private userService:UserService
+
   ) {
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+
+
     this.lineItemtypes = [
       { type: 'Business' },
       { type: 'Category' },
@@ -48,6 +70,10 @@ export class LibraryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(this.currentRoute.includes('master-repo')){
+      this.userService.activeNavIcon('master');
+    }
+
     this.spinner.isLoading.subscribe((val) => {
       this.isLoading = val;
     });
@@ -55,7 +81,7 @@ export class LibraryComponent implements OnInit {
     this.spinner.isLoading.next(true);
 
     this.categoryForm = new FormGroup({
-      value: new FormControl('', [Validators.required,Validators.minLength(2),Validators.maxLength(255)]),
+      value: new FormControl('', [Validators.required,Validators.minLength(2),Validators.maxLength(255),Validators.pattern(this.lineItemNamePattern)]),
       type: new FormControl('', Validators.required),
     });
 
@@ -86,11 +112,18 @@ export class LibraryComponent implements OnInit {
     this.addCategoryDialogBox = false;
     this.editCategoryForm = false;
   }
-
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
   onClickSave() {
     this.addCategoryDialogBox = false;
     this.spinner.isLoading.next(true);
-
+    
     this.masterRepoService.addCategory(this.categoryForm.value).subscribe(
       (data: any) => {
         this.messageService.add({

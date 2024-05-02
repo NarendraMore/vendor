@@ -17,7 +17,13 @@ interface SideNavToggle {
   screenWidth: number;
   collapsed: boolean;
 }
-
+export const navbarData = [
+  {
+    routerLink: 'dashboard',
+    icon: 'fas fa-home',
+    label: 'dashboard',
+  },
+];
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -25,6 +31,7 @@ interface SideNavToggle {
   providers: [ConfirmationService, MessageService, PrimeIcons],
 })
 export class AdminComponent implements OnInit {
+
 
   sidebar: boolean = false;
 
@@ -46,10 +53,18 @@ export class AdminComponent implements OnInit {
 
   iconClicked = false;
 
-
-
-
   data: any;
+
+  userActiveRoute:any;
+  roleActiveRoute:any;
+  libraryActiveRoute:any;
+  projectActiveRoute:any;
+  vendorActiveRoute:any;
+  templateActiveRoute:any;
+  scorecardActiveRoute:any;
+  reportActiveRoute:any;
+  activeRoute:any;
+
   private subscription!: Subscription;
 
   constructor(
@@ -58,53 +73,116 @@ export class AdminComponent implements OnInit {
     private messageService: MessageService,
     private notificationService: NotificationService
   ) {
-    // this.subscription = this.notificationService.getData().subscribe((data) => {
-    //   // Update the data in the second module
-    //   console.log("inside admin constructor: ",data);
-    //   // this.allNotifications = data;
-    // });
+
   }
 
   allNotifications: any[] = [];
   notificationCount: any;
 
   ngOnInit(): void {
-    // setInterval(() => {
-    // this.userService.getAllNotifications().subscribe((data: any) => {
-    //   this.allNotifications = this.filterNotificationData(data);
-    //   this.allNotifications.reverse();
-    //   console.log("updated notifications",this.allNotifications);
-    // });
-    // }, 15000); // Update every 1 second
 
-    // this.notificationService.dialogFormDataSubscriber$.subscribe(
-    //   (data: any) => {
-    //     console.log("inside admin subsciber: ",data);
 
-    //     this.userService.getAllNotifications().subscribe((data: any) => {
-    //       this.allNotifications = this.filterNotificationData(data);
-    //       this.allNotifications.reverse();
-    //       console.log('updated notifications', this.allNotifications);
-    //     });
-    //   }
-    // );
+    this.userService.navIconSubscriber$.subscribe(
+      (data:any)=>{
+        // alert(data);
+        
+        if(data==='user'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.userActiveRoute='activeRoute';
+        }
+        else if(data==='master'){
+          this.libraryActiveRoute='activeRoute';
+          this.roleActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          // this.userActiveRoute=null;
+        }
+        else if(data==='project'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.projectActiveRoute='activeRoute';
+        }
+        else if(data==='vendors'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.vendorActiveRoute='activeRoute';
+        }
+        else if(data==='template'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.templateActiveRoute='activeRoute';
+        }
+        else if(data==='proposal'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.scorecardActiveRoute='activeRoute';
+        }
+        else if(data==='report'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.reportActiveRoute='activeRoute';
+        }
+        else{
+          this.userActiveRoute='inactiveRoute';
+        }
+      }
+    )
+    // this.navData = navbarData;
 
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
 
     this.userService.getAllNotificationsCount().subscribe((data: any) => {
-      // console.log(data);
+
       this.notificationCount = data;
     });
 
     setInterval(() => {
       this.userService.getAllNotificationsCount().subscribe((data: any) => {
-        // console.log(data);
+
         this.notificationCount = data;
       });
-    }, 15000); //execute after every 15 seconds
+    }, 15000);
 
+
+
+    
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
     this.lastName = sessionStorage.getItem(AppModuleConstants.LASTNAME)!;
@@ -125,26 +203,6 @@ export class AdminComponent implements OnInit {
         image: 'assets/Images/PwC_Funct_Icons_Avatar_Outline_Black_RGB.png',
         tooltip: 'Users',
       },
-      // {
-      //   routeLink: '/document/nav/project-mng',
-      //   icon: 'pi pi-chart-line',
-      //   label: 'Project',
-      //   image:'assets/Images/Union 2.png'
-
-      // },
-      // {
-      //   routeLink: '/document/nav/vendor-mng',
-      //   icon: 'pi pi-users',
-      //   label: 'Vendor',
-      //   image:'assets/Images/Group.png'
-
-      // },
-      // {
-      //   routeLink: '/document/nav/template-mng',
-      //   icon: 'pi pi-cog',
-      //   label: 'Templates',
-      //   image:'assets/Images/Union 1.png'
-      // },
       {
         routeLink: '/Admin/master-repo',
         icon: 'pi pi-users',
@@ -187,38 +245,25 @@ export class AdminComponent implements OnInit {
         image: 'assets/Images/dashboard.png',
         tooltip: 'Reports',
       },
-      // {
-      //   routeLink: '/Admin/azure',
-      //   icon: 'pi pi-chart-line',
-      //   label: 'Reports',
-      //   image: 'assets/Images/dashboard.png',
-      //   tooltip: 'Azure',
-      // },
-
-      // {
-      //   routeLink: '/Admin/template-list',
-      //   icon: 'pi pi-cog',
-      //   label: 'Templates',
-      //   image:'assets/Images/Union 1.png',
-      //   tooltip:"Templates"
-      // },
-      // {
-      //   routeLink: '/Admin/proposal-list',
-      //   icon: 'pi pi-chart-line',
-      //   label: 'Template Scoring',
-      //   image:'assets/Images/scoring_icon.png',
-      //   tooltip:"Template Scoring"
-
-      // },
     ];
+  }
+
+  onClickRole(){
+    this.roleActiveRoute='activeRoute';
+    this.libraryActiveRoute=null;
+    this.projectActiveRoute=null;
+    this.vendorActiveRoute=null;
+    this.templateActiveRoute=null;
+    this.userActiveRoute=null;
+    this.scorecardActiveRoute=null;
+    this.reportActiveRoute=null;
   }
 
   filterNotificationData(inputData: any) {
     let filterData: any[] = [];
 
     inputData.filter((data: any) => {
-      // console.log('data././././', data);
-      if (data.userName === sessionStorage.getItem('email')) {
+      if (btoa(data.userName) === sessionStorage.getItem('email')) {
         filterData.push(data);
       }
     });
@@ -229,7 +274,6 @@ export class AdminComponent implements OnInit {
     this.userService.getAllNotifications().subscribe((data: any) => {
       this.allNotifications = this.filterNotificationData(data);
       this.allNotifications.reverse();
-      // console.log('updated notifications', this.allNotifications);
     });
     this.overlayVisible = !this.overlayVisible;
   }
@@ -273,11 +317,6 @@ export class AdminComponent implements OnInit {
   onClickLibrary() {
     this.router.navigate(['/template-mng']);
   }
-
-  // config: boolean = false;
-  // onClickConfig() {
-  //   this.config = true;
-  // }
 
   onClickAnchor() {
     this.isActive = true;
@@ -344,18 +383,14 @@ export class AdminComponent implements OnInit {
 
   onClickLogout() {
     sessionStorage.clear();
-    this.router.navigate(['/']);
-    // window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
+    window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
   }
 
   onClearNotification(id: any) {
-    // alert(id)
     this.userService.clearNotification(id).subscribe((data: any) => {
-      // console.log('notification cleared');
       this.userService.getAllNotifications().subscribe((data: any) => {
         this.allNotifications = this.filterNotificationData(data);
         this.allNotifications.reverse();
-        // console.log('updated notifications', this.allNotifications);
       });
     });
   }
@@ -372,6 +407,16 @@ export class AdminComponent implements OnInit {
       });
     this.overlayVisible = false;
     this.notificationCount = 0;
-    // this.notificationService.emitDialogFormData("event");
+  }
+
+
+  collapse = false;
+  
+
+  closeSidenav1(){
+this.collapse=false
+  }
+  toggleCollapse11(){
+    this.collapse=!this.collapse
   }
 }

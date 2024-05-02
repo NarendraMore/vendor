@@ -13,6 +13,7 @@ import { VendorComponent } from './vendor/vendor.component';
 import { SharedModulesModule } from '../shared-modules/shared-modules.module';
 import { ProjectComponent } from './project/project.component';
 import { ReportsComponent } from './reports/reports.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { ReportsComponent } from './reports/reports.component';
     CommonModule,
     AdminRoutingModule,
     PrimengModule,
-    SharedModulesModule
+    SharedModulesModule,
+    RouterModule
   ]
 })
 export class AdminModule { }

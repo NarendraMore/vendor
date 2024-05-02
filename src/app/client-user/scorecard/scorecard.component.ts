@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ScorecardService } from './scorecard.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProjectService } from 'src/app/services/project.service';
-
+import { UserService } from 'src/app/services/user.service';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-scorecard',
   templateUrl: './scorecard.component.html',
@@ -16,16 +18,72 @@ export class ScorecardComponent implements OnInit {
 
   projects: any;
   selectedProject!: string;
+
+  currentRoute:any;
+  allDecryptedData:any
+  allDecryptedprojectData:any 
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
   constructor(
     private service: ScorecardService,
     private router: Router,
-    private projectService: ProjectService
-  ) {}
+    private projectService: ProjectService,
+    private userService:UserService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+  }
 
   ngOnInit(): void {
+    if(this.currentRoute.includes('score')){
+      this.userService.activeNavIcon('proposal');
+    }
+
     this.projectService.getClients().subscribe(
       (data: any) => {
-        this.projects = data;
+
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        this.projects = this.allDecryptedprojectData;
         // console.log(this.projects, 'projects');
 
         // console.log(this.projects);
@@ -43,9 +101,52 @@ export class ScorecardComponent implements OnInit {
     );
     this.service.getScorecards().subscribe(
       (data: any) => {
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        // const decodedData = CryptoJS.enc.Base64.parse(base64EncodedData).toString(CryptoJS.enc.Utf8);
+        // console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        // console.log(toArray, 'split array');
+
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+
+        
+         const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+       
+        // console.log( cText1.toString(CryptoJS.enc.Utf8),'decrypt data');
+
+
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedData =decryptedObject
+          console.log(this.allDecryptedData, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
         // this.scorecards = data;
         // console.log(this.scorecards, ' all scorecards');
-        this.scorecards = this.transformTempalteClientuserData(data);
+        this.scorecards = this.transformTempalteClientuserData(this.allDecryptedData);
         this.projectList1 = this.transformDraftProjectList(this.scorecards);
         this.scorecards.reverse();
         // console.log("without reverse: ",this.scorecards);
@@ -59,21 +160,21 @@ export class ScorecardComponent implements OnInit {
 
   transformTempalteClientuserData(inputData: any) {
     this.allData = [];
-    const categoryData = inputData.filter((data: any) => {
-      // console.log(data, 'data of single project');
-      for (let i = 0; i < data.projectData.businessUser.length; i++) {
-        // console.log(data.projectData.businessUser[i]);
-
-        if (
-          data.projectData.businessUser[i] === sessionStorage.getItem('email')
-        ) {
-          this.allData.push(data);
+    const allDataSet = new Set();
+    
+    inputData.forEach((data: any) => {
+        for (let i = 0; i < data.projectData.businessUser.length; i++) {
+            if (data.projectData.businessUser[i] === sessionStorage.getItem('email')) {
+                allDataSet.add(data);
+                break; // Exit the loop after adding the data once
+            }
         }
-      }
     });
-    this.allData=this.transformScorecardByVendor(this.allData);
-
-    return this.allData;
+    
+    this.allData = Array.from(allDataSet);
+    const transformedData = this.transformScorecardByVendor(this.allData);
+    
+    return transformedData;
     // return categoryData4;
   }
 

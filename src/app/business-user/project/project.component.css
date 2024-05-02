@@ -45,7 +45,7 @@
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep .pbuttonclass2 {
@@ -74,7 +74,7 @@ h1 {
 h3 {
   color: #3a3a3a;
   font-size: 22px;
-  font-family: "Helvetica";
+  
   text-align: left;
   font-weight: bold;
 }
@@ -156,7 +156,7 @@ tr:nth-child(even) {
   background-color: #ffffff;
   color: #d04a02;
   border-color: #d04a02;
-  font-family: Helvetica;
+  ;
   margin-bottom: 10px;
 }
 
@@ -237,7 +237,7 @@ app-spinner {
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep .balancesheettable {
@@ -362,7 +362,7 @@ th {
 h3 {
   color: #3a3a3a;
   font-size: 22px;
-  font-family: "Helvetica";
+  
   text-align: left;
   font-weight: bold;
   padding: 10px 0px;

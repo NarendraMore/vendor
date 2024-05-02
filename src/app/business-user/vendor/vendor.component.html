@@ -302,6 +302,9 @@
               >
                 <span style="color: red"> field is required </span>
               </small>
+              <small *ngIf="addlineOfBusinessForm.get('lineOfBusiness')?.hasError('pattern')">
+                <span style="color: red;">Invalid Characters .</span>
+             </small>
             </span>
           </div>
         </div>
@@ -309,7 +312,7 @@
           <button
             pButton
             label="Cancel"
-            class="p-button-sm busibessCancelButton"
+            class="p-button-sm p-button-outlined busibessCancelButton"
             icon="pi pi-check-circle"
             (click)="onClickCancelLOB()"
           ></button>

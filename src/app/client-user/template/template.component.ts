@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { VendorMngServiceService } from 'src/app/vendor-mng-service.service';
 import { Template } from './newtemplate/template-details/model/template';
 import { ProjectService } from 'src/app/services/project.service';
-
+import { UserService } from 'src/app/services/user.service';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-template',
   templateUrl: './template.component.html',
@@ -17,43 +19,92 @@ export class TemplateComponent implements OnInit {
   selectedProject!: string;
   projectList1:any[]=[];
 
+  currentRoute:any;
+  allDecryptedprojectData:any;
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
   constructor(
     private router: Router,
     private service: VendorMngServiceService,
-    private projectService: ProjectService
-  ) {}
-  ngOnInit(): void {
+    private projectService: ProjectService,
+    private userService:UserService
+  ) {
 
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+
+  }
+  ngOnInit(): void {
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
+
+    
     this.projectService.getClients().subscribe(
       (data: any) => {
-        this.projects = data;
-        // console.log(this.projects,'projects');
-        
-      
-        // console.log(this.projects);
-        for (let i = 0; i < this.projects.length; i++) {
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        this.projects = this.allDecryptedprojectData;
+         for (let i = 0; i < this.projects.length; i++) {
           this.projects = this.projects.sort((a: any, b: any) => {
             if (a.projectName < b.projectName) return -1;
             if (a.projectName > b.projectName) return 1;
             return 0;
           });
-         
-          
         }
       },
       (error: HttpErrorResponse) => {
         alert('something went wrong');
       }
     );
+    
     this.service.getTemplateDetails().subscribe(
       (data: any) => {
         // this.templateDetails = data;
        
-        this.templateDetails =this.transformTempalteClientuserData(data);
+        this.templateDetails =this.transformTempalteClientuserData(data).reverse();
         this.projectList1 = this.transformDraftProjectList(
           this.templateDetails      
         );
-        this.templateDetails.reverse();
         // console.log( this.templateDetails ,' this.templateDetails...  ');
       },
       (error: HttpErrorResponse) => {
@@ -65,21 +116,20 @@ export class TemplateComponent implements OnInit {
 
 
   transformTempalteClientuserData(inputData: any) {
-    this.allData=[];
-    // console.log(inputData, 'inputData1');
-    const categoryData = inputData.filter((data: any) => {
-      // console.log(data, "data of single project");
-      for (let i = 0; i < data.project.businessUser.length; i++) {
-        // console.log(data.project.businessUser[i]);
-
-        if (data.project.businessUser[i] === sessionStorage.getItem('email')) {
-          this.allData.push(data)
-          console.log(this.allData,'all data');
-        }
-      }
-    });
-    return this.allData;
+    this.allData = [];
+    const allDataSet = new Set();
     
+    inputData.forEach((data: any) => {
+        for (let i = 0; i < data.project.businessUser.length; i++) {
+            if (data.project.businessUser[i] === sessionStorage.getItem('email')) {
+                allDataSet.add(data);
+                break; // Exit the loop after adding the data once
+            }
+        }
+    });
+    
+    this.allData = Array.from(allDataSet);
+    return this.allData;
     
   }
 

@@ -43,6 +43,19 @@ export class ClientUserComponent implements OnInit {
   overlayVisible: boolean = false;
   private subscription!: Subscription;
 
+
+  
+  userActiveRoute:any;
+  roleActiveRoute:any;
+  libraryActiveRoute:any;
+  projectActiveRoute:any;
+  vendorActiveRoute:any;
+  templateActiveRoute:any;
+  scorecardActiveRoute:any;
+  reportActiveRoute:any;
+  activeRoute:any;
+
+
   constructor(
     private router: Router,
     private userService: UserService,
@@ -53,6 +66,47 @@ export class ClientUserComponent implements OnInit {
   notificationCount:any=0;
 
   ngOnInit(): void {
+
+
+    this.userService.navIconSubscriber$.subscribe(
+      (data:any)=>{
+      if(data==='template'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.templateActiveRoute='activeRoute';
+        }
+        else if(data==='proposal'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.reportActiveRoute=null;
+          this.scorecardActiveRoute='activeRoute';
+        }
+        else if(data==='report'){
+          this.roleActiveRoute=null;
+          this.libraryActiveRoute=null;
+          this.projectActiveRoute=null;
+          this.vendorActiveRoute=null;
+          this.templateActiveRoute=null;
+          this.userActiveRoute=null;
+          this.scorecardActiveRoute=null;
+          this.reportActiveRoute='activeRoute';
+        }
+        else{
+          this.userActiveRoute='inactiveRoute';
+        }
+      }
+    )
+
+
     this.userService.getAllNotificationsCount().subscribe((data: any) => {
       // console.log(data);
       this.notificationCount = data;
@@ -253,8 +307,8 @@ export class ClientUserComponent implements OnInit {
 
   onClickLogout() {
     sessionStorage.clear();
-    this.router.navigate(['/']);
-    // window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
+    // this.router.navigate(['/']);
+    window.location.href = 'https://login-stg.pwc.com/openam/UI/Logout';
   }
 
   onClearNotification(id: any) {
@@ -283,5 +337,15 @@ export class ClientUserComponent implements OnInit {
       this.notificationCount=0;
 
       // this.notificationService.emitDialogFormData("event");
+    }
+
+    collapse = false;
+  
+
+    closeSidenav1(){
+  this.collapse=false
+    }
+    toggleCollapse11(){
+      this.collapse=!this.collapse
     }
 }

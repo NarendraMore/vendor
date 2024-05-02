@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TemplatebuilderService } from '../newtemplate/templatebuilder.service';
 import { Template } from './model/template';
+import { NavigationEnd, Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-table-structure',
@@ -9,13 +11,27 @@ import { Template } from './model/template';
 })
 export class TableStructureComponent implements OnInit {
   products: any[] = [];
-  countries: any[]=[];
-product1!:Template;
-  constructor(private templateService:TemplatebuilderService) {
-   
+  countries: any[] = [];
+  product1!: Template;
+  currentRoute: any;
+
+  constructor(
+    private templateService: TemplatebuilderService,
+    private router: Router,
+    private userService: UserService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
   }
 
   ngOnInit(): void {
+    
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
     this.countries = [
       {
         name: 'Category',
@@ -75,11 +91,11 @@ product1!:Template;
     ];
   }
 
-  newRow(){
+  newRow() {
     return {
       id: '',
       category: '',
-      cat_wightage:'',
+      cat_wightage: '',
       subcategory1: '',
       sc1_weightage: '',
       subcategory2: '',
@@ -93,12 +109,9 @@ product1!:Template;
     };
   }
 
-
-  onSelect(){
+  onSelect() {
     console.log(this.products[0].category);
-    
   }
-
 
   //copy the row
 
@@ -107,7 +120,7 @@ product1!:Template;
     console.log(product);
 
     this.templateService.copyProduct(product).subscribe(
-      (data:any) => {
+      (data: any) => {
         // this.messageService.add({
         //   severity: 'success',
         //   summary: 'Success',

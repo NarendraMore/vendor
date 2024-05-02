@@ -40,7 +40,6 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {PickListModule} from 'primeng/picklist';
 import { PanelModule } from 'primeng/panel';
 
-import { PowerBIEmbedModule } from 'powerbi-client-angular';
 
 
 //Angular material
@@ -98,8 +97,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
     ProgressSpinnerModule,
     ProgressBarModule,
     PickListModule,
-    PanelModule,
-    PowerBIEmbedModule
+    PanelModule
   ],
   exports:[
     TreeSelectModule,
@@ -149,8 +147,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
     ProgressSpinnerModule,
     ProgressBarModule,
     PickListModule,
-    PanelModule,
-    PowerBIEmbedModule
+    PanelModule
   ]
 })
 export class SharedModulesModule { }

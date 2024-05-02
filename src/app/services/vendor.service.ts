@@ -12,11 +12,17 @@ export class VendorService {
 
     // services for vendor management
     addVendor(userData: any) {
-      return this.http.post(`${environment.url}/vendors`, userData);
+      console.log(userData,'in servise data');
+      
+      console.log(userData.encreptedData, ' data is in service now');
+      const encreptedData=userData.encreptedData;
+      return this.http.post(`${environment.url}/vendors`, {encreptedData});
     }
   
     getVendors() {
-      return this.http.get(`${environment.url}/vendors`);
+      return this.http.get(`${environment.url}/vendors`,{
+        responseType: 'text'
+      });
     }
   
     deleteVendor(id: string) {

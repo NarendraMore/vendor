@@ -20,7 +20,8 @@ import { ProjectService } from 'src/app/services/project.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { NotificationService } from 'src/app/services/notification.service';
-
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-view-proposal',
   templateUrl: './view-proposal.component.html',
@@ -50,8 +51,16 @@ export class ViewProposalComponent implements OnInit {
   commentData: any = [];
   viewComment: boolean = false;
   issueType!: string;
-
+  allDecryptedvendorData:any
   disableField: boolean = false;
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
 
   constructor(
     private location: Location,
@@ -214,6 +223,8 @@ export class ViewProposalComponent implements OnInit {
         this.selectedTemplateData = data;
 
         if (this.selectedTemplateData) {
+          console.log("selected vendor data: ",this.selectedTemplateData);
+          
           this.selectedVendor = this.selectedTemplateData.vendorObject;
           this.getVendorList();
           this.populateData(this.selectedTemplateData.scoredTemplateData);
@@ -227,7 +238,46 @@ export class ViewProposalComponent implements OnInit {
 
   private getVendorList() {
     this.proposalService.getVendorList().subscribe((data: any) => {
-      this.vendorList = data;
+      console.log(data, 'encrypted data');
+      const base64EncodedData = data;
+      const decodedData = atob(base64EncodedData);
+      console.log(decodedData, 'decode data');
+      let toArray = decodedData.split(this.environment.kSeparator);
+      const key = CryptoJS.PBKDF2(
+        `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+        CryptoJS.enc.Hex.parse(toArray[1]),
+        {
+          keySize: this.environment.kSize / 32,
+          iterations: this.environment.cIter
+        }
+      );
+      let cipherParams = CryptoJS.lib.CipherParams.create({
+        ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+      });
+      console.log(key, 'key');
+      const _iv = toArray[0]
+      let cText1 = CryptoJS.AES.decrypt(
+        cipherParams,
+        key,
+        {
+          iv: CryptoJS.enc.Hex.parse(_iv),
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
+        }
+      );
+
+      console.log(cText1,'cetext1');
+      
+      try {
+        const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+        const decryptedObject = JSON.parse(decryptedString);
+        this.allDecryptedvendorData = decryptedObject
+        console.log(this.allDecryptedvendorData, 'decrypted object');
+      } catch (error) {
+        // console.error('Error parsing decrypted data as JSON:', error);
+      }
+
+      this.vendorList = this.allDecryptedvendorData;
     });
   }
 

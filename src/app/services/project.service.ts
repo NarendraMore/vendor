@@ -7,13 +7,14 @@ import { newProject } from '../business-user/project/model/project';
   providedIn: 'root',
 })
 export class ProjectService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // services for project management
   addClient(clientData: any) {
-    return this.http.post(`${environment.url}/projects`, clientData, {
-      responseType: 'text',
-    });
+
+    const encreptedData = clientData.encreptedData;
+    console.log(encreptedData, 'encrypted data in service123');
+    return this.http.post(`${environment.url}/projects`, { encreptedData },);
   }
 
   updateProject(data: newProject, clientFormId: string) {
@@ -32,7 +33,11 @@ export class ProjectService {
   }
 
   getClients() {
-    return this.http.get(`${environment.url}/projects`);
+    return this.http.get(`${environment.url}/projects`, {
+      responseType: 'text'
+    });
+    console.log('project service');
+
   }
 
   getdocByProjectId(id: string) {
@@ -164,19 +169,19 @@ export class ProjectService {
     );
   }
 
-  addDetaggedVendor(data:any){
-      return this.http.post(`${environment.url}/detag/`,data);
+  addDetaggedVendor(data: any) {
+    return this.http.post(`${environment.url}/detag/`, data);
   }
 
-  deleteRetaggedVendors(data:any){
+  deleteRetaggedVendors(data: any) {
     return this.http.delete(`${environment.url}/detag/${data}`)
   }
 
-  getDetaggedVendors(projectId:any){
+  getDetaggedVendors(projectId: any) {
     return this.http.get(`${environment.url}/detag/${projectId}`);
   }
 
-  getScorecardsByProjectId(projectId:any){
+  getScorecardsByProjectId(projectId: any) {
     return this.http.get(`${environment.url}/score_cards/scorecard/${projectId}`);
   }
 }

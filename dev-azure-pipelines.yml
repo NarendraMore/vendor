@@ -1,0 +1,132 @@
+# UI Pipeline
+parameters:
+  - name: ENVVG
+    displayName: Select Environment To Deploy
+    type: string
+    default: DEV
+    values:
+    - DEV
+    #- UAT
+    #- PROD
+
+  - name: blackduck
+    displayName: Do you want to scan for BlackDuck?(Click on it)
+    type: boolean
+    default: false
+    
+trigger:
+- dev
+
+# DEFINE VARIABLES
+variables:
+- name: build_agent_pool
+  value: windows-latest
+
+- name: build_content_path
+  value: "$(Build.SourcesDirectory)/dist/vendor-ui"
+  
+- name: env
+  ${{ if eq(parameters.ENVVG, 'DEV') }}:
+    value: dev
+  ${{ if eq(parameters.ENVVG, 'UAT') }}:
+    value: uat
+  ${{ if eq(parameters.ENVVG, 'PROD') }}:
+    value: prod
+
+stages:
+- ${{ if eq(parameters.blackduck, false) }}:
+  - stage: BUILD
+    displayName: 'Build ${{ parameters.ENVVG }}'
+    pool: 
+      vmImage: $(build_agent_pool)
+    jobs:
+      - job: Build
+        displayName: "Build UI"
+        workspace:
+          clean: all
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '16.x'
+            displayName: 'Install Node.js'          
+
+          - task: Npm@1
+            displayName: 'angular install'
+            inputs:
+              command: custom
+              customCommand: 'install -g @angular/cli@14.2.10'  
+
+          - task: Npm@1
+            displayName: 'npm install '
+            inputs:
+              command: custom
+              customCommand: 'install --legacy-peer-deps' 
+          
+          - task: Npm@1
+            displayName: 'build project'
+            inputs:
+              command: custom
+              customCommand: 'run ng build'
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(build_content_path)
+              artifactName: build_ui_$(env)
+            displayName: "Publish pipeline artifact"
+
+  - stage: Deploy
+    dependsOn: Build
+    displayName: 'deploy ${{ parameters.ENVVG }}'
+    pool: 
+      vmImage: $(build_agent_pool)
+    jobs:
+    - deployment: VM_VEM
+      displayName: Deploy to VM
+      workspace:
+        clean: all
+      environment: 
+        name: VEM_VM
+        resourceType: VirtualMachine
+      strategy:
+        runOnce:
+          deploy:   
+            steps:
+              
+              - task: DownloadPipelineArtifact@2
+                inputs:
+                  artifact: build_ui_$(env)
+                  path: $(System.DefaultWorkingDirectory)/build_ui_$(env)
+
+              - powershell: |
+                  Write-Host "Remove Old Content"
+                  Remove-Item -path 'C:\CICD\devFrontend\**' -Recurse -Force -EA SilentlyContinue -Verbose;
+
+                  Write-Host "Copy UI code to VM Path"      
+                  Copy-Item '$(System.DefaultWorkingDirectory)/build_ui_$(env)/*' 'C:\CICD\devFrontend' -Recurse 
+
+- ${{ if eq(parameters.blackduck, true) }}:
+  - stage: BlackDuck
+    displayName: 'BlackDuck ${{ parameters.ENVVG }}'
+    pool: 
+      vmImage: $(build_agent_pool)
+    jobs:
+      - job: BlackDuck
+        displayName: "BlackDuck Scan"
+        workspace:
+          clean: all
+        steps:
+          - checkout: self
+
+          - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@8
+            displayName: 'Black Duck - Synopsys Detect for your build '
+            inputs:
+              BlackDuckService: 'black_duck'
+              DetectArguments: |
+                --detect.diagnostic=true
+                --detect.project.name="IN-VEM"
+                --detect.project.version.name="$(bd_version)"
+                --detect.project.codelocation.suffix="UI"
+                --detect.output.path="C:\Users\VssAdministrator\blackduck"
+            #continueOnError: true

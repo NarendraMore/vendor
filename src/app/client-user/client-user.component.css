@@ -1,10 +1,23 @@
+/* @font-face {
+  font-family: YourFontFamily;
+  src: url(src/assets/Fonts/HelveticaNeueLTW01-55Roman.ttf) format("opentype");
+}
+
+* {
+  font-family: YourFontFamily;
+} */
+
 .container {
   width: 100%;
-  position: fixed;
+  position: static;
   height: auto;
-  display: flex;
-  flex-wrap: wrap;
+  /* Add this line to prevent horizontal scrolling */
+  overflow-x: hidden;
+  font-family: HelveticaNeue !important;
+
 }
+
+
 
 ::ng-deep .title {
   text-align: center;
@@ -15,9 +28,7 @@
   width: 100%;
   margin: 0;
 }
-.topOptions i.notifyIcon {
-  font-size: 33px !important; 
-}
+
 .nav-pane {
   background: #f2f2f2;
   scroll-behavior: auto;
@@ -35,55 +46,6 @@
   font-size: larger;
 }
 
-.clearIcon2 {
-  padding: 0%;
-  height: 20px !important;
-  width: 20px;
-}
-
-.notify {
-  font-size: larger;
-  padding: 0.5rem !important;
-}
-
-.mat-menu-panel {
-  min-width: 112px;
-  max-width: 487px !important;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  max-height: calc(100vh - 48px);
-  border-radius: 4px;
-  outline: 0;
-  min-height: 64px;
-}
-
-::ng-deep .matMenu {
-  max-width: 500px !important;
-  border: 1px solid;
-  height: 20rem !important;
-}
-
-::ng-deep .notificationPanel {
-  background-color: white !important;
-  color: black !important;
-  border: 1px solid black;
-  width: 35% !important;
-  height: 40% !important;
-  overflow: auto !important;
-
-}
-
-.notificationButton {
-  height: 20px !important;
-}
-
-.footer-section {
-  /* position: fixed; */
-  position: relative;
-  float: right;
-  margin-bottom: 2%;
-}
-
 a {
   text-decoration: none;
   color: white;
@@ -94,15 +56,11 @@ i {
   color: white;
 }
 
-/* a:hover , i:hover
-    {
-        color: #415385;
-    } */
 
 .nav-buttons {
   background-color: #f2f2f2;
   color: #7d7d7d;
-  font-family: Helvetica Neue LT Pro;
+  ;
   font-size: 20px;
 }
 
@@ -121,7 +79,6 @@ ul {
   color: white;
   font-size: larger;
 }
-
 ::ng-deep .leftpanel {
   height: 100%;
   position: static;
@@ -138,66 +95,6 @@ ul {
   display: flex;
 }
 
-.item {
-  padding: 0.5rem;
-  font-size: 22px;
-  color: #7c7c7c;
-  cursor: pointer;
-  font-family: "Helvetica Neue LT Pro";
-}
-
-.item:hover,
-a:hover,
-i:hover {
-  background-color: #415385;
-  color: #ffffff;
-}
-
-.toggle {
-  padding: 0.7rem;
-  font-size: 22px;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  font-family: "Helvetica Neue LT Pro";
-  font-size: 18px;
-}
-
-/* @media screen and (max-width: 400px) {
-        .toolbar{
-            display: flex;
-            flex-wrap: wrap;
-            height: 100px;
-            width: fit-content;
-        }
-    
-        .title1,.userInfo{
-            display: none;
-        }
-    }
-    
-    @media screen and (max-width: 490px) {
-        .title1 {
-            width: 5px;
-        }
-    }
-    
-    @media screen and (max-width: 754px) {
-        .title1 {
-            font-size:medium;
-        }
-    
-    
-        .userInfo{
-            font-size:medium;
-        }
-    } */
-
-img {
-  width: 50px;
-  margin-right: 10px;
-}
-
 ::ng-deep .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -212,7 +109,8 @@ img {
 ::ng-deep .cardData {
   color: black;
   background-color: #f2f2f2;
-  height: 9vh;
+  height: 3.5rem;
+  width: 102% !important;
 }
 
 span {
@@ -226,15 +124,6 @@ span {
   margin-left: 10px !important;
   color: #252525;
   font-size: x-large !important;
-}
-
-.pages {
-  position: relative;
-  float: left;
-  height: 90vh;
-  flex: 1;
-  overflow-x: hidden;
-  padding: 30px;
 }
 
 .footer {
@@ -259,7 +148,6 @@ span {
   ::ng-deep img {
     display: none;
   }
-
   ::ng-deep .userData {
     display: none;
   }
@@ -267,32 +155,19 @@ span {
 
 a {
   color: #7c7c7c;
-  font-family: Helvetica Neue LT Pro;
+  ;
 }
 
 i {
   color: #7c7c7c;
-  /* width: 27.77px;
-        height: 32px; */
   font-size: x-large;
   margin-bottom: 5px;
 }
 
-/* ::ng-deep active{
-        background-color: #415385;
-    } */
-/* left sidenav new css */
 
-.sidenav {
-  margin-top: 9vh;
-  background: #f2f2f2;
-  transition: all 0.5s ease;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  width: 5rem;
-  height: 100vh;
-}
+
+
+
 
 .logo-container {
   display: flex;
@@ -302,7 +177,6 @@ i {
   left: 0;
   margin-bottom: 10px;
 }
-
 .logo {
   background: #fff;
   text-align: center;
@@ -332,7 +206,6 @@ i {
   background-color: transparent;
   border: none;
 }
-
 .fa-times {
   color: #7d7d7d;
   font-size: 22px;
@@ -340,71 +213,27 @@ i {
 
 .sidenav-collapsed {
   width: 16.5625rem;
+  
 }
 
-.sidenav-nav {
-  list-style: none;
-  padding: 0.938rem;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: calc(100% - 3.65rem);
-  cursor: pointer;
-}
 
-.sidenav-nav-item {
-  width: 100%;
-  margin-bottom: 0.625rem;
-}
 
-.sidenav-nav-link {
-  display: flex;
-  align-items: center;
-  height: 3rem;
-  color: #7d7d7d;
-  text-decoration: none;
-  border-radius: 0.625rem;
-  transition: all 0.3s ease;
-}
-
-.sidenav-link-icon {
-  font-size: 22px;
-  width: 2rem;
-  min-width: 2rem;
-  margin: 0 0.5rem;
-  text-align: center;
-}
 
 .collapseIcon {
   font-size: 22px;
   width: 2rem;
   min-width: 2rem;
-  margin: 0 0.8rem;
-  text-align: center;
+  /* margin: 0 0rem 0 1rem; */
+  /* text-align: center; */
 }
 
-.sidenav-link-text {
-  margin-left: 1.5rem;
-  font-family: Helvetica;
-  font-size: 22px;
-}
 
-.sidenav-nav-item:hover .sidenav-nav-link {
-  background-color: #415385;
-  color: #7d7d7d;
-}
 
-.active {
-  background-color: #415385 !important;
-}
 
-.sidenav-link-text {
-  color: #7d7d7d;
-}
 
 .pages {
-  width: calc(100% - 5rem);
+  overflow-x: hidden;
+  overflow-y: auto;
   height: 100vh;
   margin-left: 5rem;
   margin-bottom: 10vh !important;
@@ -413,17 +242,17 @@ i {
   top: 0;
   transition: all 0.8s ease;
   background: white;
-  padding: 1rem 3rem;
+  padding: 1rem 1rem;
 }
 
 .pages-trimmed {
-  width: calc(100% - 16.5625rem);
   margin-left: 16.5625rem;
+
 }
 
 .pages-md-screen {
-  width: calc(100% - 5rem);
-  margin-left: 5rem;
+  margin-left: 4rem;
+
 }
 
 ::ng-deep .toggleIcon {
@@ -437,14 +266,12 @@ i {
 
 ::ng-deep .collapse {
   color: #7d7d7d;
-    font-size: 22px;
-
+  font-size: 22px;
 }
 
 ::ng-deep .blank {
-  margin-top: 10vh !important;
+  margin-top: 10vh !important ;
 }
-
 :host::ng-deep .logo1 * {
   color: black !important;
   margin: 1rem 0.2rem !important;
@@ -459,13 +286,15 @@ i {
   margin: 1rem !important;
   color: black !important;
   font-size: 20px;
-  padding: 20px 10px;
+  padding: 0px 10px;
   font-size: x-large !important;
-
+}
+.topOptions i.notifyIcon {
+  font-size: 33px !important; 
 }
 
 ::ng-deep .options {
-  margin: 1rem !important;
+  margin: 1rem 0.5rem 1rem 1rem !important;
 }
 
 ::ng-deep .profileIcon {
@@ -476,50 +305,264 @@ i {
   font-size: xx-large !important;
 }
 
-.notifyIcon:hover{
-  background-color: #f2f2f2 !important;
-  color: #7c7c7c;
-  } 
 
-.logoImage {
+.logoImage{
   float: left;
   margin-top: 1rem;
   zoom: 120%;
-  margin-left: 10px;
   margin-top: 19px !important;
+  margin-left: 10px;
+
 }
-::ng-deep .notificationPanel{
+
+.notify{
+  font-size: larger;
+  padding: 0.5rem !important;
+}
+
+::ng-deep .matMenu{
+  max-width: 500px !important;
+  height: 20rem !important;
+}
+::ng-deep .notificationPanel2{
   background-color: white !important;
   color: black !important;
   border: 1px solid black;
   width: 35% !important;
-  height: auto;
+  height: 40%;
   overflow: auto !important;
 }
 
-::ng-deep .clearAllButton{
-  color: red !important;
-  padding: 10px !important;
-  font-size: larger !important;
-  font-weight: bold;
-  cursor: pointer;
+.notifyIcon:hover{
+  background-color: #f2f2f2 !important;
+  color: #7c7c7c;
   }
-  /* Define the initial icon style */
-.icon-container {
-  display: inline-block;
+
+.footer-section {
   position: relative;
+  float: right;
+  margin-bottom: 2%;
+}
+.clearIcon{
+  padding: 0%;
+  height: 20px !important;
+  width: 20px;
 }
 
-.icon-container img {
-
-  height: auto;
-  transition: color 0.1s ease; 
+::ng-deep .notificationPanel{
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid black;
 }
 
-/* Change the color on hover */
-.icon-container:hover img {
+::ng-deep .clearAllButton{
+color: red !important;
+padding: 10px !important;
+font-size: larger !important;
+font-weight: bold;
+cursor: pointer;
+}
+
+.sidenav {
+  background: #F2F2F2;
+  transition: all 0.5s ease;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 5rem;
+  margin-top: 3.5rem;
+  height: 120vh;
+}
+
+.logo-container {
+ 
+  bottom: 0;
+}
+.logo {
+  background-color: #fff;
+  text-align: center;
+  width: 3rem;
+  min-width: 3rem;
+  border-radius: 0.313rem;
+  padding: 0.313rem;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+}
+
+.logo-text {
+  margin-left: 1.5rem;
+  font-size: 24px;
+  font-weight: 700;
+  color: #7C7C7C;
+}
+
+.btn-close {
+  margin-left: auto;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+}
+
+.fa-times {
+  color: #fff;
+  font-size: 24px;
+}
+
+.sidenav-collapse {
+  width: 16.5635rem;
+}
+
+.sidenav-nav {
+  list-style: none;
+  padding: 0.938rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100% - 3.64rem);
+  cursor: pointer;
+}
+
+.sidenav-nav-item {
+  width: 100%;
+  margin-bottom: 0.625rem;
+}
+
+.sidenav-nav-link {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  color: #7C7C7C;
+  text-decoration: none;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease;
+}
+
+.sidenav-link-icon {
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  margin: 0 0.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.sidenav-link-text {
+  width: 76px;
+  height: 30px;
+  font-size: x-large;
+  margin-left: 1.5rem;
+  margin-top: 5px;
+  border-radius: 0.625rem;
+  transition: all 0.3s ease;
+  color: #7C7C7C;
+  ;
+}
+
+.sidenav-nav-item:hover {
+  color: #000;
+}
+.sidenav-nav-link:hover {
+  background-color: #415385;
+  color: #000;
+}
+
+.pages {
+  position: relative;
+  float: left;
+  height: 90vh;
+  flex: 1;
+  overflow-x: hidden;
+  padding: 10px;
+  margin-left: 90px !important;
+}
+.pages {
+  width: calc(100% - 4rem);
+  height: 100vh;
+  margin-left: 5rem;
+  margin-bottom: 10vh !important;
+  z-index: 0;
+  position: relative;
+  top: 0;
+  transition: all 0.8s ease;
+  background: white;
+  padding: 1rem 2rem;
+}
+
+.pages-trimmed {
+  width: calc(100% - 16.5625rem);
+  margin-left: 16.5625rem;
+}
+
+.pages-md-screen {
+  width: calc(100% - 4rem);
+  margin-left: 4rem;
+}
+
+.active {
+  background-color: #415385;
+}
+
+.active .sidenav-link-icon,
+.active .sidenav-link-text {
   filter: brightness(4.5); 
 }
-.lableHover:hover {
-  color: rgb(255, 255, 255); 
+
+.navbar{
+  width:calc(100%-4.5rem);
+  height: 4rem;
+  background-color: #F2F2F2;
+
+}
+
+.logoImage{
+  float: left;
+  margin-top: 1rem;
+  zoom: 120%;
+  margin-top: 19px !important;
+  margin-left: 10px;
+
+}
+.title1 {
+  margin-left: 10px !important;
+  color: #252525;
+  font-size: x-large !important;
+}
+
+.inside, .outside{
+  border: none;
+  margin-left: 0.5rem;
+  margin-right: 0.7rem;
+    cursor: pointer;
+}
+.outside{
+  transform: scaleX(-1);
+  
+}
+
+.activeRoute,.active{
+  background-color: #415385;
+  color: white;
+}
+.inactiveRoute{
+  background-color: #7C7C7C;
+}
+
+.activeRoute .sidenav-link-icon,
+.activeRoute .sidenav-link-text {
+  filter: brightness(4.5); 
+}
+
+.collapse{
+  font-size: x-large;
+}
+
+::ng-deep .cardd {
+  margin-top: 50px;
+  box-shadow: none;
 }

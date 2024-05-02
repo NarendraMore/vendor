@@ -1,3 +1,5 @@
+
+
 ::ng-deep .pbutton {
   background-color: #d93954;
   border-color: white;
@@ -20,7 +22,6 @@
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
 }
 
 .roles{
@@ -30,7 +31,7 @@ h1 {
 .newroles {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 ::ng-deep .accesscard {
@@ -41,7 +42,7 @@ h1 {
 h3 {
   color: #3a3a3a;
   font-size: 22px;
-  font-family: "Helvetica ";
+  ;
   font-weight: bold;
   padding-top: 5px;
 }
@@ -60,9 +61,9 @@ h3 {
   color: white;
   float: right;
   margin-right: 10px !important;
-  margin-top: 10px !important;
+  margin-top: 9px !important;
   border: none;
-  font-family: Helvetica;
+  height: 37px;
 }
 
 ::ng-deep .pbuttonclass1 {
@@ -71,7 +72,7 @@ h3 {
   float: right;
   /* margin-right: 4rem !important; */
   border: none;
-  font-family: Helvetica;
+  ;
 }
 
 .pbuttonclass1:hover {
@@ -122,7 +123,8 @@ tr:nth-child(even) {
   margin-right: 10px !important;
   margin-top: 10px !important;
   border: none;
-  font-family: Helvetica;
+  height: 37px;
+
   border-color: #d04a02 !important;
   color: #d04a02 !important;
   margin-top: 8px !important;

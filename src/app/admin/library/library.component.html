@@ -6,28 +6,66 @@
   <div style="margin-top: 10px">
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
-      <input type="text" pInputText class="p-inputtext-sm" placeholder="Search"
-        (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+      <input
+        type="text"
+        pInputText
+        class="p-inputtext-sm"
+        placeholder="Search"
+        (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+      />
     </span>
     &nbsp;
-    <p-dropdown styleClass="dropdownValue" [options]="lineItemtypes" [(ngModel)]="selectedType" placeholder="Filter By"
-      optionLabel="type" optionValue="type" (onChange)="dt.filterGlobal($any(selectedType), 'equals')"
-      [showClear]="true" [filter]="true" filterBy="type"></p-dropdown>
+    <p-dropdown
+      styleClass="dropdownValue"
+      [options]="lineItemtypes"
+      [(ngModel)]="selectedType"
+      placeholder="Filter By"
+      optionLabel="type"
+      optionValue="type"
+      (onChange)="dt.filterGlobal($any(selectedType), 'equals')"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="type"
+    ></p-dropdown>
 
-    <button class="p-button-sm submitButton2" style="float: right" pButton label="Add" icon="pi pi-plus-circle"
-      (click)="onClickAdd()"></button>
+    <button
+      class="p-button-sm submitButton2"
+      style="float: right"
+      pButton
+      label="Add"
+      icon="pi pi-plus-circle"
+      (click)="onClickAdd()"
+    ></button>
     <span>
-      <button [disabled]="!selectedProducts || !selectedProducts.length"
-        class="p-button-sm p-button-outlined deleteButton" style="float: right" pButton pTooltip="Delete" tooltipPosition="top"
-        icon="pi pi-trash" (click)="onClickDelete()"></button>
+      <button
+        [disabled]="!selectedProducts || !selectedProducts.length"
+        class="p-button-sm p-button-outlined deleteButton"
+        style="float: right"
+        pButton
+        pTooltip="Delete"
+        tooltipPosition="top"
+        icon="pi pi-trash"
+        (click)="onClickDelete()"
+      ></button>
     </span>
   </div>
   <!-- 
       <div class="p-grid">
       <div class="p-col-12 md:col-6"> -->
-  <p-table #dt [value]="categoriesData" [rows]="10" [paginator]="true" [globalFilterFields]="['value', 'type']"
-    [(selection)]="selectedProducts" [rowHover]="true" dataKey="id" styleClass="p-datatable-sm categoryTable"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+
+  <p-table
+    #dt
+    [value]="categoriesData"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['value', 'type']"
+    [(selection)]="selectedProducts"
+    [rowHover]="true"
+    dataKey="id"
+    styleClass="p-datatable-sm categoryTable"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
     <ng-template pTemplate="header">
       <tr class="myTable">
         <th style="width: 4rem">
@@ -52,8 +90,15 @@
         <td>{{ category.value }}</td>
         <td>{{ category.type }}</td>
         <td>
-          <button pTooltip="Edit" tooltipPosition="top" pButton pRipple icon="pi pi-pencil"
-            class="p-button-sm p-button-outlined actionButton" (click)="onClickEdit(category)"></button>
+          <button
+            pTooltip="Edit"
+            tooltipPosition="top"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-sm p-button-outlined actionButton"
+            (click)="onClickEdit(category)"
+          ></button>
         </td>
       </tr>
     </ng-template>
@@ -62,54 +107,91 @@
    </div> -->
   <span>
     <form [formGroup]="categoryForm">
-      <div> 
-        <p-dialog [modal]="true" class="userDialog" [closable]="false" [(visible)]="addCategoryDialogBox"
-          [style]="{ width: '30%', margin: '0px 20px' }" (onHide)="onClickCancle()">
+      <div>
+        <p-dialog
+          [modal]="true"
+          class="userDialog"
+          [closable]="false"
+          [(visible)]="addCategoryDialogBox"
+          [style]="{ width: '30%', margin: '0px 20px' }"
+          (onHide)="onClickCancle()"
+        >
           <ng-template pTemplate="header">
             <h1>
-             
               <span>
-                <span style="cursor: pointer;"> <i (click)="onClickCancle()" class="pi pi-times"> </i></span>  &nbsp;
+                <span style="cursor: pointer">
+                  <i (click)="onClickCancle()" class="pi pi-times"> </i
+                ></span>
+                &nbsp;
                 <b>{{
                   editCategoryForm ? " Edit Line Item" : " Add Line Item"
-                  }}</b>
+                }}</b>
               </span>
             </h1>
           </ng-template>
           <ng-template pTemplate="content">
             <div style="font-weight: bold; margin-bottom: 10px">
               <label for="">
-                Select Line Item type <span style="color: red">*</span></label>
-              <p-dropdown [showClear]="true" styleClass="lineItemDropdown" [options]="lineItemtypes"
-                formControlName="type" placeholder="Select" optionLabel="type" optionValue="type" appendTo="body"
-                [filter]="true" filterBy="type"></p-dropdown>
-              <small *ngIf="
+                Select Line Item type <span style="color: red">*</span></label
+              >
+              <p-dropdown
+                [showClear]="true"
+                styleClass="lineItemDropdown"
+                [options]="lineItemtypes"
+                formControlName="type"
+                placeholder="Select"
+                optionLabel="type"
+                optionValue="type"
+                appendTo="body"
+                [filter]="true"
+                filterBy="type"
+              ></p-dropdown>
+              <small
+                *ngIf="
                   !categoryForm.get('type')?.valid &&
                   categoryForm.get('type')?.touched
-                ">
+                "
+              >
                 <span style="color: red">This field is required. </span>
               </small>
+
             </div>
-            <div style="margin-top: 20px; font-weight: bold; margin-bottom: 10px">
+            <div
+              style="margin-top: 20px; font-weight: bold; margin-bottom: 10px"
+            >
               <label for="">
                 Enter Line Item Name
                 <span style="color: red">*</span>
               </label>
               <br />
-              <input formControlName="value" type="text" class="p-inputtext-sm" style="width: 100%" pInputText
-                placeholder="Enter" />
-              <small *ngIf="
+              <input
+                formControlName="value"
+                type="text"
+                class="p-inputtext-sm"
+                style="width: 100%"
+                pInputText
+                placeholder="Enter"
+              />
+              <small
+                *ngIf="
                   !categoryForm.get('value')?.valid &&
                   categoryForm.get('value')?.touched
-                ">
-                <span style="color: red">This field is required. </span>
+                "
+              >
+                <span style="color: red">This field is required. </span>      
+              </small>
+              
+              <small   *ngIf="categoryForm.get('value')?.hasError('pattern')">
+            <span style="color: red">Invalid characters .</span>
               </small>
               <br />
-              <small *ngIf="
+              <small
+                *ngIf="
                   !categoryForm.get('value')?.valid &&
                   categoryForm.get('value')?.touched &&
                   categoryForm.get('value')?.errors
-                ">
+                "
+              >
                 <span style="color: red">
                   Line Item contains atleast 2 and maximum 255 characters
                 </span>
@@ -118,16 +200,33 @@
           </ng-template>
           <ng-template pTemplate="footer">
             <span>
-              <button class="p-button-sm p-button-outlined cancleButtons" style="float: left" pButton label="Cancel"
-                (click)="onClickCancle()"></button>
+              <button
+                class="p-button-sm p-button-outlined cancleButtons"
+                style="float: left"
+                pButton
+                label="Cancel"
+                (click)="onClickCancle()"
+              ></button>
             </span>
             <span *ngIf="editCategoryForm">
-              <button [disabled]="categoryForm.invalid" class="submitButton"
-                style="float: right;" pButton label="Edit" (click)="onClickUpdate()"></button>
+              <button
+                [disabled]="categoryForm.invalid"
+                class="submitButton"
+                style="float: right"
+                pButton
+                label="Edit"
+                (click)="onClickUpdate()"
+              ></button>
             </span>
             <span *ngIf="!editCategoryForm">
-              <button [disabled]="categoryForm.invalid" class="submitButton1" style="float: right" pButton label="Submit"
-                (click)="onClickSave()"></button>
+              <button
+                [disabled]="categoryForm.invalid"
+                class="submitButton1"
+                style="float: right"
+                pButton
+                label="Submit"
+                (click)="onClickSave()"
+              ></button>
             </span>
           </ng-template>
         </p-dialog>
@@ -138,7 +237,10 @@
 
 <!-- Notification msg's -->
 <p-toast></p-toast>
-<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog
+  header="Confirmation"
+  icon="pi pi-exclamation-triangle"
+></p-confirmDialog>
 <!-- Spinner -->
 <ng-container *ngIf="isLoading">
   <div class="spinner"></div>

@@ -7,6 +7,27 @@ import { RoleService } from 'src/app/services/role.service';
 import { UserService } from 'src/app/services/user.service';
 import { Role } from '../role/model/role';
 import { User, Manager } from './model/user';
+import { NavigationEnd, Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
+
+export interface encreptedDataObject {
+  encreptedData?: any;
+}
+
+export interface encrytdata {
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+  email: string;
+  role: string;
+  manager: string;
+  partner: string;
+  userStatus: string;
+  createdOn: string;
+  createdBy: string;
+  editedBy: string;
+}
 
 
 @Component({
@@ -26,6 +47,7 @@ export class UserComponent implements OnInit {
   userData!: User;
 
   roles: Role[] = [];
+  encryptUser: encrytdata[] = [];
   roles1: any[] = [];
   managers: Manager[] = [];
   partners: Manager[] = [];
@@ -64,19 +86,31 @@ export class UserComponent implements OnInit {
   // pwdPattern = "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,12}$";
   mobnumPattern = '^((\\+91-?)|0)?[5,6,7,8,9]{1}[0-9]{9}$';
   emailPattern = '^[A-Za-z0-9._%+-]+[@]{1}[A-Za-z0-9.-]+[.]{1}[A-Za-z]{2,4}$';
+  managerpattern = '[^<>]*$';
+  partnerpattern = '[^<>]*';
 
   userId!: string;
   userFormEditable: boolean = false;
   before!: boolean;
   isLoading: boolean = false;
-
+  newEncryptedObject!: encreptedDataObject;
+  currentRoute: any;
   constructor(
     private vendorService: UserService,
     private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private spinner: LoadingSpinnerService
+    private spinner: LoadingSpinnerService,
+    private router: Router,
+    private userService: UserService
   ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.log('Current route in user:', this.router.url);
+        this.currentRoute = this.router.url;
+      }
+    });
+
     // this.roles = [
     //   { role: 'Super Admin' },
     //   { role: 'Admin' },
@@ -186,15 +220,19 @@ export class UserComponent implements OnInit {
 
   currentTime!: Date;
   intervalId: any;
-
+  allDecryptedData:any
   ngOnInit(): void {
+    console.log('currentRoute: ', this.currentRoute);
+
+    if (this.currentRoute.includes('user')) {
+      this.userService.activeNavIcon('user');
+    }
 
     // this.intervalId = setInterval(() => {
     //   this.currentTime = new Date();
     //   console.log(this.currentTime);
-      
-    // }, 1000); // Update every 1 second
 
+    // }, 1000); // Update every 1 second
 
     this.spinner.isLoading.subscribe((val) => {
       this.isLoading = val;
@@ -228,8 +266,8 @@ export class UserComponent implements OnInit {
         Validators.pattern(this.emailPattern),
       ]),
       role: new FormControl(''),
-      manager: new FormControl(''),
-      partner: new FormControl(''),
+      manager: new FormControl('',[Validators.required,Validators.pattern(this.managerpattern)]),
+      partner: new FormControl('',[Validators.required,Validators.pattern(this.partnerpattern)]),
       userStatus: new FormControl(''),
       createdOn: new FormControl(''),
       createdBy: new FormControl(''),
@@ -241,7 +279,7 @@ export class UserComponent implements OnInit {
     this.roleService.getRoles().subscribe(
       (data: any) => {
         this.before = true;
-        this.roles1=[];
+        this.roles1 = [];
         this.getActiveRoles(data);
         this.before = false;
       },
@@ -253,7 +291,53 @@ export class UserComponent implements OnInit {
     // to fetch all users
     this.vendorService.getuUser().subscribe(
       (data: any) => {
-        this.allUsers = data;
+        // console.log(data, 'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        // const decodedData = CryptoJS.enc.Base64.parse(base64EncodedData).toString(CryptoJS.enc.Utf8);
+        // console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        // console.log(toArray, 'split array');
+
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        );
+        let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key');
+
+        
+         const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+       
+        // console.log( cText1.toString(CryptoJS.enc.Utf8),'decrypt data');
+
+
+        try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedData =decryptedObject
+          // console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+       
+        this.allUsers =  this.allDecryptedData;
+        // console.log(data, ' all Users');
         this.allUsers.reverse();
         // console.log(this.allUsers, ' all Users');
         this.spinner.isLoading.next(false);
@@ -264,16 +348,16 @@ export class UserComponent implements OnInit {
     );
   }
 
-
-  getActiveRoles(data:any){
-    for (let i = 0; data.length; i++) {
+  getActiveRoles(data: any) {
+    for (let i = 0; i < data.length; i++) {
       if (data[i].roleStatus === 'Active') {
         const activeRoles = data[i];
         this.roles1.push(activeRoles);
+      } else {
+        this.roles1 = [];
       }
     }
   }
-
 
   onClickAddUser() {
     this.checked = true;
@@ -284,29 +368,92 @@ export class UserComponent implements OnInit {
     this.checked = e.checked;
   }
 
+  userPostencryptedData: any[] = [];
+  encryptUserData: any
+  private secretKey = '1234567890123456';
+
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
+
+
+
+  
+
+
+
+
+
+
   onClickSave() {
     if (this.checked) {
       this.userForm.value.userStatus = 'Active';
     } else {
       this.userForm.value.userStatus = 'Inactive';
     }
-    
+
     // get role by roleName
 
     this.roleService.getRoleByName(this.userForm.value.role).subscribe(
       (data: any) => {
-        // console.log(data," get role by rolename");
+        console.log(data, ' get role by rolename');
 
         this.userForm.value.role = data;
-        this.userForm.value.editedBy=sessionStorage.getItem('email');
-        this.userForm.value.createdBy=sessionStorage.getItem('email');
+        this.userForm.value.editedBy = sessionStorage.getItem('email');
+        this.userForm.value.createdBy = sessionStorage.getItem('email');
+        // const kSize =256
+        const jsonString = JSON.stringify(this.userForm.value);
+        const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        const iv = CryptoJS.lib.WordArray.random(128 / 8).toString(CryptoJS.enc.Hex);
+        // const keySize1 = 128 / 32;
+        const passPhrase = 'anemoi';
 
 
-        // this.userForm.value.createdBy=sessionStorage.getItem('email');
-        // this.userForm.value.editedBy=sessionStorage.getItem('email');
-        // console.log(this.userForm.value," before service");
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(salt),
+          {
+            keySize: this.environment.kSize / 32, iterations: this.environment.cIter
+          }
+        );
+        console.log('key ###', key);
+        console.log('jsonString ###', jsonString);
 
-        this.vendorService.addUser(this.userForm.value).subscribe(
+        let cText = CryptoJS.AES.encrypt(
+          jsonString,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        );
+        console.log('key ###', key);
+        console.log('Iv ###', iv);
+        console.log('salt ###', salt);
+
+
+
+        let aesText = iv + this.environment.kSeparator + salt + this.environment.kSeparator + cText.ciphertext.toString(CryptoJS.enc.Base64);
+        let aesFinalText = btoa(aesText);
+        console.log("aesText: ", aesFinalText);
+
+        this.newEncryptedObject = {};
+
+        this.newEncryptedObject.encreptedData = aesFinalText;
+        console.log('string data', this.encryptUserData);
+
+
+
+
+
+
+        this.vendorService.addUser(this.newEncryptedObject, this.secretKey).subscribe(
           (data: any) => {
             this.addUserDialogBox = false;
 
@@ -353,7 +500,7 @@ export class UserComponent implements OnInit {
   }
 
   onClickUpdate() {
-    this.userForm.value.editedBy=sessionStorage.getItem('email');
+    this.userForm.value.editedBy = sessionStorage.getItem('email');
 
     // console.log(JSON.stringify(this.userForm.value), ' data to be updated');
 
@@ -426,11 +573,13 @@ export class UserComponent implements OnInit {
     this.userForm.reset();
   }
 
-  editUser(id: string) {
-    this.vendorService.getUserById(id).subscribe(
-      (data: any) => {
-        this.userData = data;
-        // console.log(this.userData, ' user data by id');
+  editUser(user: any) {
+    // this.vendorService.getUserById(id).subscribe(
+    //   (data: any) => {
+
+
+        this.userData = user;
+        console.log(this.userData, ' user data by id');
 
         if (this.userData.userStatus === 'Active') {
           this.checked = true;
@@ -452,19 +601,21 @@ export class UserComponent implements OnInit {
         this.userForm.get('userStatus')?.patchValue(this.userData.userStatus);
         this.userForm.get('createdOn')?.patchValue(this.userData.createdOn);
         this.userForm.get('createdBy')?.patchValue(this.userData.createdBy);
-        this.userForm.get('editedBy')?.patchValue(sessionStorage.getItem('email'));
+        this.userForm
+          .get('editedBy')
+          ?.patchValue(sessionStorage.getItem('email'));
         this.userFormEditable = true;
 
         this.addUserDialogBox = true;
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'Danger',
-          summary: 'Error',
-          detail: 'Something went wrong while adding user..!!',
-        });
-      }
-    );
+    //   },
+    //   (error: HttpErrorResponse) => {
+    //     this.messageService.add({
+    //       severity: 'Danger',
+    //       summary: 'Error',
+    //       detail: 'Something went wrong while adding user..!!',
+    //     });
+    //   }
+    // );
   }
 
   deleteUser() {
@@ -528,7 +679,7 @@ export class UserComponent implements OnInit {
         break;
       case 'Inactive':
         return 'status-badge status-badge-pending';
-      }
+    }
     return '';
   }
 }

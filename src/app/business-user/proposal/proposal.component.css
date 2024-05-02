@@ -2,7 +2,7 @@
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 .search {
@@ -33,7 +33,7 @@ ng-deep .templateTable {
 .actionButton{
   background-color: #d04a02;
   border-color: white;
-  font-family: Helvetica;
+  ;
   float: left;
 }
 .actionButton:hover{
@@ -128,7 +128,7 @@ app-spinner {
 .roles,h1{
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 .topView{

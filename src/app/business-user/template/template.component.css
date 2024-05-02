@@ -2,7 +2,7 @@
 h1 {
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 .roles{
@@ -16,7 +16,7 @@ h1 {
 .actionButton{
   background-color: #d04a02;
   border-color: white;
-  font-family: Helvetica;
+  ;
   float: left;
 }
 .actionButton:hover{
@@ -98,7 +98,7 @@ app-spinner {
 ::ng-deep .pbuttonclass {
   background-color: #d04a02;
   border-color: white;
-  font-family: Helvetica;
+  ;
   float: left;
   margin-top: 25px !important;
 }
@@ -115,7 +115,7 @@ app-spinner {
 .roles,h1{
   color: #415385;
   font-size: 34px;
-  font-family: "Helvetica";
+  
 }
 
 .topView{

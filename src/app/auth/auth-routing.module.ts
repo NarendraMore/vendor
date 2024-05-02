@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
 import { LoginHomepageComponent } from './login-homepage/login-homepage.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [
   {
     path: '',
-    pathMatch:'full',
-    component: LoginHomepageComponent
+    component: LoginComponent
   },
   {
     path: 'loginWithPwc',

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AppModuleConstants } from 'src/app/app-constants';
 import { ProjectService } from 'src/app/services/project.service';
@@ -9,7 +9,9 @@ import { VendorMngServiceService } from 'src/app/vendor-mng-service.service';
 import { TemplateService } from '../../template.service';
 import { TemplatebuilderService } from '../templatebuilder.service';
 import { Template } from './model/template';
-
+import { UserService } from 'src/app/services/user.service';
+import * as CryptoJS from 'crypto-js';
+import * as CircularJSON from 'circular-json';
 @Component({
   selector: 'app-template-details',
   templateUrl: './template-details.component.html',
@@ -42,6 +44,17 @@ export class TemplateDetailsComponent implements OnInit {
   currentFile?: File;
   uploadProposal: boolean = false;
   uploadMasterTemplateButton = false;
+  currentRoute:any;
+  allDecryptedprojectData:any
+  private environment = {
+    cIter: 1000,
+    kSize: 128,
+    kSeparator: '::',
+    val1: 'abcd65443A',
+    val2: 'AbCd124_09876',
+    val3: 'sa2@3456s',
+  };
+
 
   constructor(
     private router: Router,
@@ -51,10 +64,23 @@ export class TemplateDetailsComponent implements OnInit {
     private projectService: ProjectService,
     private activatedRoute: ActivatedRoute,
     private draftService: TemplatebuilderService,
-    private templateService: TemplateService
-  ) {}
+    private templateService: TemplateService,
+    private userService:UserService
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute=this.router.url
+      }
+    });
+  }
 
   ngOnInit(): void {
+
+
+    if(this.currentRoute.includes('template')){
+      this.userService.activeNavIcon('template');
+    }
+    
     this.spinner = true;
     this.userRole = sessionStorage.getItem(AppModuleConstants.ROLE)!;
     this.userName = sessionStorage.getItem(AppModuleConstants.USER)!;
@@ -120,10 +146,12 @@ export class TemplateDetailsComponent implements OnInit {
                   // console.log(
                   //   'projectName: new FormControl(this.draftTemplateData.project),'
                   // );
+                  console.log("template data::::",data);
+                  
 
                   this.draftTemplateData = data;
                   this.service.draftTemplateDetails = data;
-                  this.selectedProject = this.draftTemplateData.project;
+                  this.selectedProject = data.project;
                   // console.log(data);
                   this.templateForm = new FormGroup({
                     name: new FormControl(
@@ -178,12 +206,46 @@ export class TemplateDetailsComponent implements OnInit {
 
     this.projectService.getClients().subscribe(
       (data: any) => {
-        this.projects = data;
+        console.log(data,'encrypted data');
+        const base64EncodedData = data;
+        const decodedData = atob(base64EncodedData);
+        console.log(decodedData, 'decode data');
+        let toArray = decodedData.split(this.environment.kSeparator);
+        const key = CryptoJS.PBKDF2(
+          `${this.environment.val1}${this.environment.val2}${this.environment.val3}`,
+          CryptoJS.enc.Hex.parse(toArray[1]),
+          {
+            keySize: this.environment.kSize / 32,
+            iterations: this.environment.cIter
+          }
+        ); let cipherParams = CryptoJS.lib.CipherParams.create({
+          ciphertext: CryptoJS.enc.Base64.parse(toArray[2])
+        });
+        console.log(key, 'key'); const _iv = toArray[0]
+        let cText1 = CryptoJS.AES.decrypt(
+          cipherParams,
+          key,
+          {
+            iv: CryptoJS.enc.Hex.parse(_iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+          }
+        ); try {
+          const decryptedString = cText1.toString(CryptoJS.enc.Utf8);
+          const decryptedObject = JSON.parse(decryptedString);
+          this.allDecryptedprojectData =decryptedObject
+          console.log(decryptedObject, 'decrypted object');
+        } catch (error) {
+          // console.error('Error parsing decrypted data as JSON:', error);
+        }
+        // this.projects = this.allDecryptedprojectData;
         if (this.userRole === '2') {
-          this.projects = this.transferProjectName1(data);
+          this.projects = this.transferProjectName1(this.allDecryptedprojectData);
+          console.log("projects:===> ",this.projects);
+          
         }
         else if (this.userRole === '1') {
-          this.projects = data;
+          this.projects = this.allDecryptedprojectData;
         }
         // console.log(this.projects);
         for (let i = 0; i < this.projects.length; i++) {
@@ -201,7 +263,8 @@ export class TemplateDetailsComponent implements OnInit {
   }
   allProjectName: any[] = [];
   transferProjectName1(inputData: any) {
-    // console.log(inputData, 'inputData1');
+
+    console.log(inputData, 'inputData1');
     const categoryData = inputData.filter((data: any) => {
       // console.log(data, 'data of single project');
       for (let i = 0; i < data.businessUser.length; i++) {
@@ -212,17 +275,17 @@ export class TemplateDetailsComponent implements OnInit {
         }
       }
     });
+    console.log("this.allProjectName:",this.allProjectName);
+    
     return this.allProjectName;
   }
 
   openNext() {
+    this.redirectToTemplateCreation();
+    console.log(this.templateForm.value,'template value///../');
     this.templateForm.value.createdOn = Date.now();
-
     this.service.templateDescriptionData = this.templateForm.value;
     this.service.project = this.selectedProject;
-    this.redirectToTemplateCreation();
-    // console.log('template data', this.templateForm.value);
-    // console.log('template data', JSON.stringify(this.templateForm.value));
   }
 
   onSaveDraft() {
@@ -235,8 +298,11 @@ export class TemplateDetailsComponent implements OnInit {
   }
 
   private redirectToTemplateCreation() {
+    console.log(this.userRole,'user role');
+    
     if (this.activatedRoute.snapshot.params['draftId']) {
       if (this.userRole === '2') {
+        
         this.router.navigate([
           '/BusinessUser/create-template/tableDemo/' +
             this.activatedRoute.snapshot.params['draftId'],
@@ -335,9 +401,23 @@ export class TemplateDetailsComponent implements OnInit {
     this.service.project = this.selectedProject;
     this.uploadProposal = true;
   }
-
+  
+  @ViewChild('inputFile') fileInputRef!: ElementRef<HTMLInputElement>;
   selectFile1(event: any): void {
     this.selectedFiles = event.target.files;
+    if (this.selectedFiles && this.selectedFiles.length > 0) {
+      const parts = this.selectedFiles[0].name.split('.');
+      const fileExtension = parts[parts.length - 1];
+      console.log('fileExtension: ', fileExtension);
+
+      if (fileExtension !== 'xlsx') {
+        alert('Please select file of type Excel');
+
+        if (this.fileInputRef && this.fileInputRef.nativeElement) {
+          this.fileInputRef.nativeElement.value = '';
+        }
+      }
+    }
     // this.uploadProposal = false;
     this.uploadMasterTemplateButton = true;
   }
@@ -348,7 +428,7 @@ export class TemplateDetailsComponent implements OnInit {
       if (file) {
         this.projectService.uploadMasterTemplate(file).subscribe(
           (data: any) => {
-            localStorage.setItem('saveEnable', 'true');
+            sessionStorage.setItem('saveEnable', 'true');
             // console.log('template uploaded', JSON.parse(data.body));
             this.templateService.masterTemplateData = JSON.parse(data.body);
             this.service.draftTemplateDetails = JSON.parse(data.body);

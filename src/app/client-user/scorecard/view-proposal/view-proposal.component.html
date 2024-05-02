@@ -61,11 +61,13 @@
                 (click)="onClickViewProposal()"
               ></button>
             </div>
-
+            <!-- <span style="color: black;">{{selectedVendor |json}}</span> <br> -->
+            <!-- <span style="color: black;">===> {{selectedTemplateData |json}}</span> <br> -->
             <div class="left-aligned">
+              
               <p-dropdown
                 [options]="vendorList"
-                [(ngModel)]="selectedVendor"
+                [(ngModel)]="selectedTemplateData.vendorObject"
                 placeholder="Select Vendor"
                 optionLabel="vendorName"
                 [readonly]="true"

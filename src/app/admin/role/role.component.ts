@@ -6,6 +6,7 @@ import { LoadingSpinnerService } from 'src/app/services/loading-spinner.service'
 import { RoleService } from 'src/app/services/role.service';
 import { User } from '../user/model/user';
 import { Role } from './model/role';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-role',
@@ -37,30 +38,26 @@ export class RoleComponent implements OnInit {
 
   roleId!: string;
 
+  currentRoute:any;
+
   access1: any[] = [
-   
     { access: 'Comment' },
     { access: 'Download' },
     { access: 'Edit' },
     { access: 'View' },
-   
   ];
 
   access2: any[] = [
- 
     { access: 'Comment' },
     { access: 'Download' },
     { access: 'Edit' },
     { access: 'View' },
-   
   ];
 
   access3: any[] = [
     { access: 'Approve Request' },
     { access: 'Edit' },
     { access: 'View' },
-   
-  
   ];
 
   descriptionPattern = '^([a-zA-Z0-9 .,]{3,200})$';
@@ -71,10 +68,21 @@ export class RoleComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private spinner: LoadingSpinnerService,
-
-  ) {}
+    private router: Router
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.log('Current route in user:', this.router.url);
+        this.currentRoute=this.router.url
+      }
+    });
+  }
 
   ngOnInit(): void {
+
+
+
+
     const myHeaders = new Headers();
 
     this.spinner.isLoading.subscribe((val) => {
@@ -85,10 +93,13 @@ export class RoleComponent implements OnInit {
     // this.checked = true;
     this.viewRoles = true;
     this.roleForm = new FormGroup({
-      roleName: new FormControl('', [Validators.required,Validators.pattern(this.roleNamePattern)]),
+      roleName: new FormControl('', [
+        Validators.required,
+        Validators.pattern(this.roleNamePattern),
+      ]),
       descriptions: new FormControl('', [
         Validators.required,
-        Validators.pattern(this.descriptionPattern)
+        Validators.pattern(this.descriptionPattern),
       ]),
       vendorTemplateAccess: new FormControl('', Validators.required),
       dashboardAccess: new FormControl('', Validators.required),
@@ -148,7 +159,7 @@ export class RoleComponent implements OnInit {
           detail: 'Role addedd successfully',
         });
         // console.log(JSON.stringify(data));
-        
+
         this.addRoleDialogBox = false;
         this.roleForm.reset();
         this.ngOnInit();
@@ -189,39 +200,37 @@ export class RoleComponent implements OnInit {
         this.spinner.isLoading.next(true);
         this.addRoleDialogBox = false;
 
-        this.vendorService
-          .updateRole(this.roleForm.value)
-          .subscribe(
-            (data: any) => {
-              // console.log('Role Updated' + data);
+        this.vendorService.updateRole(this.roleForm.value).subscribe(
+          (data: any) => {
+            // console.log('Role Updated' + data);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'role updated Successfully',
+            });
+            this.spinner.isLoading.next(false);
+
+            this.roleForm.reset();
+            this.ngOnInit();
+          },
+          (error: HttpErrorResponse) => {
+            if (error.status === 500) {
               this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'role updated Successfully',
+                severity: 'warn',
+                summary: 'error..!!',
+                detail: 'Duplicate Role not allowed',
               });
               this.spinner.isLoading.next(false);
-
-              this.roleForm.reset();
-              this.ngOnInit();
-            },
-            (error: HttpErrorResponse) => {
-              if (error.status === 500) {
-                this.messageService.add({
-                  severity: 'warn',
-                  summary: 'error..!!',
-                  detail: 'Duplicate Role not allowed',
-                });
-                this.spinner.isLoading.next(false);
-              } else {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'error..!!',
-                  detail: 'Something went wrong, try once again',
-                });
-                this.spinner.isLoading.next(false);
-              }
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'error..!!',
+                detail: 'Something went wrong, try once again',
+              });
+              this.spinner.isLoading.next(false);
             }
-          );
+          }
+        );
       },
 
       reject: () => {
@@ -252,62 +261,60 @@ export class RoleComponent implements OnInit {
   editRole(data: any) {
     // this.vendorService.getRoleById(id).subscribe(
     //   (data: any) => {
-        this.roleData = data;
+    this.roleData = data;
 
-        if (this.roleData.roleStatus === 'Active') {
-          this.checked = true;
-        } else {
-          this.checked = false;
-        }
+    if (this.roleData.roleStatus === 'Active') {
+      this.checked = true;
+    } else {
+      this.checked = false;
+    }
 
-        // console.log(this.roleData, ' data to be edited');
+    // console.log(this.roleData, ' data to be edited');
 
-        // this.roleData.dashboardAccess = this.roleData.dashboardAccess[0]
-        //   .substring(1, this.roleData.dashboardAccess[0].length - 1)
-        //   .split(',');
-        // this.roleData.masterRepoAccess = this.roleData.masterRepoAccess[0]
-        //   .substring(1, this.roleData.masterRepoAccess[0].length - 1)
-        //   .split(',');
-        // this.roleData.vendorTemplateAccess =
-        //   this.roleData.vendorTemplateAccess[0]
-        //     .substring(1, this.roleData.vendorTemplateAccess[0].length - 1)
-        //     .split(',');
+    // this.roleData.dashboardAccess = this.roleData.dashboardAccess[0]
+    //   .substring(1, this.roleData.dashboardAccess[0].length - 1)
+    //   .split(',');
+    // this.roleData.masterRepoAccess = this.roleData.masterRepoAccess[0]
+    //   .substring(1, this.roleData.masterRepoAccess[0].length - 1)
+    //   .split(',');
+    // this.roleData.vendorTemplateAccess =
+    //   this.roleData.vendorTemplateAccess[0]
+    //     .substring(1, this.roleData.vendorTemplateAccess[0].length - 1)
+    //     .split(',');
 
-        // console.log(this.roleData.dashboardAccess, 'data...');
+    // console.log(this.roleData.dashboardAccess, 'data...');
 
-        // this.roleData.dashboardAccess = this.roleData.dashboardAccess.map(
-        //   (element: any) => {
-        //     return element.trim();
-        //   }
-        // );
-        // this.roleData.masterRepoAccess = this.roleData.masterRepoAccess.map(
-        //   (element: any) => {
-        //     return element.trim();
-        //   }
-        // );
-        // this.roleData.vendorTemplateAccess =
-        //   this.roleData.vendorTemplateAccess.map((element: any) => {
-        //     return element.trim();
-        //   });
+    // this.roleData.dashboardAccess = this.roleData.dashboardAccess.map(
+    //   (element: any) => {
+    //     return element.trim();
+    //   }
+    // );
+    // this.roleData.masterRepoAccess = this.roleData.masterRepoAccess.map(
+    //   (element: any) => {
+    //     return element.trim();
+    //   }
+    // );
+    // this.roleData.vendorTemplateAccess =
+    //   this.roleData.vendorTemplateAccess.map((element: any) => {
+    //     return element.trim();
+    //   });
 
-        this.roleId = this.roleData.roleId;
-        this.roleForm.get('roleName')?.patchValue(this.roleData.roleName);
-        this.roleForm
-          .get('descriptions')
-          ?.patchValue(this.roleData.descriptions);
-        this.roleForm
-          .get('dashboardAccess')
-          ?.patchValue(this.roleData.dashboardAccess);
-        this.roleForm
-          .get('vendorTemplateAccess')
-          ?.patchValue(this.roleData.vendorTemplateAccess);
-        this.roleForm
-          .get('masterRepoAccess')
-          ?.patchValue(this.roleData.masterRepoAccess);
-        this.roleForm.get('roleStatus')?.patchValue(this.roleData.roleStatus);
-        this.roleForm.get('createdOn')?.patchValue(this.roleData.createdOn);
-        this.roleFormEditable = true;
-        this.addRoleDialogBox = true;
+    this.roleId = this.roleData.roleId;
+    this.roleForm.get('roleName')?.patchValue(this.roleData.roleName);
+    this.roleForm.get('descriptions')?.patchValue(this.roleData.descriptions);
+    this.roleForm
+      .get('dashboardAccess')
+      ?.patchValue(this.roleData.dashboardAccess);
+    this.roleForm
+      .get('vendorTemplateAccess')
+      ?.patchValue(this.roleData.vendorTemplateAccess);
+    this.roleForm
+      .get('masterRepoAccess')
+      ?.patchValue(this.roleData.masterRepoAccess);
+    this.roleForm.get('roleStatus')?.patchValue(this.roleData.roleStatus);
+    this.roleForm.get('createdOn')?.patchValue(this.roleData.createdOn);
+    this.roleFormEditable = true;
+    this.addRoleDialogBox = true;
     //   },
     //   (error: HttpErrorResponse) => {
     //     alert(error);
@@ -377,7 +384,7 @@ export class RoleComponent implements OnInit {
         this.roleName = roleName;
         // console.log(this.userData);
         this.viewUser = true;
-       
+
         this.spinner.isLoading.next(false);
       },
       (error: HttpErrorResponse) => {
@@ -385,7 +392,6 @@ export class RoleComponent implements OnInit {
         this.spinner.isLoading.next(false);
       }
     );
-    
   }
 
   getStatusClass(status: any) {

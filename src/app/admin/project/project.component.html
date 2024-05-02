@@ -10,7 +10,7 @@
     (onShow)="!editClientForm ? onShow() : null"
   >
     <ng-template pTemplate="header">
-      <h2 style="color: #415385; font-size: 34px; font-family: Helvetica">
+      <h2 style="color: #415385; font-size: 34px; ">
         {{ editClientForm ? "Edit Project" : "Create New Project" }}
       </h2>
     </ng-template>
@@ -38,7 +38,7 @@
                   placeholder="Enter"
                   class="input"
                 />
-                <small style="color: red; font-size: 16px">
+                <small style="color: red;">
                   <app-print-error
                     [clientName]="clientForm1.get('clientName')"
                   ></app-print-error>
@@ -840,6 +840,10 @@
               "
             >
               <span style="color: red"> field is required </span>
+            </small>
+
+            <small *ngIf="addIndustryForm.get('industry')?.hasError('pattern')">
+               <span style="color: red;">Invalid Characters .</span>
             </small>
           </span>
         </div>

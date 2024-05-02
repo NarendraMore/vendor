@@ -8,7 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './Interceptor/interceptor.service';
-
+import { NgIdleModule } from '@ng-idle/core';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 @NgModule({
   declarations: [
     AppComponent
@@ -19,7 +20,9 @@ import { InterceptorService } from './Interceptor/interceptor.service';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgIdleModule,
+    NgIdleKeepaliveModule
   ],
   providers: [{
     provide:HTTP_INTERCEPTORS,
